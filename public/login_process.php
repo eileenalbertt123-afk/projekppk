@@ -1,5 +1,4 @@
 <?php
-// public/login-process.php
 
 session_start();
 
@@ -24,12 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Login berhasil, simpan session
+    //login berhasil, simpan session
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['nama'] = $user['nama'];
     $_SESSION['role'] = $user['role'];
 
-    // Redirect sesuai role (nanti disambungkan ke dashboard masing-masing role)
+    //redirect sesuai role (nanti disambungkan ke dashboard masing" role)
     header('Location: ../views/dashboard.php');
     exit;
 

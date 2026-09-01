@@ -9,7 +9,7 @@ class User {
         $this->pdo = $pdo;
     }
 
-    // Daftarkan user baru
+    //daftarkan new user
     public function create($nama, $email, $password, $role = 'pengguna') {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $sql = "INSERT INTO users (nama, email, password, role) VALUES (:nama, :email, :password, :role)";
@@ -22,7 +22,7 @@ class User {
         ]);
     }
 
-    // Cari user berdasarkan email
+    //cari user berdasarkan email
     public function findByEmail($email) {
         $sql = "SELECT * FROM users WHERE email = :email";
         $stmt = $this->pdo->prepare($sql);
@@ -30,12 +30,12 @@ class User {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Cek email sudah terdaftar atau belum
+    //cek email sudah terdaftar/belum
     public function emailExists($email) {
         return $this->findByEmail($email) !== false;
     }
 
-    // Verifikasi password saat login
+    //verifikasi password saat login
     public function verifyPassword($password, $hashedPassword) {
         return password_verify($password, $hashedPassword);
     }

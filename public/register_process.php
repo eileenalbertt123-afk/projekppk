@@ -1,5 +1,4 @@
 <?php
-// public/register-process.php
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../app/models/User.php';
@@ -10,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    // Validasi server-side
+    //validasi sisi server
     if ($nama === '' || $email === '' || $password === '') {
         header('Location: ../views/register.php?error=Semua field wajib diisi');
         exit;
@@ -28,13 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $userModel = new User($pdo);
 
-    // Cek email sudah terdaftar
+    //cek email sdh terdaftar
     if ($userModel->emailExists($email)) {
         header('Location: ../views/register.php?error=Email sudah terdaftar');
         exit;
     }
 
-    // Simpan user baru
+    //simpan new user
     $success = $userModel->create($nama, $email, $password);
 
     if ($success) {

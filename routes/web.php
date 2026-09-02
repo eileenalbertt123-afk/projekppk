@@ -20,8 +20,8 @@ Route::get('/petugas', function () {
 })->middleware(['auth', 'account.status', 'role:petugas,admin'])->name('petugas');
 
 Route::get('/pengguna', function () {
-    return 'Halaman Pengguna';
-})->middleware(['auth', 'account.status', 'role:pengguna,admin'])->name('pengguna');
+    return view('pengguna.dashboard');
+})->middleware(['auth', 'account.status', 'role:pengguna'])->name('pengguna');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -12,7 +12,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'account.status'])->name('dashboard');
 
 Route::get('/admin', function () {
-    return 'Halaman Admin';
+    return view('admin.dashboard');
 })->middleware(['auth', 'account.status', 'role:admin'])->name('admin');
 
 Route::get('/petugas', function () {

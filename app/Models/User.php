@@ -15,6 +15,7 @@ use Illuminate\Notifications\Notifiable;
     'password',
     'role',
     'status_akun',
+    'user_type_id',
 ])]
 
 #[Hidden([
@@ -33,5 +34,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function userType()
+    {
+        return $this->belongsTo(UserType::class);
     }
 }

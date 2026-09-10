@@ -11,38 +11,113 @@
 <body class="bg-gray-50 text-gray-800">
 
 <div class="min-h-screen">
-
-    {{-- NAVBAR --}}
+   {{-- NAVBAR --}}
     <nav class="bg-white border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
+            <!-- Nama Sistem -->
             <div>
                 <h1 class="text-xl font-bold text-green-700">
                     Reservasi Fasilitas
                 </h1>
             </div>
 
-            <div class="flex items-center gap-4">
-                <span class="text-sm">
-                    {{ auth()->user()->name }}
-                </span>
+            <!-- Akun Pengguna -->
+            <div class="flex items-center gap-3">
+                <!-- Avatar -->
+                <div class="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold">
+                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                </div>
 
+                <!-- Nama dan Role -->
+                <div>
+                    <p class="text-sm font-semibold text-gray-800">
+                        {{ auth()->user()->name }}
+                    </p>
+                    <p class="text-xs text-gray-500">
+                        Pengguna
+                    </p>
+                </div>
+
+                <!-- Logout -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
+
                     <button
                         type="submit"
-                        class="text-sm text-red-600 hover:text-red-800">
+                        class="ml-3 text-sm text-red-600 hover:text-red-800">
                         Logout
                     </button>
                 </form>
             </div>
-
         </div>
     </nav>
 
+    {{-- SIDEBAR --}}
+    <aside id="sidebar"
+        class="fixed left-0 top-[73px] bottom-0 w-64 bg-white border-r border-gray-200 transition-all duration-300 z-40">
+
+        <div class="p-4">
+            <!-- Tombol buka/tutup -->
+            <button
+                id="sidebarToggle"
+                type="button"
+                class="w-full flex items-center gap-3 px-3 py-3 rounded-lg
+                    text-gray-700 hover:bg-green-50 hover:text-green-700">
+                <span class="text-xl">☰</span>
+                <span id="sidebarTitle" class="font-medium">
+                    Menu
+                </span>
+            </button>
+
+            <!-- Menu -->
+            <nav class="mt-4 space-y-2">
+                <a href="{{ route('dashboard') }}"
+                    class="flex items-center gap-3 px-3 py-3 rounded-lg
+                        bg-green-50 text-green-700">
+                    <span class="sidebar-text">
+                        Halaman Utama
+                    </span>
+                </a>
+
+                <a href="#fasilitas"
+                class="flex items-center gap-3 px-3 py-3 rounded-lg
+                        text-gray-700 hover:bg-green-50 hover:text-green-700">
+                    <span class="sidebar-text">
+                        Fasilitas
+                    </span>
+                </a>
+
+                <a href="#reservasi"
+                class="flex items-center gap-3 px-3 py-3 rounded-lg
+                        text-gray-700 hover:bg-green-50 hover:text-green-700">
+                    <span class="sidebar-text">
+                        Reservasi
+                    </span>
+                </a>
+
+                <a href="#riwayat-reservasi"
+                class="flex items-center gap-3 px-3 py-3 rounded-lg
+                        text-gray-700 hover:bg-green-50 hover:text-green-700">
+                    <span class="sidebar-text">
+                        Riwayat
+                    </span>
+                </a>
+
+                <a href="#lapor-kerusakan"
+                class="flex items-center gap-3 px-3 py-3 rounded-lg
+                        text-gray-700 hover:bg-green-50 hover:text-green-700">
+                    <span class="sidebar-text">
+                        Laporan
+                    </span>
+                </a>
+
+            </nav>
+        </div>
+    </aside>
 
     {{-- CONTENT --}}
-    <main class="max-w-7xl mx-auto px-6 py-8">
+    <main id="mainContent"class="ml-64 max-w-7xl mx-auto px-6 py-8 transition-all duration-300">
 
         {{-- HEADER --}}
         <div class="mb-8">
@@ -683,6 +758,25 @@
     </main>
 
 </div>
+
+<script>
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarTexts = document.querySelectorAll('.sidebar-text');
+    const mainContent = document.getElementById('mainContent');
+
+    sidebarToggle.addEventListener('click', function () {
+        sidebar.classList.toggle('w-64');
+        sidebar.classList.toggle('w-20');
+
+        mainContent.classList.toggle('ml-64');
+        mainContent.classList.toggle('ml-20');
+
+        sidebarTexts.forEach(function (text) {
+            text.classList.toggle('hidden');
+        });
+    });
+</script>
 
 </body>
 </html>

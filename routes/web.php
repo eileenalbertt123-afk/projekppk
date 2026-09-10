@@ -3,8 +3,12 @@
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
+
 
 Route::get('/', [FacilityController::class, 'index'])->name('home');
+
+Route::get('/fasilitas', [FacilityController::class, 'index'])->name('facilities.index');
 
 Route::get('/fasilitas/{facility}', [FacilityController::class, 'availability'])->name('facilities.availability');
 
@@ -12,9 +16,11 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'account.status'])->name('dashboard');
 
-Route::get('/admin', function () {
-    return view('admin.dashboard');
-})->middleware(['auth', 'account.status', 'role:admin'])->name('admin');
+Route::get('/admin', [AdminController::class, 'index'])
+    ->middleware(['auth', 'account.status', 'role:admin']) ->name('admin');
+
+Route::get('/admin/rekap', [AdminController::class, 'rekap'])
+    ->middleware(['auth', 'account.status', 'role:admin']) ->name('admin.rekap');
 
 Route::get('/petugas', function () {
     return 'Halaman Petugas';

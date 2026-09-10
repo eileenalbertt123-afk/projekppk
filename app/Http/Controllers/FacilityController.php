@@ -37,7 +37,7 @@ class FacilityController extends Controller
     {
         $date = $request->input('date', Carbon::today()->toDateString());
 
-        // generate semua slot 30 menit jam 07:00-20:00
+        // Generate semua slot 30 menit dari jam 07:00 - 20:00
         $slots = [];
         $start = Carbon::parse($date . ' 07:00');
         $end = Carbon::parse($date . ' 20:00');
@@ -52,21 +52,26 @@ class FacilityController extends Controller
             $start = $slotEnd;
         }
 
-        // ambil reservasi yang disetujui/menunggu buat fasilitas ini di tanggal ini
+        // Ambil reservasi yang disetujui / menunggu di fasilitas & tanggal ini
         $booked = ReservationDetail::where('facility_id', $facility->id)
             ->whereHas('reservation', function ($q) use ($date) {
                 $q->whereIn('status', ['disetujui', 'menunggu'])
-                  ->whereDate('start_time', $date);
+                ->whereDate('start_time', $date);
             })
             ->with('reservation')
             ->get();
 
+        // Cek bentrok jam pada setiap slot
         foreach ($slots as &$slot) {
             $slotStart = Carbon::parse($date . ' ' . $slot['start']);
             $slotEnd = Carbon::parse($date . ' ' . $slot['end']);
 
             foreach ($booked as $b) {
-                if ($slotStart < $b->reservation->end_time && $slotEnd > $b->reservation->start_time) {
+                // 2. Parse waktu dari DB ke Carbon agar komparasi tanggal & jam akurat
+                $resStart = Carbon::parse($b->reservation->start_time);
+                $resEnd = Carbon::parse($b->reservation->end_time);
+
+                if ($slotStart < $resEnd && $slotEnd > $resStart) {
                     $slot['status'] = 'tidak tersedia';
                     break;
                 }

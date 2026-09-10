@@ -73,51 +73,72 @@
             <!-- Menu -->
             <nav class="mt-4 space-y-2">
                 <a href="{{ route('dashboard') }}"
-                    class="flex items-center gap-3 px-3 py-3 rounded-lg
+                class="flex items-center gap-3 px-3 py-3 rounded-lg
                         bg-green-50 text-green-700">
+                    <span class="text-lg">🏠</span>
+
                     <span class="sidebar-text">
-                        Halaman Utama
+                        Dashboard
                     </span>
+
                 </a>
 
                 <a href="#fasilitas"
                 class="flex items-center gap-3 px-3 py-3 rounded-lg
                         text-gray-700 hover:bg-green-50 hover:text-green-700">
+
+                    <span class="text-lg">🏢</span>
+
                     <span class="sidebar-text">
                         Fasilitas
                     </span>
+
                 </a>
 
                 <a href="#reservasi"
                 class="flex items-center gap-3 px-3 py-3 rounded-lg
                         text-gray-700 hover:bg-green-50 hover:text-green-700">
+
+                    <span class="text-lg">📅</span>
+
                     <span class="sidebar-text">
                         Reservasi
                     </span>
+
                 </a>
 
                 <a href="#riwayat-reservasi"
                 class="flex items-center gap-3 px-3 py-3 rounded-lg
                         text-gray-700 hover:bg-green-50 hover:text-green-700">
+
+                    <span class="text-lg">📋</span>
+
                     <span class="sidebar-text">
                         Riwayat
                     </span>
+
                 </a>
 
                 <a href="#lapor-kerusakan"
                 class="flex items-center gap-3 px-3 py-3 rounded-lg
                         text-gray-700 hover:bg-green-50 hover:text-green-700">
+
+                    <span class="text-lg">⚠️</span>
+
                     <span class="sidebar-text">
                         Laporan
                     </span>
+
                 </a>
 
             </nav>
+
         </div>
+
     </aside>
 
     {{-- CONTENT --}}
-    <main id="mainContent"class="ml-64 max-w-7xl mx-auto px-6 py-8 transition-all duration-300">
+    <main class="max-w-7xl mx-auto px-6 py-8">
 
         {{-- HEADER --}}
         <div class="mb-8">
@@ -758,25 +779,6 @@
     </main>
 
 </div>
-
-<script>
-    const sidebar = document.getElementById('sidebar');
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    const sidebarTexts = document.querySelectorAll('.sidebar-text');
-    const mainContent = document.getElementById('mainContent');
-
-    sidebarToggle.addEventListener('click', function () {
-        sidebar.classList.toggle('w-64');
-        sidebar.classList.toggle('w-20');
-
-        mainContent.classList.toggle('ml-64');
-        mainContent.classList.toggle('ml-20');
-
-        sidebarTexts.forEach(function (text) {
-            text.classList.toggle('hidden');
-        });
-    });
-</script>
 
 </body>
 </html>

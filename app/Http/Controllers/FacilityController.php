@@ -3,23 +3,76 @@
 namespace App\Http\Controllers;
 
 use App\Models\Facility;
+use App\Models\ReservationDetail;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class FacilityController extends Controller
 {
     public function index(Request $request)
     {
-        $facilities = Facility::query()
-            ->when($request->search, fn ($q) => $q->where('name', 'like', "%{$request->search}%"))
-            ->when($request->type, fn ($q) => $q->where('type', $request->type))
-            ->when($request->location, fn ($q) => $q->where('location', $request->location))
-            ->when($request->capacity, fn ($q) => $q->where('capacity', '>=', $request->capacity))
-            ->with(['reservations' => fn ($q) => $q->whereDate('start_time', today())])
-            ->paginate(9)
-            ->withQueryString();
+        $query = Facility::query();
 
-        $types = Facility::distinct()->pluck('type');
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+        if ($request->filled('location')) {
+            $query->where('location', $request->location);
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('capacity')) {
+            $query->where('capacity', '>=', $request->capacity);
+        }
 
-        return view('dashboard.index', compact('facilities', 'types'));
+        $facilities = $query->get();
+        $types = Facility::select('type')->distinct()->pluck('type');
+        $locations = Facility::select('location')->distinct()->orderBy('location')->pluck('location');
+
+        return view('facilities.index', compact('facilities', 'types', 'locations'));
+    }
+
+    public function availability(Request $request, Facility $facility)
+    {
+        $date = $request->input('date', Carbon::today()->toDateString());
+
+        // generate semua slot 30 menit jam 07:00-20:00
+        $slots = [];
+        $start = Carbon::parse($date . ' 07:00');
+        $end = Carbon::parse($date . ' 20:00');
+
+        while ($start < $end) {
+            $slotEnd = $start->copy()->addMinutes(30);
+            $slots[] = [
+                'start' => $start->format('H:i'),
+                'end' => $slotEnd->format('H:i'),
+                'status' => 'tersedia',
+            ];
+            $start = $slotEnd;
+        }
+
+        // ambil reservasi yang disetujui/menunggu buat fasilitas ini di tanggal ini
+        $booked = ReservationDetail::where('facility_id', $facility->id)
+            ->whereHas('reservation', function ($q) use ($date) {
+                $q->whereIn('status', ['disetujui', 'menunggu'])
+                  ->whereDate('start_time', $date);
+            })
+            ->with('reservation')
+            ->get();
+
+        foreach ($slots as &$slot) {
+            $slotStart = Carbon::parse($date . ' ' . $slot['start']);
+            $slotEnd = Carbon::parse($date . ' ' . $slot['end']);
+
+            foreach ($booked as $b) {
+                if ($slotStart < $b->reservation->end_time && $slotEnd > $b->reservation->start_time) {
+                    $slot['status'] = 'tidak tersedia';
+                    break;
+                }
+            }
+        }
+
+        return view('facilities.availability', compact('facility', 'slots', 'date'));
     }
 }

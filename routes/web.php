@@ -1,11 +1,12 @@
 <?php
 
+use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [FacilityController::class, 'index'])->name('home');
+
+Route::get('/fasilitas/{facility}', [FacilityController::class, 'availability'])->name('facilities.availability');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

@@ -30,6 +30,10 @@ Route::get('/pengguna', function () {
     return 'Halaman Pengguna';
 })->middleware(['auth', 'account.status', 'role:pengguna,admin'])->name('pengguna');
 
+Route::get('/petugas/reservasi/dashboard', function () {
+    return view('petugas.reservasi.dashboard');
+})->name('petugas.reservasi.dashboard');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -30,14 +30,14 @@
                         [
                             'label' => 'Dashboard',
                             'route' => 'petugas.dashboard',
-                            'active' => true,
+                            'active' => request()->routeIs('petugas.reservasi.dashboard'),
                             'badge' => null,
                             'icon' => 'grid',
                         ],
                         [
                             'label' => 'Daftar Reservasi',
                             'route' => 'petugas.reservasi.index',
-                            'active' => false,
+                            'active' => request()->routeIs('petugas.reservasi.index'),
                             'badge' => $reservasiBaruCount ?? 3,
                             'icon' => 'clipboard',
                         ],

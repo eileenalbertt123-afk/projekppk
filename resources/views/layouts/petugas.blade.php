@@ -16,7 +16,7 @@
     <div class="flex min-h-screen">
         {{-- Sidebar --}}
         @include('components.petugas.sidebar')
-        <div class="flex-1">
+        <div class="flex-1 min-w-0">
             {{-- Header --}}
             @include('components.petugas.header')
             {{-- Content halaman --}}

@@ -1,6 +1,6 @@
-        <header class="bg-white border-b border-[#e2ebe9] flex items-center justify-between px-8 h-[80px]">
+        <header class="w-full bg-white border-b border-[#e2ebe9] flex items-center justify-between px-4 sm:px-6 lg:px-8 h-[80px] gap-4">
             {{-- Segmented view tabs --}}
-            <div class="bg-[#eef4f3] border border-[rgba(186,205,201,0.5)] rounded-xl p-[5px] flex items-center gap-2">
+            <div class="bg-[#eef4f3] border border-[rgba(186,205,201,0.5)] rounded-xl p-[5px] flex items-center gap-2 shrink-0">
                 @php
                     $tabs = [
                         ['label' => 'All', 'active' => false],
@@ -20,7 +20,7 @@
             </div>
 
             {{-- User profile --}}
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-4 shrink-0">
                 <span class="bg-[#e2ebe9] h-8 w-px"></span>
                 <div class="flex items-center gap-3">
                     <div class="relative bg-[#19183b] border border-[#19183b] rounded-xl size-10 flex items-center justify-center shadow-[0px_0px_0px_2px_rgba(161,194,189,0.4)]">

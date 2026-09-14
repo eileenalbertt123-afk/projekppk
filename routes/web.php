@@ -38,6 +38,10 @@ Route::get('/petugas/reservasi/daftar-reservasi', function () {
     return view('petugas.reservasi.daftar-reservasi');
 })->name('petugas.reservasi.index');
 
+Route::get('/petugas/reservasi/jadwal-reservasi', function () {
+    return view('petugas.reservasi.jadwal-reservasi');
+})->name('petugas.reservasi.jadwal');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

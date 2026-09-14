@@ -44,7 +44,7 @@
                         [
                             'label' => 'Jadwal',
                             'route' => 'petugas.jadwal.index',
-                            'active' => false,
+                            'active' => request()->routeIs('petugas.reservasi.jadwal'),
                             'badge' => null,
                             'icon' => 'calendar',
                         ],

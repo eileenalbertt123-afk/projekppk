@@ -27,7 +27,7 @@ Route::get('/petugas', function () {
 })->middleware(['auth', 'account.status', 'role:petugas,admin'])->name('petugas');
 
 Route::get('/pengguna', function () {
-    return view('pengguna.dashboard');
+    return view('dashboard'); // pakai file yang sama dengan /dashboard
 })->middleware(['auth', 'account.status', 'role:pengguna'])->name('pengguna');
 
 Route::get('/petugas/reservasi/dashboard', function () {

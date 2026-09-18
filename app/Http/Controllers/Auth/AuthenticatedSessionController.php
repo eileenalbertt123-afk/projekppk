@@ -31,10 +31,10 @@ class AuthenticatedSessionController extends Controller
     $user = Auth::user();
 
     return match ($user->role) {
-        'admin' => redirect('/admin'),
-        'petugas' => redirect('/petugas'),
-        'pengguna' => redirect('/pengguna'),
-        default => redirect('/'),
+    'admin' => redirect('/admin'),
+    'petugas' => redirect()->route('petugas.reservasi.dashboard'),
+    'pengguna' => redirect('/pengguna'),
+    default => redirect('/'),
     };
 }
 

@@ -51,8 +51,8 @@
             <!-- Header Logo -->
             <div class="flex items-center justify-between pb-5 border-b border-gray-100 mb-6">
                 <div class="flex items-center gap-2.5">
-                    <div class="bg-brand-primary text-white px-2.5 py-1 rounded-md font-extrabold text-xs tracking-wider">CS</div>
-                    <span class="font-bold text-lg text-brand-primary tracking-tight">CivicSpace</span>
+                    <div class="bg-brand-primary text-white px-2.5 py-1 rounded-md font-extrabold text-xs tracking-wider">BF</div>
+                <span class="font-bold text-lg text-brand-primary tracking-tight">Book & Fix</span>
                 </div>
                 <button @click="sidebarOpen = false" class="text-brand-secondary hover:text-brand-primary p-1 rounded-lg hover:bg-gray-100 md:hidden">
                     ✕

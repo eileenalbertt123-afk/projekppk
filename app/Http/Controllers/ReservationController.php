@@ -7,7 +7,6 @@ use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class ReservationController extends Controller
 {
@@ -84,8 +83,15 @@ class ReservationController extends Controller
         }
 
         // 6. Simpan ke Database
+        $lastCode = Reservation::orderBy('id', 'desc')->value('reservation_code');
+        $nextNumber = 1;
+        if ($lastCode && preg_match('/RV-(\d+)/', $lastCode, $matches)) {
+            $nextNumber = (int)$matches[1] + 1;
+        }
+        $reservationCode = 'RV-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+
         $reservation = Reservation::create([
-            'reservation_code'     => 'RES-' . strtoupper(Str::random(8)),
+            'reservation_code'     => $reservationCode,
             'user_id'              => Auth::id(),
             'start_time'           => $start,
             'end_time'             => $end,

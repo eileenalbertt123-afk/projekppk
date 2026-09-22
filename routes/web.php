@@ -22,6 +22,40 @@ Route::get('/admin', [AdminController::class, 'index'])
 Route::get('/admin/rekap', [AdminController::class, 'rekap'])
     ->middleware(['auth', 'account.status', 'role:admin']) ->name('admin.rekap');
 
+// Admin - Kelola Fasilitas
+Route::get('/admin/fasilitas', [AdminController::class, 'fasilitas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.facilities.index');
+
+Route::get('/admin/fasilitas/create', [AdminController::class, 'createFasilitas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.facilities.create');
+
+Route::post('/admin/fasilitas', [AdminController::class, 'storeFasilitas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.facilities.store');
+
+Route::get('/admin/fasilitas/{id}/edit', [AdminController::class, 'editFasilitas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.facilities.edit');
+
+Route::put('/admin/fasilitas/{id}', [AdminController::class, 'updateFasilitas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.facilities.update');
+
+Route::put('/admin/fasilitas/{id}/nonaktifkan', [AdminController::class, 'nonaktifkanFasilitas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.facilities.deactivate');
+
+// Admin - Kelola Pengguna
+Route::get('/admin/pengguna', [AdminController::class, 'pengguna'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.pengguna.index');
+
+Route::put('/admin/pengguna/{id}/status', [AdminController::class, 'updateStatusPengguna'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.pengguna.status');
+    
 Route::get('/petugas', function () {
     return 'Halaman Petugas';
 })->middleware(['auth', 'account.status', 'role:petugas,admin'])->name('petugas');

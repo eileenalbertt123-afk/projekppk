@@ -7,7 +7,9 @@ use App\Models\ReservationDetail;
 
 class Facility extends Model
 {
-    protected $fillable = ['name', 'type', 'location', 'capacity', 'description', 'status', 'image'];
+    public $timestamps = false;
+    
+    protected $fillable = ['name', 'type', 'location', 'capacity', 'description', 'equipment', 'status', 'image'];
 
     public function reservationDetails()
     {

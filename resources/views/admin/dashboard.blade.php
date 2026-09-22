@@ -7,44 +7,74 @@
             <!-- SIDEBAR -->
             <aside class="w-64 min-h-screen bg-white dark:bg-gray-800 shadow-md">
 
-                <div class="p-6 border-b dark:border-gray-700">
-                    <h1 class="text-xl font-bold text-gray-800 dark:text-white">
-                        Admin Panel
-                    </h1>
-                    <p class="text-sm text-gray-500 mt-1">
-                        Sistem Reservasi Fasilitas
-                    </p>
+                <!-- BRAND -->
+                <div class="px-5 py-5 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center gap-3">
+
+                    <!-- Icon -->
+                    <div class="w-10 h-10 rounded-xl bg-[#19183B] flex items-center justify-center text-white text-lg shadow-sm">
+                        📅
+                    </div>
+
+                    <!-- Brand -->
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-lg font-bold text-gray-800 dark:text-white">
+                                Book & Fix
+                            </h1>
+
+                            <span class="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-gray-100 text-gray-600">
+                                ADMIN
+                            </span>
+                        </div>
+
+                        <p class="text-xs text-gray-400 mt-0.5">
+                            Campus Facility Management
+                        </p>
+                    </div>
+
                 </div>
+            </div>
 
-                <nav class="p-4 space-y-2">
+            <!-- NAVIGATION -->
+            <nav class="px-4 py-5">
 
-                    <a href="{{ route('admin') }}"
-                       class="flex items-center gap-3 px-4 py-3 rounded-lg bg-indigo-50 text-indigo-600 font-semibold">
-                        <span>🏠</span>
-                        Dashboard
-                    </a>
+                <p class="px-3 mb-4 text-[11px] font-medium tracking-wide text-[#708993] uppercase">
+                    Menu Utama
+                </p>
 
-                    <a href="{{ route('facilities.index') }}"
-                       class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-                        <span>🏢</span>
-                        Fasilitas
-                    </a>
+                <!-- Dashboard -->
+                <a href="{{ route('admin') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#19183B] text-white font-semibold">
+                    <span class="text-lg">🏠</span>
+                    <span class="text-sm">Dashboard</span>
+                </a>
 
-                    <a href="#pengguna"
-                       class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-                        <span>👤</span>
-                        Pengguna
-                    </a>
+                <!-- Fasilitas -->
+                <a href="{{ route('admin.facilities.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 mt-2 rounded-xl text-[#708993] hover:bg-[#F4F8F7] hover:text-[#19183B] transition">
+                    <span class="text-lg">🏢</span>
+                    <span class="text-sm">Fasilitas</span>
+                </a>
 
-                    <a href="#laporan"
-                       class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-                        <span>📊</span>
-                        Laporan
-                    </a>
+                <!-- Pengguna -->
+                <a href="{{ route('admin.pengguna.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 mt-2 rounded-xl text-[#708993] hover:bg-[#F4F8F7] hover:text-[#19183B] transition">
+                    <span class="text-lg">👤</span>
+                    <span class="text-sm">Pengguna</span>
+                </a>
 
-                </nav>
+                <!-- Laporan -->
+                <a href="#laporan"
+                    class="flex items-center gap-3 px-4 py-3 mt-2 rounded-xl text-[#708993] hover:bg-[#F4F8F7] hover:text-[#19183B] transition">
 
-            </aside>
+                    <span class="text-lg">📊</span>
+                    <span class="text-sm">Laporan</span>
+                </a>
+
+            </nav>
+
+        </aside>
 
 
             <!-- CONTENT -->
@@ -79,7 +109,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
 
                     <!-- FASILITAS -->
-                    <a href="{{ route('facilities.index') }}"
+                    <a href="{{ route('admin.facilities.index') }}"
                        class="group bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition">
 
                         <div class="flex items-center justify-between">
@@ -107,14 +137,14 @@
                     </a>
 
                     <!-- FASILITAS AKTIF -->
-                    <a href="{{ route('facilities.index') }}"
+                    <a href="{{ route('admin.facilities.index') }}"
                        class="group bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition">
 
                         <div class="flex items-center justify-between">
 
                             <div>
                                 <p class="text-sm text-gray-500">
-                                    Fasilitas Aktif
+                                    Fasilitas Tersedia
                                 </p>
 
                                 <p class="text-3xl font-bold text-green-600 mt-2">
@@ -201,7 +231,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                        <a href="{{ route('facilities.index') }}"
+                        <a href="{{ route('admin.facilities.index') }}"
                            class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-indigo-50 dark:hover:bg-gray-700 transition">
 
                             <p class="font-semibold text-gray-800 dark:text-white">

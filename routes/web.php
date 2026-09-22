@@ -4,7 +4,7 @@ use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
-
+use App\Http\Controllers\ReservationController;
 
 Route::get('/', [FacilityController::class, 'index'])->name('home');
 
@@ -23,24 +23,40 @@ Route::get('/admin/rekap', [AdminController::class, 'rekap'])
     ->middleware(['auth', 'account.status', 'role:admin']) ->name('admin.rekap');
 
 Route::get('/petugas', function () {
-    return 'Halaman Petugas';
-})->middleware(['auth', 'account.status', 'role:petugas,admin'])->name('petugas');
+    return redirect()->route('petugas.reservasi.dashboard');
+})
+->middleware(['auth', 'account.status', 'role:petugas'])
+->name('petugas');
 
 Route::get('/pengguna', function () {
     return 'Halaman Pengguna';
 })->middleware(['auth', 'account.status', 'role:pengguna,admin'])->name('pengguna');
 
-Route::get('/petugas/reservasi/dashboard', function () {
-    return view('petugas.reservasi.dashboard');
-})->name('petugas.reservasi.dashboard');
+Route::get('/petugas/reservasi/dashboard',
+    [ReservationController::class, 'dashboard']
+)->name('petugas.reservasi.dashboard');
 
-Route::get('/petugas/reservasi/daftar-reservasi', function () {
-    return view('petugas.reservasi.daftar-reservasi');
-})->name('petugas.reservasi.index');
+Route::get('/petugas/reservasi/daftar-reservasi',
+    [ReservationController::class, 'index']
+)->name('petugas.reservasi.index');
 
-Route::get('/petugas/reservasi/jadwal-reservasi', function () {
-    return view('petugas.reservasi.jadwal-reservasi');
-})->name('petugas.reservasi.jadwal');
+Route::get('/petugas/reservasi/jadwal-reservasi',
+    [ReservationController::class, 'schedule']
+)
+->middleware(['auth', 'account.status', 'role:petugas'])
+->name('petugas.reservasi.jadwal');
+
+Route::get(
+    '/petugas/reservasi/detail-reservasi/{reservation}',
+    [ReservationController::class, 'show']
+)->name('petugas.reservasi.detail');
+
+Route::patch(
+    '/petugas/reservasi/{reservation}/status',
+    [ReservationController::class, 'updateStatus']
+)
+->middleware(['auth', 'account.status', 'role:petugas,admin'])
+->name('petugas.reservasi.update-status');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

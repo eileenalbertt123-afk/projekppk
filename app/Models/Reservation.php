@@ -6,7 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reservation extends Model
 {
-    protected $fillable = ['user_id', 'start_time', 'end_time', 'reason', 'document', 'status', 'is_reschedule', 'reschedule_of'];
+    protected $fillable = [
+        'reservation_code',
+        'user_id',
+        'purpose',
+        'activity_description',
+        'participant_count',
+        'document',
+        'status',
+        'start_time',
+        'end_time',
+    ];
 
     protected $casts = [
         'start_time' => 'datetime',
@@ -22,4 +32,23 @@ class Reservation extends Model
     {
         return $this->hasMany(ReservationDetail::class);
     }
+
+    public function statusHistories()
+    {
+        return $this->hasMany(
+            ReservationStatusHistory::class,
+            'reservation_id'
+        );
+    }
+
+    public function facilities()
+    {
+        return $this->belongsToMany(
+            Facility::class,
+            'reservation_detail',
+            'reservation_id',
+            'facility_id'
+        );
+    }
+
 }

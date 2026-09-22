@@ -34,50 +34,63 @@ class FacilityController extends Controller
     }
 
     public function availability(Request $request, Facility $facility)
+{
+    $date = $request->input('date', Carbon::today('Asia/Jakarta')->toDateString());
+
+    $slots = $this->getSlotsForDate($facility, $date);
+
+    $days = collect(range(0, 6))->map(function ($i) use ($date) {
+        $d = Carbon::today('Asia/Jakarta')->addDays($i);
+        return [
+            'key' => $d->toDateString(),
+            'day' => $d->translatedFormat('D'),
+            'date' => $d->day,
+            'active' => $d->toDateString() === $date,
+        ];
+    });
+
+    return view('facilities.availability', compact('facility', 'slots', 'date', 'days'));
+}
+
+    public function getSlotsForDate(Facility $facility, $date)
     {
-        $date = $request->input('date', Carbon::today()->toDateString());
+        $start = \Carbon\Carbon::parse($date . ' 07:00', 'Asia/Jakarta');
+        $end   = \Carbon\Carbon::parse($date . ' 20:00', 'Asia/Jakarta');
+        $now   = \Carbon\Carbon::now('Asia/Jakarta');
 
-        // Generate semua slot 30 menit dari jam 07:00 - 20:00
-        $slots = [];
-        $start = Carbon::parse($date . ' 07:00');
-        $end = Carbon::parse($date . ' 20:00');
-
-        while ($start < $end) {
-            $slotEnd = $start->copy()->addMinutes(30);
-            $slots[] = [
-                'start' => $start->format('H:i'),
-                'end' => $slotEnd->format('H:i'),
-                'status' => 'tersedia',
-            ];
-            $start = $slotEnd;
-        }
-
-        // Ambil reservasi yang disetujui / menunggu di fasilitas & tanggal ini
-        $booked = ReservationDetail::where('facility_id', $facility->id)
+        // Ambil reservasi yang aktif pada tanggal tersebut, lewat relasi reservation_detail
+        $booked = \App\Models\ReservationDetail::where('facility_id', $facility->id)
             ->whereHas('reservation', function ($q) use ($date) {
-                $q->whereIn('status', ['disetujui', 'menunggu'])
+                $q->whereIn('status', ['menunggu', 'disetujui'])
                 ->whereDate('start_time', $date);
             })
             ->with('reservation')
             ->get();
 
-        // Cek bentrok jam pada setiap slot
-        foreach ($slots as &$slot) {
-            $slotStart = Carbon::parse($date . ' ' . $slot['start']);
-            $slotEnd = Carbon::parse($date . ' ' . $slot['end']);
+        $slots = [];
 
-            foreach ($booked as $b) {
-                // 2. Parse waktu dari DB ke Carbon agar komparasi tanggal & jam akurat
-                $resStart = Carbon::parse($b->reservation->start_time);
-                $resEnd = Carbon::parse($b->reservation->end_time);
+        while ($start < $end) {
+            $slotEnd = $start->copy()->addMinutes(30);
 
-                if ($slotStart < $resEnd && $slotEnd > $resStart) {
-                    $slot['status'] = 'tidak tersedia';
-                    break;
-                }
-            }
+            // Cek apakah slot bentrok dengan reservasi yang ada
+            $isBooked = $booked->contains(function ($b) use ($start, $slotEnd) {
+                $resStart = \Carbon\Carbon::parse($b->reservation->start_time, 'Asia/Jakarta');
+                $resEnd   = \Carbon\Carbon::parse($b->reservation->end_time, 'Asia/Jakarta');
+                return ($start < $resEnd && $slotEnd > $resStart);
+            });
+
+            $isPast = $start->lt($now);
+
+            $slots[] = [
+                'start'   => $start->format('H:i'),
+                'end'     => $slotEnd->format('H:i'),
+                'status'  => $isBooked ? 'terisi' : 'tersedia',
+                'is_past' => $isPast,
+            ];
+
+            $start = $slotEnd;
         }
 
-        return view('facilities.availability', compact('facility', 'slots', 'date'));
+        return $slots;
     }
 }

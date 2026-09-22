@@ -58,8 +58,14 @@ class RegisteredUserController extends Controller
         $mapping = self::DOMAIN_MAP[$domain];
 
         $userTypeId = null;
-        if ($mapping['user_type']) {
+        if ($mapping['role'] === 'pengguna') {
             $userTypeId = UserType::where('name', $mapping['user_type'])->value('id');
+
+            if (!$userTypeId) {
+                throw ValidationException::withMessages([
+                'email' => 'Tipe pengguna tidak ditemukan pada sistem.',
+                ]);
+            }
         }
 
         $user = User::create([

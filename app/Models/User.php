@@ -12,6 +12,7 @@ use Illuminate\Notifications\Notifiable;
 #[Fillable([
     'name',
     'email',
+    'identifier',
     'password',
     'role',
     'status_akun',
@@ -40,26 +41,39 @@ class User extends Authenticatable
         return $this->belongsTo(UserType::class, 'user_type_id');
     }
 
-    // Pengecekan Role Email Kampus
-    public function getRoleTypeAttribute()
+    /**
+     * Mengecek role utama pengguna.
+     */
+    public function isAdmin()
     {
-        $email = $this->email;
-
-        if ($email === 'admin@undip.ac.id') {
-            return 'admin';
-        } elseif (str_ends_with($email, '@students.undip.ac.id')) {
-            return 'mahasiswa';
-        } elseif (str_ends_with($email, '@lecturer.undip.ac.id')) {
-            return 'dosen';
-        } elseif (str_ends_with($email, '@worker.undip.ac.id')) {
-            return 'petugas';
-        }
-
-        return 'user';
+        return $this->role === 'admin';
     }
 
-    public function isAdmin() { return $this->role_type === 'admin'; }
-    public function isMahasiswa() { return $this->role_type === 'mahasiswa'; }
-    public function isDosen() { return $this->role_type === 'dosen'; }
-    public function isPetugas() { return $this->role_type === 'petugas'; }
+    public function isPengguna()
+    {
+        return $this->role === 'pengguna';
+    }
+
+    public function isPetugas()
+    {
+        return $this->role === 'petugas';
+    }
+
+    /**
+     * Mengecek tipe pengguna.
+     */
+    public function isMahasiswa()
+    {
+        return $this->user_type_id === 1;
+    }
+
+    public function isDosen()
+    {
+        return $this->user_type_id === 2;
+    }
+
+    public function isTendik()
+    {
+        return $this->user_type_id === 3;
+    }
 }

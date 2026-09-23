@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\RegistrableUser;
 use App\Models\User;
-use App\Models\UserType;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
@@ -16,16 +17,6 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Domain email yang diizinkan, dan role/tipe yang otomatis diberikan.
-     */
-    private const DOMAIN_MAP = [
-    'students.undip.ac.id' => ['role' => 'pengguna', 'user_type' => 'mahasiswa'],
-    'lecturer.undip.ac.id' => ['role' => 'pengguna', 'user_type' => 'dosen'],
-    'staff.undip.ac.id'    => ['role' => 'pengguna', 'user_type' => 'staf'],
-    'worker.undip.ac.id'   => ['role' => 'petugas',  'user_type' => null],
-];
-
     /**
      * Display the registration view.
      */
@@ -42,45 +33,68 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'email' => [
+                'required',
+                'string',
+                'lowercase',
+                'email',
+                'max:255',
+                'unique:' . User::class,
+            ],
+
+            'identifier' => [
+                'required',
+                'digits:14',
+            ],
+
+            'password' => [
+                'required',
+                'confirmed',
+                Rules\Password::min(8),
+            ],
         ]);
 
-        $domain = strtolower(substr(strrchr($request->email, '@'), 1));
+        // Mencari NIM/NIP yang terdaftar dan belum digunakan.
+        $registrableUser = RegistrableUser::where('identifier', $request->identifier)
+            ->where('is_registered', false)
+            ->first();
 
-        if (!array_key_exists($domain, self::DOMAIN_MAP)) {
+        if (!$registrableUser) {
             throw ValidationException::withMessages([
-                'email' => 'Gunakan email UNDIP resmi (@students.undip.ac.id, @lecturer.undip.ac.id, @staff.undip.ac.id, atau @worker.undip.ac.id).',
+                'identifier' => 'NIM/NIP tidak terdaftar atau sudah digunakan untuk registrasi.',
             ]);
         }
 
-        $mapping = self::DOMAIN_MAP[$domain];
+        DB::transaction(function () use ($request, $registrableUser) {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'identifier' => $request->identifier,
+                'password' => Hash::make($request->password),
+                'role' => 'pengguna',
+                'user_type_id' => $registrableUser->user_type_id,
+                'status_akun' => 'menunggu',
+            ]);
 
-        $userTypeId = null;
-        if ($mapping['role'] === 'pengguna') {
-            $userTypeId = UserType::where('name', $mapping['user_type'])->value('id');
+            // Menandai NIM/NIP bahwa sudah digunakan.
+            $registrableUser->update([
+                'is_registered' => true,
+            ]);
 
-            if (!$userTypeId) {
-                throw ValidationException::withMessages([
-                'email' => 'Tipe pengguna tidak ditemukan pada sistem.',
-                ]);
-            }
-        }
+            event(new Registered($user));
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $mapping['role'],
-            'user_type_id' => $userTypeId,
-            'status_akun' => 'aktif',
-        ]);
+            
+        });
 
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('login')->with(
+            'status',
+            'Registrasi berhasil. Akun Anda sedang menunggu verifikasi admin.'
+        );
     }
 }

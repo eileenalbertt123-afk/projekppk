@@ -42,11 +42,40 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $start = microtime(true);
+
+        $result = Auth::attempt(
+            $this->only('email', 'password'),
+            $this->boolean('remember')
+        );
+
+        logger()->info('AUTH ATTEMPT TIME', [
+            'time' => microtime(true) - $start,
+        ]);
+
+        if (! $result) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
+            ]);
+        }
+
+        $user = Auth::user();
+
+        if ($user->status_akun === 'menunggu') {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda masih menunggu verifikasi admin.',
+            ]);
+        }
+
+        if ($user->status_akun === 'nonaktif') {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda tidak aktif.',
             ]);
         }
 
@@ -81,6 +110,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }

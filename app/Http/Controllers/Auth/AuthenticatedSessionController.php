@@ -24,17 +24,35 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
 {
+    $start = microtime(true);
+
     $request->authenticate();
+
+    logger()->info('AFTER AUTH', [
+        'time' => microtime(true) - $start,
+    ]);
+
+    $start = microtime(true);
 
     $request->session()->regenerate();
 
+    logger()->info('AFTER SESSION REGENERATE', [
+        'time' => microtime(true) - $start,
+    ]);
+
+    $start = microtime(true);
+
     $user = Auth::user();
 
+    logger()->info('AFTER AUTH USER', [
+        'time' => microtime(true) - $start,
+    ]);
+
     return match ($user->role) {
-    'admin' => redirect('/admin'),
-    'petugas' => redirect()->route('petugas.reservasi.dashboard'),
-    'pengguna' => redirect('/pengguna'),
-    default => redirect('/'),
+        'admin' => redirect('/admin'),
+        'petugas' => redirect()->route('petugas.reservasi.dashboard'),
+        'pengguna' => redirect('/pengguna'),
+        default => redirect('/'),
     };
 }
 

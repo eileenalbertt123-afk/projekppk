@@ -1,4 +1,4 @@
-    <aside class="bg-white border-r border-[#e2ebe9] w-[288px] flex flex-col justify-between shrink-0">
+<aside class="bg-white border-r border-[#e2ebe9] w-[288px] flex flex-col justify-between shrink-0">
         <div>
             {{-- Brand Logo Header --}}
             <div class="flex items-center gap-3 h-[80px] px-6 border-b border-[#e2ebe9]">
@@ -20,42 +20,76 @@
                     <p class="text-[11px] font-medium text-[#708993] leading-4">Campus Facility Management</p>
                 </div>
             </div>
-
+ 
             {{-- Navigation --}}
             <nav class="flex flex-col gap-1.5 px-4 pt-[15px] pb-4">
                 <p class="px-3 pb-2 text-[11px] font-bold uppercase tracking-[0.55px] text-[#708993]">Menu Utama</p>
-
+ 
             @php
-                $navItems = [
-                    [
-                        'label' => 'Dashboard',
-                        'route' => 'petugas.reservasi.dashboard',
-                        'active' => request()->routeIs('petugas.reservasi.dashboard'),
-                        'badge' => null,
-                        'icon' => 'grid',
-                    ],
-                    [
-                        'label' => 'Daftar Reservasi',
-                        'route' => 'petugas.reservasi.index',
-                        'active' => request()->routeIs([
-                            'petugas.reservasi.index',
-                            'petugas.reservasi.detail'
-                        ]),
-                        'badge' => $reservasiBaruCount ?? 0,
-                        'icon' => 'clipboard',
-                    ],
-                    [
-                        'label' => 'Jadwal',
-                        'route' => 'petugas.reservasi.jadwal',
-                        'active' => request()->routeIs('petugas.reservasi.jadwal'),
-                        'badge' => null,
-                        'icon' => 'calendar',
-                    ],
-                ];
+                $isLaporan = request()->routeIs([
+                    'petugas.laporan.*',
+                    'petugas.fasilitas.*',
+                ]);
+ 
+                if ($isLaporan) {
+                    $navItems = [
+                        [
+                            'label'  => 'Dashboard',
+                            'route'  => 'petugas.laporan.dashboard',
+                            'active' => request()->routeIs('petugas.laporan.dashboard'),
+                            'badge'  => null,
+                            'icon'   => 'grid',
+                        ],
+                        [
+                            'label'  => 'Daftar Laporan',
+                            'route'  => 'petugas.laporan.index',
+                            'active' => request()->routeIs([
+                                'petugas.laporan.index',
+                                'petugas.laporan.detail',
+                            ]),
+                            'badge'  => $laporanBaruCount ?? 0,
+                            'icon'   => 'document',
+                        ],
+                        [
+                            'label'  => 'Fasilitas',
+                            'route'  => 'petugas.fasilitas.index',
+                            'active' => request()->routeIs('petugas.fasilitas.*'),
+                            'badge'  => null,
+                            'icon'   => 'building',
+                        ],
+                    ];
+                } else {
+                    $navItems = [
+                        [
+                            'label'  => 'Dashboard',
+                            'route'  => 'petugas.reservasi.dashboard',
+                            'active' => request()->routeIs('petugas.reservasi.dashboard'),
+                            'badge'  => null,
+                            'icon'   => 'grid',
+                        ],
+                        [
+                            'label'  => 'Daftar Reservasi',
+                            'route'  => 'petugas.reservasi.index',
+                            'active' => request()->routeIs([
+                                'petugas.reservasi.index',
+                                'petugas.reservasi.detail',
+                            ]),
+                            'badge'  => $reservasiBaruCount ?? 0,
+                            'icon'   => 'clipboard',
+                        ],
+                        [
+                            'label'  => 'Jadwal',
+                            'route'  => 'petugas.reservasi.jadwal',
+                            'active' => request()->routeIs('petugas.reservasi.jadwal'),
+                            'badge'  => null,
+                            'icon'   => 'calendar',
+                        ],
+                    ];
+                }
             @endphp
-
+ 
                 @foreach ($navItems as $item)
-                    <a href="{{ route($item['route']) }}"
+                    <a href="{{ Route::has($item['route']) ? route($item['route']) : '#' }}"
                        class="flex items-center justify-between gap-3.5 rounded-xl px-3.5 py-3 w-full
                               {{ $item['active'] ? 'bg-[#19183b] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)]' : '' }}">
                         <span class="flex items-center gap-3.5">
@@ -65,6 +99,14 @@
                                 @elseif ($item['icon'] === 'clipboard')
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 13.5l2.25 2.25 4.5-4.5" />
+                                @elseif ($item['icon'] === 'document')
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+                                    />
+                                @elseif ($item['icon'] === 'building')
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
                                 @else
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                                 @endif
@@ -73,7 +115,7 @@
                                 {{ $item['label'] }}
                             </span>
                         </span>
-
+ 
                         @if ($item['badge'])
                             <span class="bg-[#fef3c7] rounded-full px-2 py-0.5 text-xs font-semibold text-[#92400e] leading-4 whitespace-nowrap">
                                 {{ $item['badge'] }} Baru
@@ -83,7 +125,7 @@
                 @endforeach
             </nav>
         </div>
-
+ 
         {{-- Sidebar bottom status --}}
         <div class="p-4">
             <div class="bg-[#eef4f3] border border-[#e2ebe9] rounded-2xl p-[17px] flex items-center gap-3">

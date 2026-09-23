@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', [FacilityController::class, 'index'])->name('home');
 
@@ -57,6 +58,31 @@ Route::patch(
 )
 ->middleware(['auth', 'account.status', 'role:petugas,admin'])
 ->name('petugas.reservasi.update-status');
+
+Route::get('/petugas/laporan/dashboard', [ReportController::class, 'dashboard'])
+    ->middleware(['auth', 'account.status', 'role:petugas'])
+    ->name('petugas.laporan.dashboard');
+
+Route::get('/petugas/laporan/daftar-laporan',
+    [ReportController::class, 'index']
+)->name('petugas.laporan.index');
+
+Route::post('/laporan',
+    [ReportController::class, 'store']
+)
+->middleware(['auth', 'account.status'])
+->name('laporan.store');
+
+Route::get('/petugas/fasilitas', [FacilityController::class, 'list'])
+    ->middleware(['auth', 'account.status', 'role:petugas'])
+    ->name('petugas.fasilitas.index');
+
+Route::get(
+    '/petugas/laporan/detail/{report}',
+    [ReportController::class, 'show']
+)
+->middleware(['auth', 'account.status', 'role:petugas'])
+->name('petugas.laporan.detail');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

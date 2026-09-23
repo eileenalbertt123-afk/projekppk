@@ -75,7 +75,14 @@ class AdminController extends Controller
             'capacity' => 'required|integer',
             'status' => 'required|in:tersedia,dalam_perbaikan,nonaktif',
             'description' => 'nullable',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+
+        $namaFoto = null;
+
+        if ($request->hasFile('image')) {
+            $namaFoto = $request->file('image')->store('facilities', 'public');
+        }
 
         Facility::create([
             'name' => $request->name,
@@ -84,6 +91,7 @@ class AdminController extends Controller
             'capacity' => $request->capacity,
             'status' => $request->status,
             'description' => $request->description,
+            'image' => $namaFoto,
         ]);
 
         return redirect()
@@ -109,15 +117,23 @@ class AdminController extends Controller
             'capacity' => 'required|integer',
             'status' => 'required|in:tersedia,dalam_perbaikan,nonaktif',
             'description' => 'nullable',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $fasilitas->update([
+        $data = [
             'name' => $request->name,
             'type' => $request->type,
             'location' => $request->location,
             'capacity' => $request->capacity,
+            'status' => $request->status,
             'description' => $request->description,
-        ]);
+        ];
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('facilities', 'public');
+        }
+
+        $fasilitas->update($data);
 
         return redirect()
             ->route('admin.facilities.index')

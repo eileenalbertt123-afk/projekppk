@@ -18,11 +18,14 @@ class AdminController extends Controller
 
         $totalPengguna = User::count();
 
+        $menungguVerifikasi = User::where('status_verifikasi', 'menunggu')->count();
+
         return view('admin.dashboard', compact(
             'totalFasilitas',
             'fasilitasAktif',
             'fasilitasPerbaikan',
-            'totalPengguna'
+            'totalPengguna',
+            'menungguVerifikasi'
         ));
     }
 

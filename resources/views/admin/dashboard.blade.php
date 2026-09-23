@@ -216,10 +216,7 @@
                 </div>
 
 
-                {{-- ==================================================
-                    STATISTIK
-                =================================================== --}}
-
+                {{-- STATISTIK --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
 
 
@@ -297,14 +294,14 @@
                     </a>
 
 
-                    {{-- PENGGUNA --}}
+                    {{-- MENUNGGU VERIFIKASI --}}
                     <a href="{{ route('admin.pengguna.index') }}"
                        class="bg-white border border-[#e2ebe9] rounded-2xl p-5 shadow-sm hover:shadow-md transition">
 
                         <div class="flex items-center justify-between">
 
                             <p class="text-sm text-[#708993] font-semibold">
-                                Total Pengguna
+                                Menunggu Verifikasi
                             </p>
 
                             <div class="size-10 rounded-xl bg-[#fef3c7] flex items-center justify-center">
@@ -316,10 +313,7 @@
                                      stroke-width="2">
                                     <path stroke-linecap="round"
                                           stroke-linejoin="round"
-                                          d="M15.75 6.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-                                    <path stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          d="M4.5 20.25a7.5 7.5 0 0115 0" />
+                                          d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
 
                             </div>
@@ -327,11 +321,11 @@
                         </div>
 
                         <p class="mt-5 text-[30px] font-extrabold text-[#b45309]">
-                            {{ $totalPengguna }}
+                            {{ $menungguVerifikasi }}
                         </p>
 
                         <p class="text-xs text-[#b45309] mt-1">
-                            Kelola pengguna →
+                            Perlu ditinjau →
                         </p>
 
                     </a>
@@ -356,7 +350,7 @@
                                      stroke-width="2">
                                     <path stroke-linecap="round"
                                           stroke-linejoin="round"
-                                          d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.3-3.3a6 6 0 01-7.8 7.8L7 20.5a2.12 2.12 0 01-3-3l6.7-6.2a6 6 0 017.8-7.8l3.8-3.8z" />
+                                          d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a6 6 0 01-7.8 7.8L7 20.5a2.12 2.12 0 01-3-3l6.7-6.2a6 6 0 017.8-7.8l3.8-3.8z" />
                                 </svg>
 
                             </div>
@@ -376,10 +370,7 @@
                 </div>
 
 
-                {{-- ==================================================
-                    AKSI CEPAT
-                =================================================== --}}
-
+                {{-- AKSI CEPAT --}}
                 <div class="mb-8">
 
                     <h2 class="font-bold text-lg text-[#19183b]">
@@ -512,10 +503,7 @@
                 </div>
 
 
-                {{-- ==================================================
-                    RINGKASAN
-                =================================================== --}}
-
+                {{-- RINGKASAN --}}
                 <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-sm p-6 mb-8">
 
                     <div class="flex items-center gap-3 mb-5">
@@ -594,10 +582,7 @@
                 </div>
 
 
-                {{-- ==================================================
-                    REKAP DETAIL
-                =================================================== --}}
-
+                {{-- REKAP DETAIL --}}
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
 
@@ -692,7 +677,7 @@
                                      stroke-width="2">
                                     <path stroke-linecap="round"
                                           stroke-linejoin="round"
-                                          d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.3-3.3a6 6 0 01-7.8 7.8L7 20.5a2.12 2.12 0 01-3-3l6.7-6.2a6 6 0 017.8-7.8l3.8-3.8z" />
+                                          d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a6 6 0 01-7.8 7.8L7 20.5a2.12 2.12 0 01-3-3l6.7-6.2a6 6 0 017.8-7.8l3.8-3.8z" />
                                 </svg>
 
                             </div>

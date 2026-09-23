@@ -86,7 +86,6 @@ class ReservationController extends Controller
 
                 return $reservation->start_time
                     ->diffInMinutes($reservation->end_time);
-
             }) ?? 0;
 
         $adaDataBulanLalu = $reservationsLastMonth->isNotEmpty();
@@ -98,12 +97,11 @@ class ReservationController extends Controller
 
                     return $reservation->start_time
                         ->diffInMinutes($reservation->end_time);
-
                 }) ?? 0;
 
             $selisihWaktuReservasi = round(
                 $rataRataMenitBulanIni
-                - $rataRataMenitBulanLalu
+                    - $rataRataMenitBulanLalu
             );
         } else {
 
@@ -173,7 +171,6 @@ class ReservationController extends Controller
 
                 return $reservation->status === 'disetujui'
                     && $reservation->start_time->isToday();
-
             })
             ->sortBy('start_time')
             ->values();
@@ -231,7 +228,6 @@ class ReservationController extends Controller
 
                 return $reservation->start_time
                     ->format('Y-m-d');
-
             });
         $calendarStart = $calendarDate
             ->copy()
@@ -264,7 +260,6 @@ class ReservationController extends Controller
                         }
 
                         return $status;
-
                     })
                     ->unique()
                     ->values()
@@ -275,22 +270,20 @@ class ReservationController extends Controller
                     'n' => $currentDate->day,
 
                     'muted' =>
-                        $currentDate->month !==
+                    $currentDate->month !==
                         $calendarDate->month,
 
                     'active' =>
-                        $currentDate->isToday(),
+                    $currentDate->isToday(),
 
                     'dots' => $statuses,
                 ];
 
 
                 $currentDate->addDay();
-
             }
 
             $calendarWeeks[] = $week;
-
         }
 
         return view(
@@ -319,6 +312,8 @@ class ReservationController extends Controller
                 'previousMonth',
                 'nextMonth'
             )
+
+
         );
     }
 
@@ -341,13 +336,13 @@ class ReservationController extends Controller
         $dibatalkanDitolakCount = $ditolakCount + $dibatalkanCount;
 
         // QUERY DAFTAR RESERVASI
-        // =========================
+
 
         $query = Reservation::query()
             ->with([
-            'user:id,name',
-            'details:id,reservation_id,facility_id',
-            'details.facility:id,name,type,location',
+                'user:id,name',
+                'details:id,reservation_id,facility_id',
+                'details.facility:id,name,type,location',
             ]);
 
 
@@ -364,26 +359,23 @@ class ReservationController extends Controller
                     "%{$search}%"
                 )
 
-                ->orWhereHas('user', function ($userQuery) use ($search) {
+                    ->orWhereHas('user', function ($userQuery) use ($search) {
 
-                    $userQuery->where(
-                        'name',
-                        'like',
-                        "%{$search}%"
-                    );
+                        $userQuery->where(
+                            'name',
+                            'like',
+                            "%{$search}%"
+                        );
+                    })
 
-                })
+                    ->orWhereHas('details.facility', function ($facilityQuery) use ($search) {
 
-                ->orWhereHas('details.facility', function ($facilityQuery) use ($search) {
-
-                    $facilityQuery->where(
-                        'name',
-                        'like',
-                        "%{$search}%"
-                    );
-
-                });
-
+                        $facilityQuery->where(
+                            'name',
+                            'like',
+                            "%{$search}%"
+                        );
+                    });
             });
         }
 
@@ -411,7 +403,7 @@ class ReservationController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        
+
         // Tabel Reservasi
         // =========================
 
@@ -425,6 +417,7 @@ class ReservationController extends Controller
         ));
     }
 
+
     public function show(Reservation $reservation)
     {
         $reservation->load([
@@ -434,21 +427,21 @@ class ReservationController extends Controller
         ]);
 
         $facilityIds = $reservation->details
-        ->pluck('facility_id');
+            ->pluck('facility_id');
 
         $conflictingReservation = Reservation::with([
             'user',
             'details.facility',
         ])
-        ->where('id', '!=', $reservation->id)
-        ->where('status', 'disetujui')
-        ->whereHas('details', function ($query) use ($facilityIds) {
-            $query->whereIn('facility_id', $facilityIds);
-        })
-        ->where('start_time', '<', $reservation->end_time)
-        ->where('end_time', '>', $reservation->start_time)
-        ->orderBy('start_time')
-        ->first();
+            ->where('id', '!=', $reservation->id)
+            ->where('status', 'disetujui')
+            ->whereHas('details', function ($query) use ($facilityIds) {
+                $query->whereIn('facility_id', $facilityIds);
+            })
+            ->where('start_time', '<', $reservation->end_time)
+            ->where('end_time', '>', $reservation->start_time)
+            ->orderBy('start_time')
+            ->first();
 
         $hasConflict = $conflictingReservation !== null;
 
@@ -584,8 +577,8 @@ class ReservationController extends Controller
 
         $facilities = $selectedType
             ? $allFacilities
-                ->where('type', $selectedType)
-                ->values()
+            ->where('type', $selectedType)
+            ->values()
             : $allFacilities;
 
         $reservations = Reservation::query()
@@ -629,10 +622,8 @@ class ReservationController extends Controller
                                 'facilities.type',
                                 $selectedType
                             );
-
                         }
                     );
-
                 }
             )
             ->when(
@@ -647,10 +638,8 @@ class ReservationController extends Controller
                                 'facilities.id',
                                 $selectedFacility
                             );
-
                         }
                     );
-
                 }
             )
 
@@ -658,66 +647,66 @@ class ReservationController extends Controller
 
             ->get();
 
-            $weekDays = collect(range(0, 6))
-                ->map(function ($index) use ($weekStart) {
+        $weekDays = collect(range(0, 6))
+            ->map(function ($index) use ($weekStart) {
 
-                    $date = $weekStart->copy()->addDays($index);
+                $date = $weekStart->copy()->addDays($index);
 
-                    return [
-                        'index' => $index,
+                return [
+                    'index' => $index,
 
-                        'date' => $date->format('Y-m-d'),
+                    'date' => $date->format('Y-m-d'),
 
-                        'name' => $date
-                            ->locale('id')
-                            ->translatedFormat('l'),
+                    'name' => $date
+                        ->locale('id')
+                        ->translatedFormat('l'),
 
-                        'date_label' => $date
-                            ->locale('id')
-                            ->translatedFormat('j M'),
+                    'date_label' => $date
+                        ->locale('id')
+                        ->translatedFormat('j M'),
 
-                        'is_today' => $date->isToday(),
-                    ];
-                })
-                ->toArray();
+                    'is_today' => $date->isToday(),
+                ];
+            })
+            ->toArray();
 
-            $scheduleByDay = [];
+        $scheduleByDay = [];
 
-            foreach ($reservations as $reservation) {
+        foreach ($reservations as $reservation) {
 
-                // 0 = Senin, 6 = Minggu
-                $dayIndex = $reservation->start_time->dayOfWeekIso - 1;
+            // 0 = Senin, 6 = Minggu
+            $dayIndex = $reservation->start_time->dayOfWeekIso - 1;
 
-                foreach ($reservation->facilities as $facility) {
+            foreach ($reservation->facilities as $facility) {
 
-                    $scheduleByDay[$dayIndex][] = [
-                        'reservation_id' => $reservation->id,
+                $scheduleByDay[$dayIndex][] = [
+                    'reservation_id' => $reservation->id,
 
-                        'reservation_code' =>
-                            $reservation->reservation_code,
+                    'reservation_code' =>
+                    $reservation->reservation_code,
 
-                        'facility' =>
-                            $facility->name,
+                    'facility' =>
+                    $facility->name,
 
-                        'type' =>
-                            $facility->type,
+                    'type' =>
+                    $facility->type,
 
-                        'start' =>
-                            $reservation->start_time->format('H.i'),
+                    'start' =>
+                    $reservation->start_time->format('H.i'),
 
-                        'end' =>
-                            $reservation->end_time->format('H.i'),
+                    'end' =>
+                    $reservation->end_time->format('H.i'),
 
-                        'borrower' =>
-                            \Illuminate\Support\Str::title(
-                                $reservation->user?->name ?? '-'
-                            ),
+                    'borrower' =>
+                    \Illuminate\Support\Str::title(
+                        $reservation->user?->name ?? '-'
+                    ),
 
-                        'status' =>
-                            $reservation->status,
-                    ];
-                }
+                    'status' =>
+                    $reservation->status,
+                ];
             }
+        }
         return view(
             'petugas.reservasi.jadwal-reservasi',
             compact(
@@ -736,6 +725,168 @@ class ReservationController extends Controller
                 'weekDays',
                 'scheduleByDay',
             )
+        );
+    }
+    public function create(Request $request)
+    {
+        $facility = Facility::findOrFail($request->query('facility_id'));
+        $date = $request->query('date');
+        $start = $request->query('start');
+        $end = $request->query('end');
+
+        return view(
+            'reservations.create',
+            compact('facility', 'date', 'start', 'end')
+        );
+    }
+    public function store(Request $request)
+    {
+        $request->validate([
+            'facility_id'          => 'required|exists:facilities,id',
+            'date'                 => 'required|date|after_or_equal:today',
+            'start_time'           => 'required|date_format:H:i',
+            'end_time'             => 'required|date_format:H:i|after:start_time',
+            'purpose'              => 'required|string|max:255',
+            'activity_description' => 'nullable|string',
+            'participant_count'    => 'nullable|integer|min:1',
+            'document'             => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:2048',
+        ]);
+
+        $start = Carbon::parse(
+            $request->date . ' ' . $request->start_time
+        );
+
+        $end = Carbon::parse(
+            $request->date . ' ' . $request->end_time
+        );
+
+        $opStart = Carbon::parse(
+            $request->date . ' 07:00'
+        );
+
+        $opEnd = Carbon::parse(
+            $request->date . ' 20:00'
+        );
+
+        if ($start < $opStart || $end > $opEnd) {
+            return back()->withInput()->withErrors([
+                'time' => 'Waktu reservasi harus berada dalam jam operasional (07.00 - 20.00 WIB).'
+            ]);
+        }
+
+        if ($start->minute % 30 !== 0 || $end->minute % 30 !== 0) {
+            return back()->withInput()->withErrors([
+                'time' => 'Waktu mulai dan selesai harus berupa kelipatan slot 30 menit (mis. 07.00, 07.30).'
+            ]);
+        }
+
+        $conflict = Reservation::whereIn(
+            'status',
+            ['menunggu', 'disetujui']
+        )
+            ->whereHas('details', function ($q) use ($request) {
+                $q->where(
+                    'facility_id',
+                    $request->facility_id
+                );
+            })
+            ->where(function ($q) use ($start, $end) {
+                $q->where('start_time', '<', $end)
+                    ->where('end_time', '>', $start);
+            })
+            ->exists();
+
+        if ($conflict) {
+            return back()->withInput()->withErrors([
+                'conflict' => 'Slot waktu pada rentang tersebut sudah dipesan oleh pengguna lain.'
+            ]);
+        }
+
+        $documentPath = null;
+
+        if ($request->hasFile('document')) {
+            $documentPath = $request
+                ->file('document')
+                ->store('documents', 'public');
+        }
+
+        $lastCode = Reservation::orderBy(
+            'id',
+            'desc'
+        )->value('reservation_code');
+
+        $nextNumber = 1;
+
+        if (
+            $lastCode &&
+            preg_match('/RV-(\d+)/', $lastCode, $matches)
+        ) {
+            $nextNumber = (int) $matches[1] + 1;
+        }
+
+        $reservationCode = 'RV-' .
+            str_pad(
+                $nextNumber,
+                3,
+                '0',
+                STR_PAD_LEFT
+            );
+
+        $reservation = Reservation::create([
+            'reservation_code'     => $reservationCode,
+            'user_id'              => Auth::id(),
+            'start_time'           => $start,
+            'end_time'             => $end,
+            'purpose'              => $request->purpose,
+            'activity_description' => $request->activity_description,
+            'participant_count'    => $request->participant_count ?? 1,
+            'document'             => $documentPath,
+            'status'               => 'menunggu',
+        ]);
+
+        $reservation->details()->create([
+            'facility_id' => $request->facility_id,
+        ]);
+
+        return redirect()
+            ->route('dashboard')
+            ->with(
+                'success',
+                'Pengajuan reservasi berhasil dikirim!'
+            );
+    }
+
+    public function cancel(Reservation $reservation)
+    {
+        if ($reservation->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if (!in_array(
+            $reservation->status,
+            ['menunggu', 'disetujui']
+        )) {
+            return back()->withErrors([
+                'cancel' => 'Reservasi ini sudah tidak bisa dibatalkan.'
+            ]);
+        }
+
+        if (
+            now()->addHours(24)
+            ->greaterThan($reservation->start_time)
+        ) {
+            return back()->withErrors([
+                'cancel' => 'Reservasi hanya bisa dibatalkan paling lambat 24 jam sebelum waktu mulai.'
+            ]);
+        }
+
+        $reservation->update([
+            'status' => 'dibatalkan'
+        ]);
+
+        return back()->with(
+            'success',
+            'Reservasi berhasil dibatalkan.'
         );
     }
 }

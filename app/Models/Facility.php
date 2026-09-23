@@ -6,19 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Facility extends Model
 {
+    public $timestamps = false;
+
     protected $fillable = [
         'name',
         'type',
         'location',
         'capacity',
         'description',
-        'equipment', // ← missing di fillable
+        'equipment',
         'image',
         'status',
     ];
 
     protected $casts = [
-        'equipment' => 'array', // ← kolom equipment isinya JSON array
+        'equipment' => 'array',
         'capacity' => 'integer',
     ];
 

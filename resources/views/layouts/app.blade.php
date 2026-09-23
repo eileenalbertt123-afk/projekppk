@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" x-data="{ sidebarOpen: true }">
+<html lang="id" x-data="{ sidebarOpen: false }">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -80,7 +80,7 @@
                         <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-brand-secondary hover:bg-gray-100 hover:text-brand-primary font-medium transition text-sm">
                             <span>📅 Riwayat & Status</span>
                         </a>
-                        <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-brand-secondary hover:bg-gray-100 hover:text-brand-primary font-medium transition text-sm">
+                        <a href="{{ route('reports.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-brand-secondary hover:bg-gray-100 hover:text-brand-primary font-medium transition text-sm">
                             <span>⚠️ Lapor Kerusakan</span>
                         </a>
                     @endif

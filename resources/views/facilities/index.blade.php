@@ -75,9 +75,9 @@
                     {{ ucfirst($facility->type) }} &middot; {{ $facility->location }} &middot; Kapasitas {{ $facility->capacity }} Orang
                 </p>
 
-                <div class="flex items-center justify-between border-t border-gray-100 pt-3 text-xs text-brand-primary font-semibold">
-                    <span>Cek Ketersediaan</span>
-                    <span>→</span>
+                <div class="flex items-center justify-end gap-1.5 border-t border-gray-100 pt-3 text-xs text-brand-primary font-semibold group-hover:translate-x-1 transition-transform">
+                    <span>Detail</span>
+                    <span>&rarr;</span>
                 </div>
             </div>
         </a>

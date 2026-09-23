@@ -20,7 +20,6 @@ Route::get('/fasilitas', [FacilityController::class, 'index'])
 Route::get('/fasilitas/{facility}', [FacilityController::class, 'availability'])
     ->name('facilities.availability');
 
-
 // --- RUTE DASHBOARD USER (PENGGUNA) ---
 Route::get('/dashboard', function () {
     $userId = Auth::id();
@@ -57,7 +56,6 @@ Route::get('/dashboard', function () {
     ->middleware(['auth', 'account.status'])
     ->name('dashboard');
 
-
 // --- RUTE ADMIN ---
 Route::get('/admin', [AdminController::class, 'index'])
     ->middleware(['auth', 'account.status', 'role:admin'])
@@ -67,6 +65,39 @@ Route::get('/admin/rekap', [AdminController::class, 'rekap'])
     ->middleware(['auth', 'account.status', 'role:admin'])
     ->name('admin.rekap');
 
+// --- ADMIN - KELOLA FASILITAS ---
+Route::get('/admin/fasilitas', [AdminController::class, 'fasilitas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.facilities.index');
+
+Route::get('/admin/fasilitas/create', [AdminController::class, 'createFasilitas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.facilities.create');
+
+Route::post('/admin/fasilitas', [AdminController::class, 'storeFasilitas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.facilities.store');
+
+Route::get('/admin/fasilitas/{id}/edit', [AdminController::class, 'editFasilitas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.facilities.edit');
+
+Route::put('/admin/fasilitas/{id}', [AdminController::class, 'updateFasilitas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.facilities.update');
+
+Route::put('/admin/fasilitas/{id}/nonaktifkan', [AdminController::class, 'nonaktifkanFasilitas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.facilities.deactivate');
+
+// --- ADMIN - KELOLA PENGGUNA ---
+Route::get('/admin/pengguna', [AdminController::class, 'pengguna'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.pengguna.index');
+
+Route::put('/admin/pengguna/{id}/status', [AdminController::class, 'updateStatusPengguna'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.pengguna.status');
 
 // --- RUTE PETUGAS ---
 Route::get('/petugas', function () {
@@ -110,14 +141,12 @@ Route::patch(
     ->middleware(['auth', 'account.status', 'role:petugas,admin'])
     ->name('petugas.reservasi.update-status');
 
-
 // --- RUTE PENGGUNA ---
 Route::get('/pengguna', function () {
     return redirect()->route('dashboard');
 })
     ->middleware(['auth', 'account.status', 'role:pengguna'])
     ->name('pengguna');
-
 
 // --- RUTE PENGGUNA TERINTEGRASI (AUTH) ---
 Route::middleware('auth')->group(function () {
@@ -130,7 +159,6 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
-
 
     // --- Route Reservasi ---
     Route::get(
@@ -148,7 +176,6 @@ Route::middleware('auth')->group(function () {
         [ReservationController::class, 'cancel']
     )->name('reservations.cancel');
 
-
     // --- Route Lapor Kerusakan ---
     Route::get('/reports', [ReportController::class, 'index'])
         ->name('reports.index');
@@ -160,9 +187,7 @@ Route::middleware('auth')->group(function () {
         ->name('reports.store');
 });
 
-
 require __DIR__.'/auth.php';
-
 
 // --- API AJAX (FETCH SLOT INSTAN) ---
 Route::get(

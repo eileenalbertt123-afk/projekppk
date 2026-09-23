@@ -75,9 +75,8 @@
                         <span>🏠 Beranda / Fasilitas</span>
                     </a>
 
-                    <div class="pt-4 pb-2 px-3 text-[11px] font-bold text-brand-secondary uppercase tracking-wider">Menu Pengguna</div>
-                    
                     @if(Auth::user()->isMahasiswa() || Auth::user()->isDosen())
+                        <div class="pt-4 pb-2 px-3 text-[11px] font-bold text-brand-secondary uppercase tracking-wider">Menu Pengguna</div>
                         <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-brand-secondary hover:bg-gray-100 hover:text-brand-primary font-medium transition text-sm">
                             <span>📅 Riwayat & Status</span>
                         </a>
@@ -95,8 +94,11 @@
 
                     @if(Auth::user()->isAdmin())
                         <div class="pt-4 pb-2 px-3 text-[11px] font-bold text-brand-secondary uppercase tracking-wider">Menu Admin</div>
-                        <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-brand-secondary hover:bg-gray-100 hover:text-brand-primary font-medium transition text-sm">
-                            <span>⚙️ Kelola Fasilitas</span>
+                        <a href="{{ route('admin') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-brand-secondary hover:bg-gray-100 hover:text-brand-primary font-medium transition text-sm">
+                            <span>🏠 Dashboard Admin</span>
+                        </a>
+                        <a href="{{ route('admin.rekap') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-brand-secondary hover:bg-gray-100 hover:text-brand-primary font-medium transition text-sm">
+                            <span>📊 Laporan</span>
                         </a>
                     @endif
                 @endauth

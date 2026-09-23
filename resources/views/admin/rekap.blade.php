@@ -1,230 +1,653 @@
 <x-app-layout>
 
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div class="min-h-screen bg-[#f5f7f7]">
 
-        <div class="flex">
+        <div class="flex min-h-screen">
 
-            <!-- SIDEBAR -->
-            <aside class="w-64 min-h-screen bg-white dark:bg-gray-800 shadow-md">
+            {{-- SIDEBAR --}}
+            <aside class="w-[290px] shrink-0 bg-white border-r border-[#e2ebe9] flex flex-col justify-between">
 
-                <!-- BRAND -->
-                <div class="px-5 py-5 border-b border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center gap-3">
+                <div>
 
-                        <div class="w-10 h-10 rounded-xl bg-[#19183B] flex items-center justify-center text-white text-lg shadow-sm">
-                            📅
+                    {{-- BRAND --}}
+                    <div class="h-[80px] px-6 border-b border-[#e2ebe9] flex items-center gap-3">
+
+                        <div class="size-10 rounded-xl bg-[#19183b] flex items-center justify-center">
+
+                            <svg class="size-5 text-white"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M6.75 3v2.25M17.25 3v2.25M3 8.25h18M5.25 5.25h13.5A2.25 2.25 0 0121 7.5v11.25A2.25 2.25 0 0118.75 21H5.25A2.25 2.25 0 013 18.75V7.5a2.25 2.25 0 012.25-2.25z" />
+
+                            </svg>
+
                         </div>
 
                         <div>
-                            <div class="flex items-center gap-2">
-                                <h1 class="text-lg font-bold text-gray-800 dark:text-white">
-                                    Book & Fix
-                                </h1>
 
-                                <span class="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-gray-100 text-gray-600">
-                                    ADMIN
+                            <div class="flex items-center gap-1.5">
+
+                                <span class="font-extrabold text-[20px] text-[#19183b]">
+                                    Book<span class="text-[#708993]">&amp;</span>Fix
                                 </span>
+
+                                <span class="px-2 py-0.5 rounded border border-[#bacdc9] bg-[#eef4f3] text-[10px] font-bold uppercase text-[#19183b]">
+                                    Admin
+                                </span>
+
                             </div>
 
-                            <p class="text-xs text-gray-400 mt-0.5">
+                            <p class="text-[11px] text-[#708993]">
                                 Campus Facility Management
                             </p>
+
                         </div>
 
                     </div>
+
+
+                    {{-- MENU --}}
+                    <nav class="px-4 pt-4">
+
+                        <p class="px-3 mb-3 text-[11px] font-bold uppercase tracking-wide text-[#708993]">
+                            Menu Utama
+                        </p>
+
+
+                        {{-- DASHBOARD --}}
+                        <a href="{{ route('admin') }}"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
+                           {{ request()->routeIs('admin')
+                                ? 'bg-[#19183b] text-white'
+                                : 'text-[#708993] hover:bg-[#f4f8f7]' }}">
+
+                            <svg class="size-5"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 018.25 20.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+
+                            </svg>
+
+                            <span class="text-sm font-semibold">
+                                Dashboard
+                            </span>
+
+                        </a>
+
+
+                        {{-- FASILITAS --}}
+                        <a href="{{ route('admin.facilities.index') }}"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
+                           {{ request()->routeIs('admin.facilities.*')
+                                ? 'bg-[#19183b] text-white'
+                                : 'text-[#708993] hover:bg-[#f4f8f7]' }}">
+
+                            <svg class="size-5"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M2.25 21h19.5M4.5 21V4.5A1.5 1.5 0 016 3h4.5a1.5 1.5 0 011.5 1.5V21m0-12h6a1.5 1.5 0 011.5 1.5V21M7.5 6h1.5m-1.5 3h1.5m-1.5 3h1.5m4.5-3h1.5m-1.5 3h1.5" />
+
+                            </svg>
+
+                            <span class="text-sm font-medium">
+                                Fasilitas
+                            </span>
+
+                        </a>
+
+
+                        {{-- PENGGUNA --}}
+                        <a href="{{ route('admin.pengguna.index') }}"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
+                           {{ request()->routeIs('admin.pengguna.*')
+                                ? 'bg-[#19183b] text-white'
+                                : 'text-[#708993] hover:bg-[#f4f8f7]' }}">
+
+                            <svg class="size-5"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M15.75 6.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M4.5 20.25a7.5 7.5 0 0115 0" />
+
+                            </svg>
+
+                            <span class="text-sm font-medium">
+                                Pengguna
+                            </span>
+
+                        </a>
+
+
+                        {{-- LAPORAN --}}
+                        <a href="{{ route('admin.rekap') }}"
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl
+                           {{ request()->routeIs('admin.rekap')
+                                ? 'bg-[#19183b] text-white'
+                                : 'text-[#708993] hover:bg-[#f4f8f7]' }}">
+
+                            <svg class="size-5"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M3 3v18h18M7 16v-5m5 5V7m5 9v-8" />
+
+                            </svg>
+
+                            <span class="text-sm font-medium">
+                                Laporan
+                            </span>
+
+                        </a>
+
+                    </nav>
+
                 </div>
 
-                <!-- NAVIGATION -->
-                <nav class="px-4 py-5">
 
-                    <p class="px-3 mb-4 text-[11px] font-medium tracking-wide text-[#708993] uppercase">
-                        Menu Utama
-                    </p>
+                {{-- STATUS --}}
+                <div class="p-4">
 
-                    <!-- Dashboard -->
-                    <a href="{{ route('admin') }}"
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#708993] hover:bg-[#F4F8F7] hover:text-[#19183B] transition">
-                        <span class="text-lg">🏠</span>
-                        <span class="text-sm">Dashboard</span>
-                    </a>
+                    <div class="bg-[#eef4f3] border border-[#e2ebe9] rounded-2xl p-4 flex items-center gap-3">
 
-                    <!-- Fasilitas -->
-                    <a href="{{ route('admin.facilities.index') }}"
-                        class="flex items-center gap-3 px-4 py-3 mt-2 rounded-xl text-[#708993] hover:bg-[#F4F8F7] hover:text-[#19183B] transition">
-                        <span class="text-lg">🏢</span>
-                        <span class="text-sm">Fasilitas</span>
-                    </a>
+                        <span class="size-3 rounded-full bg-[#59b88a]"></span>
 
-                    <!-- Pengguna -->
-                    <a href="{{ route('admin.pengguna.index') }}"
-                        class="flex items-center gap-3 px-4 py-3 mt-2 rounded-xl text-[#708993] hover:bg-[#F4F8F7] hover:text-[#19183B] transition">
-                        <span class="text-lg">👤</span>
-                        <span class="text-sm">Pengguna</span>
-                    </a>
+                        <div>
 
-                    <!-- Laporan -->
-                    <a href="{{ route('admin.rekap') }}"
-                        class="flex items-center gap-3 px-4 py-3 mt-2 rounded-xl bg-[#19183B] text-white font-semibold">
-                        <span class="text-lg">📊</span>
-                        <span class="text-sm">Laporan</span>
-                    </a>
+                            <p class="text-xs font-semibold text-[#19183b]">
+                                Sistem Booking Aktif
+                            </p>
 
-                </nav>
+                            <p class="text-[11px] text-[#708993]">
+                                Server Kampus Normal
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
 
             </aside>
 
 
-            <!-- CONTENT -->
-            <main class="flex-1 p-8">
+            {{-- MAIN --}}
+            <main class="flex-1 min-w-0 px-8 py-8">
 
-                <!-- HEADER -->
-                <div class="mb-8">
+                {{-- HEADER --}}
+                <div class="flex items-center justify-between mb-8">
 
-                    <h2 class="text-3xl font-bold text-gray-800 dark:text-white">
-                        Rekap Penggunaan Fasilitas
-                    </h2>
+                    <div>
 
-                    <p class="text-gray-500 mt-1">
-                        Lihat penggunaan fasilitas berdasarkan periode tertentu.
-                    </p>
+                        <h1 class="font-extrabold text-[30px] tracking-[-0.75px] text-[#19183b]">
+                            Laporan Penggunaan Fasilitas
+                        </h1>
+
+                        <p class="text-sm text-[#708993] mt-1">
+                            Lihat rekap penggunaan fasilitas berdasarkan periode.
+                        </p>
+
+                    </div>
 
                 </div>
 
 
-                <!-- REKAP -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-xl">
-
-                    <div class="p-6">
-
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                            Rekap Penggunaan
-                        </h3>
+                {{-- TABEL LAPORAN --}}
+                <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-sm overflow-hidden">
 
 
-                        <!-- FILTER PERIODE -->
-                        <form method="GET" action="{{ route('admin.rekap') }}" class="mb-6">
+                    {{-- FILTER --}}
+                    <div class="px-5 py-4 border-b border-[#eef1f1]">
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                        <form
+                            action="{{ route('admin.rekap') }}"
+                            method="GET">
 
-                                <!-- TANGGAL MULAI -->
+                            <div class="flex items-end gap-3 flex-wrap">
+
+
+                                {{-- TANGGAL MULAI --}}
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+
+                                    <label
+                                        for="tanggal_mulai"
+                                        class="block text-[11px] font-semibold text-[#708993] mb-1.5">
+
                                         Tanggal Mulai
+
                                     </label>
 
                                     <input
                                         type="date"
+                                        id="tanggal_mulai"
                                         name="tanggal_mulai"
-                                        value="{{ $tanggalMulai ?? '' }}"
-                                        class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                                    >
+                                        value="{{ $tanggalMulai }}"
+                                        class="h-10 px-3 rounded-lg
+                                               border border-[#e2e8e7]
+                                               text-[13px] text-[#19183b]
+                                               focus:outline-none
+                                               focus:ring-1 focus:ring-[#19183b]
+                                               focus:border-[#19183b]">
+
                                 </div>
 
 
-                                <!-- TANGGAL AKHIR -->
+                                {{-- TANGGAL AKHIR --}}
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+
+                                    <label
+                                        for="tanggal_akhir"
+                                        class="block text-[11px] font-semibold text-[#708993] mb-1.5">
+
                                         Tanggal Akhir
+
                                     </label>
 
                                     <input
                                         type="date"
+                                        id="tanggal_akhir"
                                         name="tanggal_akhir"
-                                        value="{{ $tanggalAkhir ?? '' }}"
-                                        class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                                    >
+                                        value="{{ $tanggalAkhir }}"
+                                        class="h-10 px-3 rounded-lg
+                                               border border-[#e2e8e7]
+                                               text-[13px] text-[#19183b]
+                                               focus:outline-none
+                                               focus:ring-1 focus:ring-[#19183b]
+                                               focus:border-[#19183b]">
+
                                 </div>
 
 
-                                <!-- BUTTON -->
-                                <div class="flex gap-2">
+                                {{-- TOMBOL FILTER --}}
+                                <button
+                                    type="submit"
+                                    class="h-10 px-4 rounded-lg
+                                           bg-[#19183b] text-white
+                                           text-xs font-semibold
+                                           hover:bg-[#252451]
+                                           transition">
 
-                                    <button
-                                        type="submit"
-                                        class="px-4 py-2 bg-[#19183B] text-white rounded-lg hover:opacity-90 transition">
-                                        Filter
-                                    </button>
+                                    Tampilkan
+
+                                </button>
+
+
+                                {{-- RESET --}}
+                                @if($tanggalMulai || $tanggalAkhir)
 
                                     <a
                                         href="{{ route('admin.rekap') }}"
-                                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                                        class="h-10 px-4 rounded-lg
+                                               border border-[#dfe7e6]
+                                               text-xs font-medium text-[#52656d]
+                                               hover:bg-[#f7f9f9]
+                                               flex items-center">
+
                                         Reset
+
                                     </a>
 
-                                </div>
+                                @endif
 
                             </div>
 
                         </form>
 
+                    </div>
 
-                        <!-- TABEL -->
-                        <div class="overflow-x-auto">
 
-                            <table class="w-full text-sm text-left">
+                    {{-- TABLE --}}
+                    <div class="overflow-x-auto">
 
-                                <thead>
-                                    <tr class="border-b dark:border-gray-700">
+                        <table class="w-full text-sm">
 
-                                        <th class="px-4 py-3">
-                                            No
-                                        </th>
+                            <thead class="bg-[#fbfcfc]">
 
-                                        <th class="px-4 py-3">
-                                            Fasilitas
-                                        </th>
+                                <tr>
 
-                                        <th class="px-4 py-3">
-                                            Lokasi
-                                        </th>
+                                    <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
+                                        Fasilitas
+                                    </th>
 
-                                        <th class="px-4 py-3">
-                                            Jumlah Penggunaan
-                                        </th>
+                                    <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
+                                        Tipe
+                                    </th>
+
+                                    <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
+                                        Lokasi
+                                    </th>
+
+                                    <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
+                                        Jumlah Penggunaan
+                                    </th>
+
+                                    <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
+                                        Status
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody class="divide-y divide-[#eef1f1]">
+
+                                @forelse($rekap as $item)
+
+                                    <tr class="hover:bg-[#fafcfc] transition">
+
+
+                                        {{-- FASILITAS --}}
+                                        <td class="px-5 py-4">
+
+                                            <div class="flex items-center gap-3">
+
+                                                <div class="size-9 rounded-full
+                                                            bg-[#eef2ff]
+                                                            text-[#5965c4]
+                                                            flex items-center justify-center
+                                                            shrink-0">
+
+                                                    <svg
+                                                        class="size-4"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                        stroke-width="2">
+
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            d="M3 21h18M5 21V5a2 2 0 012-2h6a2 2 0 012 2v16M15 9h2a2 2 0 012 2v10M9 7h2m-2 4h2m-2 4h2" />
+
+                                                    </svg>
+
+                                                </div>
+
+                                                <div>
+
+                                                    <p class="font-semibold text-[14px] text-[#19183b]">
+                                                        {{ $item->name }}
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        {{-- TIPE --}}
+                                        <td class="px-5 py-4">
+
+                                            @if($item->type === 'ruangan')
+
+                                                <span class="px-2.5 py-1 rounded-full
+                                                             text-[11px] font-medium
+                                                             bg-blue-50 text-blue-700
+                                                             border border-blue-100">
+
+                                                    Ruangan
+
+                                                </span>
+
+                                            @elseif($item->type === 'laboratorium')
+
+                                                <span class="px-2.5 py-1 rounded-full
+                                                             text-[11px] font-medium
+                                                             bg-purple-50 text-purple-700
+                                                             border border-purple-100">
+
+                                                    Laboratorium
+
+                                                </span>
+
+                                            @elseif($item->type === 'area_olahraga')
+
+                                                <span class="px-2.5 py-1 rounded-full
+                                                             text-[11px] font-medium
+                                                             bg-green-50 text-green-700
+                                                             border border-green-100">
+
+                                                    Area Olahraga
+
+                                                </span>
+
+                                            @elseif($item->type === 'peralatan_presentasi')
+
+                                                <span class="px-2.5 py-1 rounded-full
+                                                             text-[11px] font-medium
+                                                             bg-orange-50 text-orange-700
+                                                             border border-orange-100">
+
+                                                    Peralatan Presentasi
+
+                                                </span>
+
+                                            @elseif($item->type === 'audio_multimedia')
+
+                                                <span class="px-2.5 py-1 rounded-full
+                                                             text-[11px] font-medium
+                                                             bg-pink-50 text-pink-700
+                                                             border border-pink-100">
+
+                                                    Audio & Multimedia
+
+                                                </span>
+
+                                            @else
+
+                                                <span class="px-2.5 py-1 rounded-full
+                                                             text-[11px] font-medium
+                                                             bg-gray-50 text-gray-600
+                                                             border border-gray-100">
+
+                                                    Lainnya
+
+                                                </span>
+
+                                            @endif
+
+                                        </td>
+
+
+                                        {{-- LOKASI --}}
+                                        <td class="px-5 py-4 text-[13px] text-[#708993]">
+
+                                            {{ $item->location }}
+
+                                        </td>
+
+
+                                        {{-- JUMLAH PENGGUNAAN --}}
+                                        <td class="px-5 py-4">
+
+                                            <span class="font-semibold text-[14px] text-[#19183b]">
+
+                                                {{ $item->jumlah_penggunaan }}
+
+                                            </span>
+
+                                            <span class="text-[12px] text-[#9aaab0] ml-1">
+                                                kali
+                                            </span>
+
+                                        </td>
+
+
+                                        {{-- STATUS --}}
+                                        <td class="px-5 py-4">
+
+                                            @if($item->status === 'tersedia')
+
+                                                <span class="inline-flex items-center gap-1.5
+                                                             px-2.5 py-1 rounded-full
+                                                             text-[11px] font-medium
+                                                             bg-[#f0faf5] text-[#24865b]
+                                                             border border-[#d4eee1]">
+
+                                                    <span class="size-1.5 rounded-full bg-[#55b985]"></span>
+
+                                                    Tersedia
+
+                                                </span>
+
+                                            @elseif($item->status === 'dalam_perbaikan')
+
+                                                <span class="inline-flex items-center gap-1.5
+                                                             px-2.5 py-1 rounded-full
+                                                             text-[11px] font-medium
+                                                             bg-[#fffaf0] text-[#b77900]
+                                                             border border-[#f3e4b7]">
+
+                                                    <span class="size-1.5 rounded-full bg-[#e6a51d]"></span>
+
+                                                    Dalam Perbaikan
+
+                                                </span>
+
+                                            @else
+
+                                                <span class="inline-flex items-center gap-1.5
+                                                             px-2.5 py-1 rounded-full
+                                                             text-[11px] font-medium
+                                                             bg-[#fff4f5] text-[#c94b5b]
+                                                             border border-[#f2d8dc]">
+
+                                                    <span class="size-1.5 rounded-full bg-[#d86673]"></span>
+
+                                                    Nonaktif
+
+                                                </span>
+
+                                            @endif
+
+                                        </td>
 
                                     </tr>
-                                </thead>
+
+                                @empty
+
+                                    <tr>
+
+                                        <td
+                                            colspan="5"
+                                            class="px-6 py-12 text-center">
+
+                                            <div class="flex flex-col items-center">
+
+                                                <div class="size-12 rounded-full
+                                                            bg-[#f4f8f7]
+                                                            flex items-center justify-center
+                                                            mb-3">
+
+                                                    <svg
+                                                        class="size-5 text-[#9aaab0]"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                        stroke-width="2">
+
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            d="M9 17v-2m3 2v-4m3 4v-6M4 19h16M5 5h14a1 1 0 011 1v13H4V6a1 1 0 011-1z" />
+
+                                                    </svg>
+
+                                                </div>
+
+                                                <p class="text-sm font-semibold text-[#19183b]">
+                                                    Belum ada data laporan
+                                                </p>
+
+                                                <p class="text-xs text-[#708993] mt-1">
+                                                    Belum ada penggunaan fasilitas pada periode yang dipilih.
+                                                </p>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                @endforelse
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
 
 
-                                <tbody>
+                    {{-- FOOTER --}}
+                    <div class="px-5 py-3 border-t border-[#eef1f1]
+                                flex items-center justify-between">
 
-                                    @forelse ($rekap as $index => $data)
+                        <p class="text-xs text-[#708993]">
 
-                                        <tr class="border-b dark:border-gray-700">
+                            Menampilkan
 
-                                            <td class="px-4 py-3">
-                                                {{ $index + 1 }}
-                                            </td>
+                            <span class="font-semibold text-[#19183b]">
+                                {{ $rekap->count() }}
+                            </span>
 
-                                            <td class="px-4 py-3 font-medium text-gray-800 dark:text-white">
-                                                {{ $data->name }}
-                                            </td>
+                            fasilitas
 
-                                            <td class="px-4 py-3 text-gray-600 dark:text-gray-300">
-                                                {{ $data->location }}
-                                            </td>
+                        </p>
 
-                                            <td class="px-4 py-3">
-                                                {{ $data->jumlah_penggunaan }}
-                                            </td>
 
-                                        </tr>
+                        @if($tanggalMulai || $tanggalAkhir)
 
-                                    @empty
+                            <p class="text-xs text-[#708993]">
 
-                                        <tr>
-                                            <td colspan="4" class="px-4 py-6 text-center text-gray-500">
-                                                Belum ada data penggunaan fasilitas.
-                                            </td>
-                                        </tr>
+                                Periode:
 
-                                    @endforelse
+                                <span class="font-medium text-[#19183b]">
 
-                                </tbody>
+                                    {{ $tanggalMulai ?: 'Awal' }}
 
-                            </table>
+                                    -
 
-                        </div>
+                                    {{ $tanggalAkhir ?: 'Sekarang' }}
+
+                                </span>
+
+                            </p>
+
+                        @endif
 
                     </div>
 

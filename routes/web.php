@@ -99,6 +99,15 @@ Route::put('/admin/pengguna/{id}/status', [AdminController::class, 'updateStatus
     ->middleware(['auth', 'account.status', 'role:admin'])
     ->name('admin.pengguna.status');
 
+// --- ADMIN - VERIFIKASI PENGGUNA ---
+Route::put('/admin/pengguna/{id}/verifikasi', [AdminController::class, 'verifikasiPengguna'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.pengguna.verifikasi');
+
+Route::put('/admin/pengguna/{id}/tolak', [AdminController::class, 'tolakPengguna'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.pengguna.tolak');
+
 // --- RUTE PETUGAS ---
 Route::get('/petugas', function () {
     return redirect()->route('petugas.reservasi.dashboard');
@@ -187,7 +196,7 @@ Route::middleware('auth')->group(function () {
         ->name('reports.store');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 // --- API AJAX (FETCH SLOT INSTAN) ---
 Route::get(

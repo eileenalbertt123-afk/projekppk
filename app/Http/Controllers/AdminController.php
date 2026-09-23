@@ -14,9 +14,18 @@ class AdminController extends Controller
 
         $fasilitasAktif = Facility::where('status', 'tersedia')->count();
 
+        $fasilitasPerbaikan = Facility::where('status', 'dalam_perbaikan')->count();
+
+        $totalPengguna = User::count();
+
+        $menungguVerifikasi = User::where('status_verifikasi', 'menunggu')->count();
+
         return view('admin.dashboard', compact(
             'totalFasilitas',
-            'fasilitasAktif'
+            'fasilitasAktif',
+            'fasilitasPerbaikan',
+            'totalPengguna',
+            'menungguVerifikasi'
         ));
     }
 
@@ -69,7 +78,14 @@ class AdminController extends Controller
             'capacity' => 'required|integer',
             'status' => 'required|in:tersedia,dalam_perbaikan,nonaktif',
             'description' => 'nullable',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+
+        $namaFoto = null;
+
+        if ($request->hasFile('image')) {
+            $namaFoto = $request->file('image')->store('facilities', 'public');
+        }
 
         Facility::create([
             'name' => $request->name,
@@ -78,6 +94,7 @@ class AdminController extends Controller
             'capacity' => $request->capacity,
             'status' => $request->status,
             'description' => $request->description,
+            'image' => $namaFoto,
         ]);
 
         return redirect()
@@ -103,16 +120,23 @@ class AdminController extends Controller
             'capacity' => 'required|integer',
             'status' => 'required|in:tersedia,dalam_perbaikan,nonaktif',
             'description' => 'nullable',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $fasilitas->update([
+        $data = [
             'name' => $request->name,
             'type' => $request->type,
             'location' => $request->location,
             'capacity' => $request->capacity,
             'status' => $request->status,
             'description' => $request->description,
-        ]);
+        ];
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('facilities', 'public');
+        }
+
+        $fasilitas->update($data);
 
         return redirect()
             ->route('admin.facilities.index')
@@ -120,7 +144,7 @@ class AdminController extends Controller
     }
 
     public function nonaktifkanFasilitas($id)
-    {   
+    {
         $fasilitas = Facility::findOrFail($id);
 
         $fasilitas->update([
@@ -156,5 +180,33 @@ class AdminController extends Controller
         return redirect()
             ->route('admin.pengguna.index')
             ->with('success', 'Status akun berhasil diperbarui.');
+    }
+
+    public function verifikasiPengguna($id)
+    {
+        $pengguna = User::findOrFail($id);
+
+        $pengguna->update([
+            'status_verifikasi' => 'diverifikasi',
+            'status_akun' => 'aktif',
+        ]);
+
+        return redirect()
+            ->route('admin.pengguna.index')
+            ->with('success', 'Pengguna berhasil diverifikasi.');
+    }
+
+    public function tolakPengguna($id)
+    {
+        $pengguna = User::findOrFail($id);
+
+        $pengguna->update([
+            'status_verifikasi' => 'ditolak',
+            'status_akun' => 'nonaktif',
+        ]);
+
+        return redirect()
+            ->route('admin.pengguna.index')
+            ->with('success', 'Pengguna ditolak.');
     }
 }

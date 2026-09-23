@@ -1,148 +1,203 @@
 <x-app-layout>
 
-    <div class="min-h-screen bg-[#F4F8F7]">
+    <div class="min-h-screen bg-[#f5f7f7]">
 
         <div class="flex min-h-screen">
 
-            <!-- SIDEBAR -->
-            <aside class="w-64 min-h-screen bg-white shadow-md flex-shrink-0">
-
-                <!-- BRAND -->
-                <div class="px-5 py-5 border-b border-gray-200">
-                    <div class="flex items-center gap-3">
-
-                        <div class="w-10 h-10 rounded-xl bg-[#19183B] flex items-center justify-center text-white text-lg shadow-sm">
-                            📅
-                        </div>
-
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <h1 class="text-lg font-bold text-gray-800">
-                                    Book & Fix
-                                </h1>
-
-                                <span class="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-gray-100 text-gray-600">
-                                    ADMIN
-                                </span>
-                            </div>
-
-                            <p class="text-xs text-gray-400 mt-0.5">
-                                Campus Facility Management
-                            </p>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- NAVIGATION -->
-                <nav class="px-4 py-5">
-
-                    <p class="px-3 mb-4 text-[11px] font-medium tracking-wide text-[#708993] uppercase">
-                        Menu Utama
-                    </p>
-
-                    <!-- Dashboard -->
-                    <a href="{{ route('admin') }}"
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl
-                               text-[#708993] hover:bg-[#F4F8F7]
-                               hover:text-[#19183B] transition">
-                        <span class="text-lg">🏠</span>
-                        <span class="text-sm">Dashboard</span>
-                    </a>
-
-                    <!-- Fasilitas -->
-                    <a href="{{ route('admin.facilities.index') }}"
-                        class="flex items-center gap-3 px-4 py-3 mt-2 rounded-xl
-                               bg-[#19183B] text-white font-semibold">
-                        <span class="text-lg">🏢</span>
-                        <span class="text-sm">Fasilitas</span>
-                    </a>
-
-                    <!-- Pengguna -->
-                    <a href="#pengguna"
-                        class="flex items-center gap-3 px-4 py-3 mt-2 rounded-xl
-                               text-[#708993] hover:bg-[#F4F8F7]
-                               hover:text-[#19183B] transition">
-                        <span class="text-lg">👤</span>
-                        <span class="text-sm">Pengguna</span>
-                    </a>
-
-                    <!-- Laporan -->
-                    <a href="{{ route('admin.rekap') }}"
-                        class="flex items-center gap-3 px-4 py-3 mt-2 rounded-xl
-                               text-[#708993] hover:bg-[#F4F8F7]
-                               hover:text-[#19183B] transition">
-                        <span class="text-lg">📊</span>
-                        <span class="text-sm">Laporan</span>
-                    </a>
-
-                </nav>
-
-            </aside>
+            {{-- =========================================================
+                SIDEBAR
+            ========================================================== --}}
+            @include('layouts.admin-sidebar')
 
 
-            <!-- CONTENT -->
-            <main class="flex-1 p-8">
+            {{-- =========================================================
+                MAIN CONTENT
+            ========================================================== --}}
+            <main class="flex-1 min-w-0 px-8 py-8">
 
-                <!-- Header -->
-                <div class="flex items-center justify-between mb-6">
+                {{-- HEADER --}}
+                <div class="flex items-center justify-between mb-8">
 
                     <div>
-                        <h1 class="text-2xl font-bold text-[#19183B]">
+
+                        <h1 class="font-extrabold text-[30px] tracking-[-0.75px] text-[#19183b]">
                             Kelola Fasilitas
                         </h1>
 
-                        <p class="mt-1 text-sm text-[#708993]">
-                            Kelola data fasilitas yang tersedia di kampus
+                        <p class="text-[14px] text-[#708993] mt-1">
+                            Kelola data fasilitas yang tersedia di kampus.
                         </p>
+
                     </div>
 
+
+                    {{-- TOMBOL TAMBAH --}}
                     <a href="{{ route('admin.facilities.create') }}"
-                        class="px-4 py-2.5 rounded-lg bg-[#19183B]
-                               text-white text-sm font-semibold
-                               hover:opacity-90 transition">
-                        + Tambah Fasilitas
+                       class="inline-flex items-center gap-2
+                              bg-[#19183b] text-white
+                              px-4 py-2.5 rounded-xl
+                              text-[13px] font-semibold
+                              hover:opacity-90 transition">
+
+                        <span class="text-lg leading-none">
+                            +
+                        </span>
+
+                        Tambah Fasilitas
+
                     </a>
 
                 </div>
 
 
-                <!-- Table -->
-                <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                {{-- =====================================================
+                    DAFTAR FASILITAS
+                ====================================================== --}}
+                <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-sm overflow-hidden">
 
+
+                    {{-- SEARCH + FILTER --}}
+                    <div class="px-6 py-5 border-b border-[#eef1f1]">
+
+                        <div class="flex flex-wrap items-center gap-2">
+
+
+                            {{-- SEARCH --}}
+                            <div class="relative flex-1 min-w-[280px]">
+
+                                <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-[#9aa9ad]"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor"
+                                     stroke-width="2">
+
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="m21 21-4.35-4.35m1.35-5.15a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />
+
+                                </svg>
+
+
+                                <input
+                                    type="text"
+                                    id="searchFasilitas"
+                                    placeholder="Cari ID, nama fasilitas, atau lokasi..."
+                                    class="w-full h-11 pl-10 pr-4
+                                           rounded-xl
+                                           border border-[#e2ebe9]
+                                           bg-white
+                                           text-[14px] text-[#19183b]
+                                           placeholder:text-[#9aa9ad]
+                                           focus:border-[#19183b]
+                                           focus:ring-0"
+                                >
+
+                            </div>
+
+
+                            {{-- SEMUA --}}
+                            <button
+                                type="button"
+                                data-filter="semua"
+                                class="filter-status h-11 px-5 rounded-xl
+                                       bg-[#19183b] text-white
+                                       text-[13px] font-semibold
+                                       transition">
+
+                                Semua
+
+                            </button>
+
+
+                            {{-- TERSEDIA --}}
+                            <button
+                                type="button"
+                                data-filter="tersedia"
+                                class="filter-status h-11 px-5 rounded-xl
+                                       bg-[#eef4f3] text-[#39735d]
+                                       text-[13px] font-medium
+                                       hover:bg-[#dff0ea]
+                                       transition">
+
+                                Tersedia
+
+                            </button>
+
+
+                            {{-- DALAM PERBAIKAN --}}
+                            <button
+                                type="button"
+                                data-filter="dalam_perbaikan"
+                                class="filter-status h-11 px-5 rounded-xl
+                                       bg-[#fff7e5] text-[#a56a00]
+                                       text-[13px] font-medium
+                                       hover:bg-[#ffefc9]
+                                       transition">
+
+                                Dalam Perbaikan
+
+                            </button>
+
+
+                            {{-- NONAKTIF --}}
+                            <button
+                                type="button"
+                                data-filter="nonaktif"
+                                class="filter-status h-11 px-5 rounded-xl
+                                       bg-[#f5f5f6] text-[#6b7280]
+                                       text-[13px] font-medium
+                                       hover:bg-[#e9e9eb]
+                                       transition">
+
+                                Nonaktif
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- =====================================================
+                        TABEL
+                    ====================================================== --}}
                     <div class="overflow-x-auto">
 
-                        <table class="w-full text-sm">
+                        <table class="w-full text-[14px]">
 
-                            <thead class="bg-[#F4F8F7]">
+                            <thead class="bg-[#fafbfb] border-b border-[#eef1f1]">
 
-                                <tr class="text-left text-[#708993]">
+                                <tr class="text-left">
 
-                                    <th class="px-6 py-4 font-semibold">
-                                        No
+                                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
+                                        ID Fasilitas
                                     </th>
 
-                                    <th class="px-6 py-4 font-semibold">
+                                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
+                                        Foto
+                                    </th>
+
+                                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
                                         Fasilitas
                                     </th>
 
-                                    <th class="px-6 py-4 font-semibold">
+                                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
                                         Jenis
                                     </th>
 
-                                    <th class="px-6 py-4 font-semibold">
+                                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
                                         Lokasi
                                     </th>
 
-                                    <th class="px-6 py-4 font-semibold">
+                                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
                                         Kapasitas
                                     </th>
 
-                                    <th class="px-6 py-4 font-semibold">
+                                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
                                         Status
                                     </th>
 
-                                    <th class="px-6 py-4 font-semibold">
+                                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0] text-center">
                                         Aksi
                                     </th>
 
@@ -151,122 +206,188 @@
                             </thead>
 
 
-                            <tbody class="divide-y divide-gray-100">
+                            <tbody id="tabelFasilitas"
+                                   class="divide-y divide-[#eef1f1]">
 
                                 @forelse ($fasilitas as $item)
 
-                                    <tr class="hover:bg-gray-50">
+                                    <tr
+                                        class="baris-fasilitas hover:bg-[#fafcfc] transition"
+                                        data-status="{{ $item->status }}"
+                                        data-search="{{ strtolower($item->id . ' ' . $item->name . ' ' . $item->type . ' ' . $item->location) }}"
+                                    >
 
-                                        <!-- No -->
-                                        <td class="px-6 py-4 text-gray-600">
-                                            {{ $loop->iteration }}
-                                        </td>
+                                        {{-- ID --}}
+                                        <td class="px-6 py-5">
 
-
-                                        <!-- Fasilitas -->
-                                        <td class="px-6 py-4">
-
-                                            <p class="font-semibold text-[#19183B]">
-                                                {{ $item->name }}
-                                            </p>
-
-                                            @if($item->description)
-
-                                                <p class="mt-1 text-xs text-[#708993]">
-                                                    {{ $item->description }}
-                                                </p>
-
-                                            @endif
+                                            <span class="font-semibold text-[14px] text-[#19183b]">
+                                                F{{ str_pad($item->id, 2, '0', STR_PAD_LEFT) }}
+                                            </span>
 
                                         </td>
 
 
-                                        <!-- Jenis -->
-                                        <td class="px-6 py-4 text-gray-600">
-                                            {{ $item->type }}
-                                        </td>
+                                        {{-- FOTO --}}
+                                        <td class="px-6 py-5">
 
+                                            @if($item->image)
 
-                                        <!-- Lokasi -->
-                                        <td class="px-6 py-4 text-gray-600">
-                                            {{ $item->location }}
-                                        </td>
-
-
-                                        <!-- Kapasitas -->
-                                        <td class="px-6 py-4 text-gray-600">
-                                            {{ $item->capacity }} orang
-                                        </td>
-
-
-                                        <!-- Status -->
-                                        <td class="px-6 py-4">
-
-                                            @if($item->status === 'tersedia')
-
-                                                <span class="inline-flex px-3 py-1 rounded-full
-                                                             bg-[#A1C2BD] text-[#19183B]
-                                                             text-xs font-semibold">
-                                                    Tersedia
-                                                </span>
-
-                                            @elseif($item->status === 'dalam_perbaikan')
-
-                                                <span class="inline-flex px-3 py-1 rounded-full
-                                                             bg-yellow-100 text-yellow-700
-                                                             text-xs font-semibold">
-                                                    Dalam Perbaikan
-                                                </span>
+                                                <img
+                                                    src="{{ asset('storage/' . $item->image) }}"
+                                                    alt="{{ $item->name }}"
+                                                    class="w-14 h-14 rounded-xl object-cover border border-[#e2ebe9]"
+                                                >
 
                                             @else
 
-                                                <span class="inline-flex px-3 py-1 rounded-full
-                                                             bg-gray-100 text-gray-500
-                                                             text-xs font-semibold">
-                                                    Nonaktif
-                                                </span>
+                                                <div class="w-14 h-14 rounded-xl
+                                                            bg-[#eef4f3]
+                                                            border border-[#e2ebe9]
+                                                            flex items-center justify-center
+                                                            text-[#708993]">
+
+                                                    <svg class="w-6 h-6"
+                                                         fill="none"
+                                                         viewBox="0 0 24 24"
+                                                         stroke="currentColor"
+                                                         stroke-width="1.7">
+
+                                                        <path stroke-linecap="round"
+                                                              stroke-linejoin="round"
+                                                              d="m2.25 15.75 5.159-5.159a2.25 2.25 0 013.182 0l3.159 3.159m0 0 1.5-1.5a2.25 2.25 0 013.182 0L21.75 15.75M3 19.5h18A1.5 1.5 0 0022.5 18V6A1.5 1.5 0 0021 4.5H3A1.5 1.5 0 001.5 6v12A1.5 1.5 0 003 19.5z" />
+
+                                                        <path stroke-linecap="round"
+                                                              stroke-linejoin="round"
+                                                              d="M8.25 9.75h.008v.008H8.25V9.75z" />
+
+                                                    </svg>
+
+                                                </div>
 
                                             @endif
 
                                         </td>
 
 
-                                        <!-- Aksi -->
-                                        <td class="px-6 py-4">
+                                        {{-- FASILITAS --}}
+                                        <td class="px-6 py-5">
 
-                                            <div class="flex items-center gap-2">
+                                            <div>
 
-                                                <!-- Edit -->
-                                                <a href="{{ route('admin.facilities.edit', $item->id) }}"
-                                                    class="px-3 py-1.5 rounded-lg border border-gray-200
-                                                           text-xs font-medium text-[#19183B]
-                                                           hover:bg-[#F4F8F7]">
-                                                    Edit
-                                                </a>
+                                                <p class="font-semibold text-[14px] text-[#19183b]">
+                                                    {{ $item->name }}
+                                                </p>
 
+                                                @if($item->description)
 
-                                                <!-- Nonaktifkan -->
-                                                @if($item->status === 'tersedia')
-
-                                                    <form action="{{ route('admin.facilities.deactivate', $item->id) }}"
-                                                        method="POST"
-                                                        onsubmit="return confirm('Yakin ingin menonaktifkan fasilitas ini?')">
-
-                                                        @csrf
-                                                        @method('PUT')
-
-                                                        <button type="submit"
-                                                            class="px-3 py-1.5 rounded-lg
-                                                                   text-xs font-medium
-                                                                   text-red-600 hover:bg-red-50">
-                                                            Nonaktifkan
-                                                        </button>
-
-                                                    </form>
+                                                    <p class="text-[12px] text-[#8b9aa0] mt-0.5 max-w-[240px] truncate">
+                                                        {{ $item->description }}
+                                                    </p>
 
                                                 @endif
 
                                             </div>
+
+                                        </td>
+
+
+                                        {{-- JENIS --}}
+                                        <td class="px-6 py-5 text-[14px] text-[#52636a] capitalize">
+
+                                            {{ str_replace('_', ' ', $item->type) }}
+
+                                        </td>
+
+
+                                        {{-- LOKASI --}}
+                                        <td class="px-6 py-5 text-[14px] text-[#52636a]">
+
+                                            {{ $item->location }}
+
+                                        </td>
+
+
+                                        {{-- KAPASITAS --}}
+                                        <td class="px-6 py-5 text-[14px] text-[#52636a]">
+
+                                            {{ $item->capacity }} orang
+
+                                        </td>
+
+
+                                        {{-- STATUS --}}
+                                        <td class="px-6 py-5">
+
+                                            @if($item->status === 'tersedia')
+
+                                                <span class="inline-flex items-center gap-1.5
+                                                             px-3 py-1.5
+                                                             rounded-full
+                                                             bg-[#edf9f3]
+                                                             border border-[#d4f0e1]
+                                                             text-[#32966b]
+                                                             text-[12px] font-semibold">
+
+                                                    <span class="size-1.5 rounded-full bg-[#52b788]"></span>
+
+                                                    Tersedia
+
+                                                </span>
+
+                                            @elseif($item->status === 'dalam_perbaikan')
+
+                                                <span class="inline-flex items-center gap-1.5
+                                                             px-3 py-1.5
+                                                             rounded-full
+                                                             bg-[#fff8e8]
+                                                             border border-[#f9e9b8]
+                                                             text-[#a56a00]
+                                                             text-[12px] font-semibold">
+
+                                                    <span class="size-1.5 rounded-full bg-[#e8a51b]"></span>
+
+                                                    Perbaikan
+
+                                                </span>
+
+                                            @else
+
+                                                <span class="inline-flex items-center gap-1.5
+                                                             px-3 py-1.5
+                                                             rounded-full
+                                                             bg-[#f8f8f9]
+                                                             border border-[#e8e8ea]
+                                                             text-[#777b83]
+                                                             text-[12px] font-semibold">
+
+                                                    <span class="size-1.5 rounded-full bg-[#9ca3af]"></span>
+
+                                                    Nonaktif
+
+                                                </span>
+
+                                            @endif
+
+                                        </td>
+
+
+                                        {{-- AKSI --}}
+                                        <td class="px-6 py-5 text-center">
+
+                                            <a href="{{ route('admin.facilities.edit', $item->id) }}"
+                                               class="inline-flex items-center justify-center
+                                                      px-3.5 py-2
+                                                      rounded-lg
+                                                      border border-[#e2ebe9]
+                                                      bg-white
+                                                      text-[12px] font-semibold
+                                                      text-[#35454b]
+                                                      hover:bg-[#f4f8f7]
+                                                      transition">
+
+                                                Detail
+
+                                            </a>
 
                                         </td>
 
@@ -275,20 +396,105 @@
 
                                 @empty
 
-                                    <tr>
+                                    <tr id="dataKosong">
 
-                                        <td colspan="7"
-                                            class="px-6 py-10 text-center text-[#708993]">
-                                            Belum ada data fasilitas.
+                                        <td colspan="8"
+                                            class="px-6 py-14 text-center">
+
+                                            <p class="text-[15px] font-semibold text-[#19183b]">
+                                                Belum ada data fasilitas.
+                                            </p>
+
+                                            <p class="text-[13px] text-[#708993] mt-1">
+                                                Tambahkan fasilitas baru untuk menampilkannya di sini.
+                                            </p>
+
                                         </td>
 
                                     </tr>
 
                                 @endforelse
 
+
+                                {{-- HASIL PENCARIAN KOSONG --}}
+                                <tr id="hasilKosong" class="hidden">
+
+                                    <td colspan="8"
+                                        class="px-6 py-14 text-center">
+
+                                        <p class="text-[15px] font-semibold text-[#19183b]">
+                                            Fasilitas tidak ditemukan.
+                                        </p>
+
+                                        <p class="text-[13px] text-[#708993] mt-1">
+                                            Coba gunakan kata kunci atau filter yang berbeda.
+                                        </p>
+
+                                    </td>
+
+                                </tr>
+
                             </tbody>
 
                         </table>
+
+                    </div>
+
+
+                    {{-- =====================================================
+                        FOOTER
+                    ====================================================== --}}
+                    <div class="px-6 py-5 border-t border-[#eef1f1]
+                                flex items-center justify-between">
+
+                        <p id="jumlahData"
+                           class="text-[13px] text-[#708993]">
+
+                            Menampilkan {{ $fasilitas->count() }} fasilitas
+
+                        </p>
+
+
+                        <div class="flex items-center gap-1">
+
+                            <button
+                                type="button"
+                                class="size-9 rounded-lg
+                                       border border-[#e2ebe9]
+                                       text-[#9aa9ad]
+                                       text-[14px]
+                                       flex items-center justify-center">
+
+                                ‹
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="size-9 rounded-lg
+                                       bg-[#19183b] text-white
+                                       text-[13px] font-semibold
+                                       flex items-center justify-center">
+
+                                1
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="size-9 rounded-lg
+                                       border border-[#e2ebe9]
+                                       text-[#52636a]
+                                       text-[14px]
+                                       flex items-center justify-center">
+
+                                ›
+
+                            </button>
+
+                        </div>
 
                     </div>
 
@@ -299,5 +505,144 @@
         </div>
 
     </div>
+
+
+    {{-- =========================================================
+        SEARCH & FILTER
+    ========================================================== --}}
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const searchInput = document.getElementById('searchFasilitas');
+            const filterButtons = document.querySelectorAll('.filter-status');
+            const rows = document.querySelectorAll('.baris-fasilitas');
+            const hasilKosong = document.getElementById('hasilKosong');
+            const jumlahData = document.getElementById('jumlahData');
+
+            let filterAktif = 'semua';
+
+
+            function tampilkanData() {
+
+                const keyword = searchInput.value.toLowerCase().trim();
+
+                let jumlahTampil = 0;
+
+
+                rows.forEach(function (row) {
+
+                    const status = row.dataset.status;
+                    const searchData = row.dataset.search;
+
+                    const cocokSearch =
+                        keyword === '' || searchData.includes(keyword);
+
+                    const cocokFilter =
+                        filterAktif === 'semua' ||
+                        status === filterAktif;
+
+
+                    if (cocokSearch && cocokFilter) {
+
+                        row.classList.remove('hidden');
+
+                        jumlahTampil++;
+
+                    } else {
+
+                        row.classList.add('hidden');
+
+                    }
+
+                });
+
+
+                if (jumlahTampil === 0) {
+
+                    hasilKosong.classList.remove('hidden');
+
+                } else {
+
+                    hasilKosong.classList.add('hidden');
+
+                }
+
+
+                jumlahData.textContent =
+                    'Menampilkan ' + jumlahTampil + ' fasilitas';
+
+            }
+
+
+            searchInput.addEventListener('input', tampilkanData);
+
+
+            filterButtons.forEach(function (button) {
+
+                button.addEventListener('click', function () {
+
+                    filterAktif = this.dataset.filter;
+
+
+                    filterButtons.forEach(function (btn) {
+
+                        btn.classList.remove(
+                            'bg-[#19183b]',
+                            'text-white'
+                        );
+
+
+                        if (btn.dataset.filter === 'tersedia') {
+
+                            btn.classList.add(
+                                'bg-[#eef4f3]',
+                                'text-[#39735d]'
+                            );
+
+                        } else if (btn.dataset.filter === 'dalam_perbaikan') {
+
+                            btn.classList.add(
+                                'bg-[#fff7e5]',
+                                'text-[#a56a00]'
+                            );
+
+                        } else if (btn.dataset.filter === 'nonaktif') {
+
+                            btn.classList.add(
+                                'bg-[#f5f5f6]',
+                                'text-[#6b7280]'
+                            );
+
+                        }
+
+                    });
+
+
+                    this.classList.remove(
+                        'bg-[#eef4f3]',
+                        'text-[#39735d]',
+                        'bg-[#fff7e5]',
+                        'text-[#a56a00]',
+                        'bg-[#f5f5f6]',
+                        'text-[#6b7280]'
+                    );
+
+
+                    this.classList.add(
+                        'bg-[#19183b]',
+                        'text-white'
+                    );
+
+
+                    tampilkanData();
+
+                });
+
+            });
+
+        });
+
+    </script>
 
 </x-app-layout>

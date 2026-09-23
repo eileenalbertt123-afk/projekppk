@@ -25,34 +25,37 @@
             <nav class="flex flex-col gap-1.5 px-4 pt-[15px] pb-4">
                 <p class="px-3 pb-2 text-[11px] font-bold uppercase tracking-[0.55px] text-[#708993]">Menu Utama</p>
 
-                @php
-                    $navItems = [
-                        [
-                            'label' => 'Dashboard',
-                            'route' => 'petugas.dashboard',
-                            'active' => request()->routeIs('petugas.reservasi.dashboard'),
-                            'badge' => null,
-                            'icon' => 'grid',
-                        ],
-                        [
-                            'label' => 'Daftar Reservasi',
-                            'route' => 'petugas.reservasi.index',
-                            'active' => request()->routeIs('petugas.reservasi.index'),
-                            'badge' => $reservasiBaruCount ?? 3,
-                            'icon' => 'clipboard',
-                        ],
-                        [
-                            'label' => 'Jadwal',
-                            'route' => 'petugas.jadwal.index',
-                            'active' => request()->routeIs('petugas.reservasi.jadwal'),
-                            'badge' => null,
-                            'icon' => 'calendar',
-                        ],
-                    ];
-                @endphp
+            @php
+                $navItems = [
+                    [
+                        'label' => 'Dashboard',
+                        'route' => 'petugas.reservasi.dashboard',
+                        'active' => request()->routeIs('petugas.reservasi.dashboard'),
+                        'badge' => null,
+                        'icon' => 'grid',
+                    ],
+                    [
+                        'label' => 'Daftar Reservasi',
+                        'route' => 'petugas.reservasi.index',
+                        'active' => request()->routeIs([
+                            'petugas.reservasi.index',
+                            'petugas.reservasi.detail'
+                        ]),
+                        'badge' => $reservasiBaruCount ?? 0,
+                        'icon' => 'clipboard',
+                    ],
+                    [
+                        'label' => 'Jadwal',
+                        'route' => 'petugas.reservasi.jadwal',
+                        'active' => request()->routeIs('petugas.reservasi.jadwal'),
+                        'badge' => null,
+                        'icon' => 'calendar',
+                    ],
+                ];
+            @endphp
 
                 @foreach ($navItems as $item)
-                    <a href="{{ Route::has($item['route']) ? route($item['route']) : '#' }}"
+                    <a href="{{ route($item['route']) }}"
                        class="flex items-center justify-between gap-3.5 rounded-xl px-3.5 py-3 w-full
                               {{ $item['active'] ? 'bg-[#19183b] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)]' : '' }}">
                         <span class="flex items-center gap-3.5">

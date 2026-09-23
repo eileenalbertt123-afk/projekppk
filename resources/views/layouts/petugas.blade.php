@@ -22,6 +22,7 @@
             {{-- Content halaman --}}
             <main class="p-6">
                 @yield('content')
+                @stack('scripts')
             </main>
         </div>
     </div>

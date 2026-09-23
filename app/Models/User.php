@@ -37,7 +37,7 @@ class User extends Authenticatable
 
     public function userType()
     {
-        return $this->belongsTo(UserType::class);
+        return $this->belongsTo(UserType::class, 'user_type_id');
     }
 
     // Pengecekan Role Email Kampus

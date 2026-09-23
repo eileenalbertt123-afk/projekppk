@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserType extends Model
 {
-    protected $fillable = ['name'];
+    protected $table = 'user_types';
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class, 'user_type_id');
     }
 }

@@ -14,9 +14,15 @@ class AdminController extends Controller
 
         $fasilitasAktif = Facility::where('status', 'tersedia')->count();
 
+        $fasilitasPerbaikan = Facility::where('status', 'dalam_perbaikan')->count();
+
+        $totalPengguna = User::count();
+
         return view('admin.dashboard', compact(
             'totalFasilitas',
-            'fasilitasAktif'
+            'fasilitasAktif',
+            'fasilitasPerbaikan',
+            'totalPengguna'
         ));
     }
 
@@ -110,7 +116,6 @@ class AdminController extends Controller
             'type' => $request->type,
             'location' => $request->location,
             'capacity' => $request->capacity,
-            'status' => $request->status,
             'description' => $request->description,
         ]);
 
@@ -120,7 +125,7 @@ class AdminController extends Controller
     }
 
     public function nonaktifkanFasilitas($id)
-    {   
+    {
         $fasilitas = Facility::findOrFail($id);
 
         $fasilitas->update([
@@ -156,5 +161,33 @@ class AdminController extends Controller
         return redirect()
             ->route('admin.pengguna.index')
             ->with('success', 'Status akun berhasil diperbarui.');
+    }
+
+    public function verifikasiPengguna($id)
+    {
+        $pengguna = User::findOrFail($id);
+
+        $pengguna->update([
+            'status_verifikasi' => 'diverifikasi',
+            'status_akun' => 'aktif',
+        ]);
+
+        return redirect()
+            ->route('admin.pengguna.index')
+            ->with('success', 'Pengguna berhasil diverifikasi.');
+    }
+
+    public function tolakPengguna($id)
+    {
+        $pengguna = User::findOrFail($id);
+
+        $pengguna->update([
+            'status_verifikasi' => 'ditolak',
+            'status_akun' => 'nonaktif',
+        ]);
+
+        return redirect()
+            ->route('admin.pengguna.index')
+            ->with('success', 'Pengguna ditolak.');
     }
 }

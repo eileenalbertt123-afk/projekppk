@@ -15,6 +15,7 @@ use Illuminate\Notifications\Notifiable;
     'password',
     'role',
     'status_akun',
+    'status_verifikasi',
     'user_type_id',
 ])]
 

@@ -55,6 +55,14 @@ Route::get('/admin/pengguna', [AdminController::class, 'pengguna'])
 Route::put('/admin/pengguna/{id}/status', [AdminController::class, 'updateStatusPengguna'])
     ->middleware(['auth', 'account.status', 'role:admin'])
     ->name('admin.pengguna.status');
+
+Route::put('/admin/pengguna/{id}/verifikasi', [AdminController::class, 'verifikasiPengguna'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.pengguna.verifikasi');
+
+Route::put('/admin/pengguna/{id}/tolak', [AdminController::class, 'tolakPengguna'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.pengguna.tolak');
     
 Route::get('/petugas', function () {
     return 'Halaman Petugas';

@@ -119,15 +119,17 @@
             @endif
         </div>
 
-        <!-- KANAN: PILIH TANGGAL & JAM -->
-        <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm h-fit">
-            <div class="mb-4">
+        <!-- KANAN: PILIH TANGGAL & JAM (DENGAN FLOATING ACTION BAR) -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm relative flex flex-col h-[560px]">
+            
+            <!-- Header Judul (Tetap diam di atas) -->
+            <div class="shrink-0 mb-4">
                 <h3 class="text-lg font-bold text-brand-primary mb-0.5">Pilih Tanggal & Jam</h3>
                 <p class="text-xs text-brand-secondary">Anda dapat memilih beberapa slot sekaligus untuk menentukan rentang sewa.</p>
             </div>
 
-            <!-- Tab Kalender 7 Hari + Tombol More -->
-            <div class="flex items-center gap-1.5 mb-5">
+            <!-- Tab Kalender 7 Hari + Tombol More (Tetap diam di atas) -->
+            <div class="shrink-0 flex items-center gap-1.5 mb-4">
                 <button class="w-6 h-8 flex items-center justify-center text-brand-secondary hover:text-brand-primary shrink-0">◀</button>
 
                 <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-hide flex-1 items-center">
@@ -155,76 +157,78 @@
                 <button class="w-6 h-8 flex items-center justify-center text-brand-secondary hover:text-brand-primary shrink-0">▶</button>
             </div>
 
-            <p class="text-xs text-brand-secondary mb-3">Slots for: <strong class="text-brand-primary" x-text="formattedDate"></strong></p>
+            <p class="shrink-0 text-xs text-brand-secondary mb-3">Slots for: <strong class="text-brand-primary" x-text="formattedDate"></strong></p>
 
             <!-- Loading Indicator Sederhana -->
             <div x-show="loading" class="py-12 text-center text-xs font-semibold text-brand-secondary">
                 Memuat slot jam...
             </div>
 
-            <!-- GRID SLOT JAM (MULTISELECT DYNAMIC RENDER) -->
-            <div x-show="!loading" class="grid grid-cols-2 gap-2.5 max-h-[360px] overflow-y-auto pr-1">
-                <template x-for="slot in slots" :key="slot.start">
-                    @php 
-                        $isFacilityAvailable = ($facility->status === 'tersedia');
-                    @endphp
-                    <div>
-                        <!-- KOTAK JAM TERSEDIA (BISA DIPILIH / MULTISELECT) -->
-                        <template x-if="{{ $isFacilityAvailable ? 'true' : 'false' }} && slot.status === 'tersedia' && !slot.is_past">
-                            <button 
-                                type="button"
-                                @click="toggleSlot(slot.start + ' - ' + slot.end, true)"
-                                :class="selectedSlots.includes(slot.start + ' - ' + slot.end) 
-                                    ? 'bg-brand-primary border-brand-primary text-white shadow-md' 
-                                    : 'bg-white border-gray-200 text-brand-primary hover:border-brand-primary/50'"
-                                class="relative flex flex-col items-center justify-center py-3.5 rounded-xl border-2 transition-all cursor-pointer w-full">
-                                
-                                <div x-show="selectedSlots.includes(slot.start + ' - ' + slot.end)" class="absolute top-1.5 right-1.5 bg-white text-brand-primary rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold shadow-xs">
-                                    ✓
-                                </div>
+            <!-- AREA GRID SLOT JAM (Hanya bagian ini yang bisa di-scroll) -->
+            <div x-show="!loading" class="flex-1 overflow-y-auto pr-1">
+                <div class="grid grid-cols-2 gap-2.5">
+                    <template x-for="slot in slots" :key="slot.start">
+                        @php 
+                            $isFacilityAvailable = ($facility->status === 'tersedia');
+                        @endphp
+                        <div>
+                            <!-- KOTAK JAM TERSEDIA (BISA DIPILIH / MULTISELECT) -->
+                            <template x-if="{{ $isFacilityAvailable ? 'true' : 'false' }} && slot.status === 'tersedia' && !slot.is_past">
+                                <button 
+                                    type="button"
+                                    @click="toggleSlot(slot.start + ' - ' + slot.end, true)"
+                                    :class="selectedSlots.includes(slot.start + ' - ' + slot.end) 
+                                        ? 'bg-brand-primary border-brand-primary text-white shadow-md' 
+                                        : 'bg-white border-gray-200 text-brand-primary hover:border-brand-primary/50'"
+                                    class="relative flex flex-col items-center justify-center py-3.5 rounded-xl border-2 transition-all cursor-pointer w-full">
+                                    
+                                    <div x-show="selectedSlots.includes(slot.start + ' - ' + slot.end)" class="absolute top-1.5 right-1.5 bg-white text-brand-primary rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold shadow-xs">
+                                        ✓
+                                    </div>
 
-                                <span class="text-[10px] opacity-70 mb-0.5">30 Menit</span>
-                                <span class="text-sm font-extrabold" x-text="slot.start + ' - ' + slot.end"></span>
-                            </button>
-                        </template>
+                                    <span class="text-[10px] opacity-70 mb-0.5">30 Menit</span>
+                                    <span class="text-sm font-extrabold" x-text="slot.start + ' - ' + slot.end"></span>
+                                </button>
+                            </template>
 
-                        <!-- KOTAK JAM TIDAK BISA DIPILIH (DISABLED) -->
-                        <template x-if="!({{ $isFacilityAvailable ? 'true' : 'false' }} && slot.status === 'tersedia' && !slot.is_past)">
-                            <button 
-                                type="button" 
-                                disabled 
-                                @click.prevent
-                                class="flex flex-col items-center justify-center py-3.5 rounded-xl border border-gray-200 bg-gray-100/80 text-gray-400 cursor-not-allowed opacity-60 w-full select-none">
-                                <span class="text-[10px] mb-0.5 opacity-60">30 Menit</span>
-                                <span class="text-sm font-bold line-through" x-text="slot.start + ' - ' + slot.end"></span>
-                                
-                                @if (in_array($facility->status, ['perbaikan', 'dalam_perbaikan', 'dalam perbaikan']))
-                                    <span class="text-[10px] font-semibold text-amber-600 mt-0.5">Dalam Perbaikan</span>
-                                @elseif (in_array($facility->status, ['nonaktif', 'tidak_tersedia', 'tidak tersedia']))
-                                    <span class="text-[10px] font-semibold text-gray-500 mt-0.5">Nonaktif</span>
-                                @else
-                                    <span x-show="slot.is_past" class="text-[10px] font-semibold text-gray-500 mt-0.5">Selesai / Lewat</span>
-                                    <span x-show="!slot.is_past" class="text-[10px] font-semibold text-rose-500 mt-0.5">Terisi</span>
-                                @endif
-                            </button>
-                        </template>
-                    </div>
-                </template>
+                            <!-- KOTAK JAM TIDAK BISA DIPILIH (DISABLED) -->
+                            <template x-if="!({{ $isFacilityAvailable ? 'true' : 'false' }} && slot.status === 'tersedia' && !slot.is_past)">
+                                <button 
+                                    type="button" 
+                                    disabled 
+                                    @click.prevent
+                                    class="flex flex-col items-center justify-center py-3.5 rounded-xl border border-gray-200 bg-gray-100/80 text-gray-400 cursor-not-allowed opacity-60 w-full select-none">
+                                    <span class="text-[10px] mb-0.5 opacity-60">30 Menit</span>
+                                    <span class="text-sm font-bold line-through" x-text="slot.start + ' - ' + slot.end"></span>
+                                    
+                                    @if (in_array($facility->status, ['perbaikan', 'dalam_perbaikan', 'dalam perbaikan']))
+                                        <span class="text-[10px] font-semibold text-amber-600 mt-0.5">Dalam Perbaikan</span>
+                                    @elseif (in_array($facility->status, ['nonaktif', 'tidak_tersedia', 'tidak tersedia']))
+                                        <span class="text-[10px] font-semibold text-gray-500 mt-0.5">Nonaktif</span>
+                                    @else
+                                        <span x-show="slot.is_past" class="text-[10px] font-semibold text-gray-500 mt-0.5">Selesai / Lewat</span>
+                                        <span x-show="!slot.is_past" class="text-[10px] font-semibold text-rose-500 mt-0.5">Terisi</span>
+                                    @endif
+                                </button>
+                            </template>
+                        </div>
+                    </template>
+                </div>
             </div>
 
-            <!-- PANEL BOTTOM CHECKOUT (Otomatis Menggabungkan Slot Awal sampai Akhir) -->
+            <!-- FLOATING / STICKY ACTION BAR (Ter kunci di paling bawah saat jam di-scroll) -->
             <div x-show="selectedSlots.length > 0" 
                  x-transition:enter="transition ease-out duration-200"
-                 x-transition:enter-start="opacity-0 translate-y-2"
+                 x-transition:enter-start="opacity-0 translate-y-3"
                  x-transition:enter-end="opacity-100 translate-y-0"
-                 class="mt-4 pt-4 border-t border-gray-200">
+                 class="sticky bottom-0 bg-white/95 backdrop-blur-xs pt-3 pb-1 border-t border-gray-100 mt-auto z-10 shrink-0">
                 
-                <div class="bg-brand-neutral p-3.5 rounded-xl border border-gray-200 mb-3">
-                    <span class="text-[10px] font-bold text-brand-secondary uppercase tracking-wider block mb-1">Selected Rentang Slot</span>
-                    <div class="flex items-center justify-between">
+                <div class="bg-brand-neutral p-3 rounded-xl border border-gray-200 mb-3 flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold text-brand-secondary uppercase tracking-wider block mb-0.5">Selected Rentang Slot</span>
                         <span class="text-sm font-extrabold text-brand-primary" x-text="startTime + ' - ' + endTime + ' WIB'"></span>
-                        <span class="text-xs text-brand-secondary font-bold" x-text="totalDuration"></span>
                     </div>
+                    <span class="text-xs text-brand-secondary font-bold" x-text="totalDuration"></span>
                 </div>
 
                 @auth

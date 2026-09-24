@@ -262,7 +262,7 @@
                     </div>
 
 
-                    <a href=""
+                    <a href="{{ route('petugas.laporan.index') }}"
                     class="text-xs font-bold text-[#19183b]">
 
                         Lihat Semua →
@@ -392,14 +392,14 @@
                             <td class="px-6 py-5">
 
                                 <span class="text-sm font-bold text-[#19183b]">
-
-                                    LP{{ str_pad(
-                                        $report->id,
-                                        3,
-                                        '0',
-                                        STR_PAD_LEFT
-                                    ) }}
-
+                                    {{ $report->report_code 
+                                        ?? 'LP-' . str_pad(
+                                            $report->id,
+                                            3,
+                                            '0',
+                                            STR_PAD_LEFT
+                                        )
+                                    }}
                                 </span>
 
                             </td>

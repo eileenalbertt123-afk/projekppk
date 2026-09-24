@@ -279,7 +279,14 @@
 
                                 {{-- Laporan ID --}}
                                 <td class="pl-6 pr-4 py-5 text-sm font-bold text-[#0f172a] whitespace-nowrap">
-                                    {{ $report->report_code }}
+                                    {{ $report->report_code 
+                                        ?? 'LP-' . str_pad(
+                                            $report->id,
+                                            3,
+                                            '0',
+                                            STR_PAD_LEFT
+                                        )
+                                    }}
                                 </td>
 
                                 {{-- Nama Pelapor --}}

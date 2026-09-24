@@ -81,11 +81,11 @@
                     <span class="inline-flex bg-[#fffbeb] rounded-[6px] px-2 py-0.5 text-[11px] font-bold text-[#b45309] whitespace-nowrap">Perbaikan Aktif</span>
                 </div>
             </div>
-            <div class="w-12 h-12 flex items-center justify-center bg-[#fffbeb] border border-[#fef3c7] rounded-xl shrink-0">
-                <svg class="w-6 h-6 text-[#f59e0b]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l5.653-4.655m5.8-2.02 3.78-3.78a1.125 1.125 0 0 0-1.59-1.591l-3.78 3.78" />
-                </svg>
-            </div>
+                <div class="bg-[#fffbeb] border border-[#fef3c7] rounded-xl size-11 flex items-center justify-center shrink-0">
+                    <svg class="size-5 text-[#f59e0b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
+                    </svg>
+                </div>
         </div>
 
         {{-- Nonaktif --}}
@@ -140,7 +140,7 @@
             {{-- Status Filter Tabs --}}
             <div class="flex items-center bg-[#f8fafc] rounded-xl p-[5px] gap-1.5 overflow-x-auto">
                 @php
-                    $currentStatus = $filterStatus ?? '';
+                    $currentStatus = request('status', '');
                     $statusOptions = [
                         '' => 'Semua (' . $totalFasilitas . ')',
                         'tersedia' => 'Tersedia (' . $tersediaCount . ')',
@@ -173,7 +173,7 @@
                 </span>
 
                 @php
-                    $currentType = $filterType ?? '';
+                    $currentType = request('type', '');
                     $typeOptions = [
                         '' => 'Semua Tipe',
                         'ruangan' => 'Ruangan',
@@ -239,33 +239,6 @@
                         default           => null,
                     };
 
-                    // {{-- Status badge styles --}}
-                    $statusBadge = match($facility->status) {
-                        'tersedia' => [
-                            'bg'   => 'bg-[#ecfdf5] border border-[rgba(167,243,208,0.6)]',
-                            'dot'  => 'bg-[#10b981]',
-                            'text' => 'text-[#047857]',
-                            'label'=> 'Tersedia',
-                        ],
-                        'dalam_perbaikan' => [
-                            'bg'   => 'bg-[#fffbeb] border border-[rgba(253,230,138,0.6)]',
-                            'dot'  => 'bg-[#f59e0b]',
-                            'text' => 'text-[#b45309]',
-                            'label'=> 'Dalam Perbaikan',
-                        ],
-                        'nonaktif' => [
-                            'bg'   => 'bg-[#fff1f2] border border-[rgba(254,205,211,0.6)]',
-                            'dot'  => 'bg-[#f43f5e]',
-                            'text' => 'text-[#be123c]',
-                            'label'=> 'Nonaktif',
-                        ],
-                        default => [
-                            'bg'   => 'bg-[#f1f5f9]',
-                            'dot'  => 'bg-[#94a3b8]',
-                            'text' => 'text-[#475569]',
-                            'label'=> ucfirst($facility->status),
-                        ],
-                    };
 
                     // {{-- Active report badge --}}
                     $hasActiveReport = isset($facility->active_reports_count) && $facility->active_reports_count > 0;
@@ -313,12 +286,9 @@
                             <span class="inline-flex bg-[#f1f5f9] rounded px-2 py-0.5 text-[11px] font-bold text-[#475569] uppercase tracking-[0.275px]">
                                 {{ $typeLabels[$facility->type] ?? ucfirst(str_replace('_', ' ', $facility->type)) }}
                             </span>
-                            <span class="inline-flex items-center gap-1.5 {{ $statusBadge['bg'] }} rounded-full px-[11px] py-[5px]">
-                                <span class="w-1.5 h-1.5 rounded-full {{ $statusBadge['dot'] }}"></span>
-                                <span class="text-[12px] font-semibold {{ $statusBadge['text'] }} whitespace-nowrap">
-                                    {{ $statusBadge['label'] }}
-                                </span>
-                            </span>
+                            <x-petugas.status-fasilitas-badge
+                                :status="$facility->status"
+                            />
                         </div>
 
                         {{-- Name --}}
@@ -413,7 +383,7 @@
                     {{-- Quick Action Button --}}
                     <div class="px-5 pb-5 pt-5">
                         <div class="border-t border-[#f1f5f9] pt-3">
-                            <a href="{{ route('petugas.fasilitas.index') }}?facility_id={{ $facility->id }}"
+                            <a href="{{ route('petugas.laporan.index', ['facility_id' => $facility->id]) }}"
                                class="flex items-center justify-center gap-1.5 w-full bg-white border border-[#e2e8f0] rounded-xl px-3 py-2.5 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] hover:bg-[#f8fafc] transition-colors">
                                 <span class="text-[12px] font-bold text-[#334155]">Lihat Laporan</span>
                                 <svg class="w-3.5 h-3.5 text-[#334155] shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">

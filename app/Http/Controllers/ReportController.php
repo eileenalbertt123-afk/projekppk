@@ -3,135 +3,100 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+
 use App\Models\Report;
 use App\Models\Facility;
 
+
 class ReportController extends Controller
 {
+
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD LAPORAN
+    |--------------------------------------------------------------------------
+    */
+
     public function dashboard()
     {
-        /*
-        |--------------------------------------------------------------------------
-        | PERIODE
-        |--------------------------------------------------------------------------
-        */
-
         $now = now();
+
 
         $startMonth = $now->copy()->startOfMonth();
         $endMonth = $now->copy()->endOfMonth();
 
-        $startLastMonth = $now->copy()->subMonth()->startOfMonth();
-        $endLastMonth = $now->copy()->subMonth()->endOfMonth();
-
 
         /*
         |--------------------------------------------------------------------------
-        | STATUS SUMMARY BULAN INI
+        | STATUS SUMMARY
         |--------------------------------------------------------------------------
         */
 
-        $countsThisMonth = Report::query()
-            ->whereBetween('created_at', [$startMonth, $endMonth])
+        $statusCounts = Report::query()
+            ->whereBetween('created_at', [
+                $startMonth,
+                $endMonth
+            ])
             ->selectRaw('status, COUNT(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');
 
 
+
         /*
         |--------------------------------------------------------------------------
-        | KPI TOTAL LAPORAN
+        | TOTAL LAPORAN
         |--------------------------------------------------------------------------
         */
 
         $totalLaporan = Report::count();
 
-        $laporanBaruCount = (int) $countsThisMonth->get('baru', 0);
+
+        $laporanBaruCount =
+            $statusCounts->get('baru', 0);
 
 
         /*
         |--------------------------------------------------------------------------
-        | GROWTH BULAN INI VS BULAN LALU
+        | GROWTH BULAN LALU
         |--------------------------------------------------------------------------
         */
 
-        $totalThisMonth = $countsThisMonth->sum();
+        $startLastMonth = $now->copy()
+            ->subMonth()
+            ->startOfMonth();
+
+
+        $endLastMonth = $now->copy()
+            ->subMonth()
+            ->endOfMonth();
+
 
         $totalLastMonth = Report::query()
             ->whereBetween('created_at', [
                 $startLastMonth,
-                $endLastMonth,
+                $endLastMonth
             ])
             ->count();
 
+
         $laporanGrowth = null;
 
+
         if ($totalLastMonth > 0) {
+
             $laporanGrowth = round(
-                (($totalThisMonth - $totalLastMonth)
-                    / $totalLastMonth) * 100,
+                (
+                    ($totalLaporan - $totalLastMonth)
+                    /
+                    $totalLastMonth
+                ) * 100,
                 1
             );
+
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | RATA-RATA WAKTU PERBAIKAN BULAN INI
-        |--------------------------------------------------------------------------
-        |
-        | Pakai resolved_at karena itu yang ada di tabel reports.
-        |
-        */
-
-        $avgSeconds = Report::query()
-            ->where('status', 'selesai')
-            ->whereNotNull('resolved_at')
-            ->whereBetween('resolved_at', [
-                $startMonth,
-                $endMonth,
-            ])
-            ->selectRaw(
-                'AVG(TIMESTAMPDIFF(SECOND, created_at, resolved_at)) as avg_seconds'
-            )
-            ->value('avg_seconds');
-
-        $rataRataPerbaikan = $avgSeconds
-            ? round($avgSeconds / 3600, 1)
-            : 0;
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | RATA-RATA BULAN LALU
-        |--------------------------------------------------------------------------
-        */
-
-        $avgSecondsLastMonth = Report::query()
-            ->where('status', 'selesai')
-            ->whereNotNull('resolved_at')
-            ->whereBetween('resolved_at', [
-                $startLastMonth,
-                $endLastMonth,
-            ])
-            ->selectRaw(
-                'AVG(TIMESTAMPDIFF(SECOND, created_at, resolved_at)) as avg_seconds'
-            )
-            ->value('avg_seconds');
-
-
-        $perbaikanComparison = null;
-
-        if ($avgSecondsLastMonth !== null && $avgSeconds !== null) {
-            $perbaikanComparison = round(
-                ($avgSeconds - $avgSecondsLastMonth) / 3600,
-                1
-            );
-        }
-
-
-        /*
+        
+            /*
         |--------------------------------------------------------------------------
         | INCOMING REPORTS
         |--------------------------------------------------------------------------
@@ -140,15 +105,16 @@ class ReportController extends Controller
         $incomingReports = Report::query()
             ->with([
                 'user:id,name',
-                'facility:id,name',
+                'facility:id,name'
             ])
             ->whereIn('status', [
                 'baru',
-                'diproses',
+                'diproses'
             ])
-            ->orderBy('created_at', 'desc')
+            ->latest('created_at')
             ->limit(3)
             ->get();
+
 
 
         /*
@@ -158,31 +124,37 @@ class ReportController extends Controller
         */
 
         $statusSummary = [
+
             [
                 'key' => 'baru',
                 'label' => 'BARU',
-                'value' => (int) $countsThisMonth->get('baru', 0),
-                'desc' => 'Menunggu verifikasi',
+                'value' => $statusCounts->get('baru',0),
+                'desc' => 'Menunggu verifikasi'
             ],
+
             [
                 'key' => 'diproses',
                 'label' => 'DIPROSES',
-                'value' => (int) $countsThisMonth->get('diproses', 0),
-                'desc' => 'Sedang ditangani',
+                'value' => $statusCounts->get('diproses',0),
+                'desc' => 'Sedang ditangani'
             ],
+
             [
                 'key' => 'selesai',
                 'label' => 'SELESAI',
-                'value' => (int) $countsThisMonth->get('selesai', 0),
-                'desc' => 'Perbaikan selesai',
+                'value' => $statusCounts->get('selesai',0),
+                'desc' => 'Perbaikan selesai'
             ],
+
             [
                 'key' => 'ditolak',
                 'label' => 'DITOLAK',
-                'value' => (int) $countsThisMonth->get('ditolak', 0),
-                'desc' => 'Tidak dapat ditindak',
+                'value' => $statusCounts->get('ditolak',0),
+                'desc' => 'Tidak dapat ditindak'
             ],
+
         ];
+
 
 
         /*
@@ -192,13 +164,17 @@ class ReportController extends Controller
         */
 
         $facilitiesUnderRepair = Facility::query()
-            ->where('status', 'dalam_perbaikan')
+            ->where(
+                'status',
+                'dalam_perbaikan'
+            )
             ->orderBy('name')
             ->get([
                 'id',
                 'name',
-                'status',
+                'status'
             ]);
+
 
 
         return view(
@@ -207,8 +183,6 @@ class ReportController extends Controller
                 'totalLaporan',
                 'laporanBaruCount',
                 'laporanGrowth',
-                'rataRataPerbaikan',
-                'perbaikanComparison',
                 'incomingReports',
                 'statusSummary',
                 'facilitiesUnderRepair'
@@ -216,35 +190,54 @@ class ReportController extends Controller
         );
     }
 
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DAFTAR LAPORAN
+    |--------------------------------------------------------------------------
+    */
+
     public function index(Request $request)
     {
+
         /*
         |--------------------------------------------------------------------------
-        | KPI STATUS (1 QUERY SAJA)
+        | KPI
         |--------------------------------------------------------------------------
         */
 
         $statusCounts = Report::query()
             ->selectRaw('status, COUNT(*) as total')
             ->groupBy('status')
-            ->pluck('total', 'status');
+            ->pluck('total','status');
 
 
-        $totalLaporan = $statusCounts->sum();
+        $totalLaporan =
+            $statusCounts->sum();
 
-        $baruCount = $statusCounts->get('baru', 0);
 
-        $diprosesCount = $statusCounts->get('diproses', 0);
+        $baruCount =
+            $statusCounts->get('baru',0);
 
-        $selesaiCount = $statusCounts->get('selesai', 0);
 
-        $ditolakCount = $statusCounts->get('ditolak', 0);
+        $diprosesCount =
+            $statusCounts->get('diproses',0);
+
+
+        $selesaiCount =
+            $statusCounts->get('selesai',0);
+
+
+        $ditolakCount =
+            $statusCounts->get('ditolak',0);
 
 
 
         /*
         |--------------------------------------------------------------------------
-        | QUERY DAFTAR LAPORAN
+        | QUERY LAPORAN
         |--------------------------------------------------------------------------
         */
 
@@ -263,7 +256,18 @@ class ReportController extends Controller
                 'facility:id,name',
             ]);
 
+            // FILTER FACILITY
+            $query->when(
+                $request->filled('facility_id'),
+                function ($q) use ($request) {
 
+                    $q->where(
+                        'facility_id',
+                        $request->facility_id
+                    );
+
+                }
+            );
 
         /*
         |--------------------------------------------------------------------------
@@ -271,72 +275,75 @@ class ReportController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if ($request->filled('search')) {
+        $query->when(
+            $request->filled('search'),
+            function ($query) use ($request) {
 
-            $search = strtoupper(trim($request->search));
-
-
-            $query->where(function ($q) use ($search) {
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | SEARCH ID LAPORAN
-                |--------------------------------------------------------------------------
-                */
-
-                $idSearch = str_replace('LP', '', $search);
-
-
-                if (is_numeric($idSearch)) {
-
-                    $q->where(
-                        'id',
-                        intval($idSearch)
+                $search =
+                    strtoupper(
+                        trim($request->search)
                     );
 
-                }
+
+                $idSearch =
+                    str_replace(
+                        'LP-',
+                        '',
+                        $search
+                    );
 
 
+                $query->where(function($q) use ($search,$idSearch){
 
-                /*
-                |--------------------------------------------------------------------------
-                | SEARCH USER
-                |--------------------------------------------------------------------------
-                */
+                    if(is_numeric($idSearch)){
 
-                $q->orWhereHas('user', function ($user) use ($search) {
+                        $q->where(
+                            'id',
+                            intval($idSearch)
+                        );
 
-                    $user->where(
-                        'name',
+                    }
+
+
+                    $q->orWhere(
+                        'report_code',
                         'like',
                         "%{$search}%"
                     );
 
-                });
 
+                    $q->orWhereHas(
+                        'user',
+                        function($user) use ($search){
 
+                            $user->where(
+                                'name',
+                                'like',
+                                "%{$search}%"
+                            );
 
-                /*
-                |--------------------------------------------------------------------------
-                | SEARCH FACILITY
-                |--------------------------------------------------------------------------
-                */
-
-                $q->orWhereHas('facility', function ($facility) use ($search) {
-
-                    $facility->where(
-                        'name',
-                        'like',
-                        "%{$search}%"
+                        }
                     );
 
+
+                    $q->orWhereHas(
+                        'facility',
+                        function($facility) use ($search){
+
+                            $facility->where(
+                                'name',
+                                'like',
+                                "%{$search}%"
+                            );
+
+                        }
+                    );
+
+
                 });
 
-
-            });
-
-        }
+            }
+        );
 
 
 
@@ -348,11 +355,12 @@ class ReportController extends Controller
 
         $query->when(
             $request->filled('status')
-            && $request->status !== 'semua',
+            &&
+            $request->status !== 'semua',
 
-            function ($q) use ($request) {
+            function($query) use ($request){
 
-                $q->where(
+                $query->where(
                     'status',
                     $request->status
                 );
@@ -370,11 +378,12 @@ class ReportController extends Controller
 
         $query->when(
             $request->filled('category')
-            && $request->category !== 'semua',
+            &&
+            $request->category !== 'semua',
 
-            function ($q) use ($request) {
+            function($query) use ($request){
 
-                $q->where(
+                $query->where(
                     'category',
                     $request->category
                 );
@@ -384,31 +393,10 @@ class ReportController extends Controller
 
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | PAGINATION
-        |--------------------------------------------------------------------------
-        */
-
         $reports = $query
             ->latest('created_at')
             ->paginate(10)
             ->withQueryString();
-
-        $statusCount = Facility::selectRaw(
-        'status, COUNT(*) as total'
-        )
-        ->groupBy('status')
-        ->pluck('total','status');
-
-
-        $totalFasilitas = $statusCount->sum();
-
-        $tersediaCount = $statusCount->get('tersedia',0);
-
-        $maintenanceCount = $statusCount->get('dalam_perbaikan',0);
-
-        $nonaktifCount = $statusCount->get('nonaktif',0);
 
 
 
@@ -423,23 +411,60 @@ class ReportController extends Controller
                 'ditolakCount'
             )
         );
+
     }
 
-public function store(Request $request)
-{
-    dd([
-        'masuk_store' => true,
-        'data' => $request->all(),
-        'user' => auth()->id(),
-    ]);
+    /*
+    |--------------------------------------------------------------------------
+    | CREATE LAPORAN
+    |--------------------------------------------------------------------------
+    */
+
+    public function store(Request $request)
+    {
+
+        $request->validate([
+
+            'facility_id'
+                => 'required',
+
+            'category'
+                => 'required',
+
+            'description'
+                => 'required',
+
+        ]);
 
 
-    Report::create([
-        'user_id' => auth()->id(),
-        'facility_id' => $request->facility_id,
-        'category' => $request->category,
-        'description' => $request->description,
-        'status' => 'baru',
-    ]);
-}
+
+        Report::create([
+
+            'user_id'
+                => $request->user()->id,
+
+            'facility_id'
+                => $request->facility_id,
+
+            'category'
+                => $request->category,
+
+            'description'
+                => $request->description,
+
+            'status'
+                => 'baru',
+
+        ]);
+
+
+
+        return back()
+            ->with(
+                'success',
+                'Laporan berhasil dibuat'
+            );
+
+    }
+
 }

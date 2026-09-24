@@ -161,7 +161,7 @@ class FacilityController extends Controller
 
         $facilities = $query
             ->orderBy('name', 'asc')
-            ->paginate(10)
+            ->paginate(5)
             ->withQueryString();
 
 

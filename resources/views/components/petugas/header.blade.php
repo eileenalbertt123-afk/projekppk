@@ -11,7 +11,7 @@
                         [
                             'label' => 'Laporan',
                             'route' => 'petugas.laporan.dashboard',
-                            'active' => request()->routeIs('petugas.laporan.*'),
+                            'active' => request()->routeIs('petugas.laporan.*', 'petugas.fasilitas.*' ),
                         ],
                     ];
                 @endphp

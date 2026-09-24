@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\FacilityRecapExport;
+use Rap2hpoutre\FastExcel\FastExcel;
 use App\Models\Facility;
 use App\Models\Report;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
@@ -127,18 +126,68 @@ class AdminController extends Controller
     }
 
     public function exportRekapExcel(Request $request)
-    {
-        $tanggalMulai = $request->tanggal_mulai;
-        $tanggalAkhir = $request->tanggal_akhir;
+{
+    $tanggalMulai = $request->tanggal_mulai;
+    $tanggalAkhir = $request->tanggal_akhir;
 
-        return Excel::download(
-            new FacilityRecapExport(
+    $rekap = Facility::withCount([
+        'reservationDetails as jumlah_penggunaan' => function ($query) use (
+            $tanggalMulai,
+            $tanggalAkhir
+        ) {
+            $query->whereHas('reservation', function ($q) use (
                 $tanggalMulai,
                 $tanggalAkhir
-            ),
-            'rekap-fasilitas.xlsx'
-        );
+            ) {
+                $q->where('status', 'disetujui');
+
+                if ($tanggalMulai) {
+                    $q->whereDate('start_time', '>=', $tanggalMulai);
+                }
+
+                if ($tanggalAkhir) {
+                    $q->whereDate('start_time', '<=', $tanggalAkhir);
+                }
+            });
+        }
+    ])->get();
+
+    $rekapKerusakan = Report::with('facility')
+        ->when($tanggalMulai, function ($query) use ($tanggalMulai) {
+            $query->whereDate('created_at', '>=', $tanggalMulai);
+        })
+        ->when($tanggalAkhir, function ($query) use ($tanggalAkhir) {
+            $query->whereDate('created_at', '<=', $tanggalAkhir);
+        })
+        ->get()
+        ->groupBy('facility_id')
+        ->map(function ($reports) {
+            $reportPertama = $reports->first();
+
+            return [
+                'Nama Fasilitas' => $reportPertama->facility?->name ?? '-',
+                'Lokasi' => $reportPertama->facility?->location ?? '-',
+                'Frekuensi Kerusakan' => $reports->count(),
+            ];
+        })
+        ->values();
+
+    $data = [];
+
+    foreach ($rekap as $fasilitas) {
+        $data[] = [
+            'Nama Fasilitas' => $fasilitas->name,
+            'Tipe' => $fasilitas->type,
+            'Lokasi' => $fasilitas->location,
+            'Kapasitas' => $fasilitas->capacity,
+            'Status' => $fasilitas->status,
+            'Jumlah Penggunaan' => $fasilitas->jumlah_penggunaan,
+        ];
     }
+
+    return (new FastExcel(collect($data)))
+        ->download('rekap-fasilitas.xlsx');
+}
 
     public function exportRekapCsv(Request $request)
     {

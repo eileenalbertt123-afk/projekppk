@@ -78,6 +78,14 @@ Route::get('/admin/rekap/export-pdf', [AdminController::class, 'exportRekapPdf']
     ->middleware(['auth', 'account.status', 'role:admin'])
     ->name('admin.rekap.export.pdf');
 
+Route::get('/admin/rekap/export-csv', [AdminController::class, 'exportRekapCsv'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.rekap.export.csv');
+
+Route::get('/admin/rekap/export-pdf', [AdminController::class, 'exportRekapPdf'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.rekap.export.pdf');
+
 // --- ADMIN - KELOLA FASILITAS ---
 Route::get('/admin/fasilitas', [AdminController::class, 'fasilitas'])
     ->middleware(['auth', 'account.status', 'role:admin'])

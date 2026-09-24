@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-layout>
 
     <div class="min-h-screen bg-[#f5f7f7]">
 
@@ -1002,4 +1002,4 @@
 
     </div>
 
-</x-app-layout>
+</x-admin-layout>

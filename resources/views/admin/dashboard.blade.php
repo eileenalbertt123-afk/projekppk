@@ -159,9 +159,10 @@
                 </div>
 
 
-                {{-- STATUS --}}
+                {{-- BAGIAN BAWAH SIDEBAR --}}
                 <div class="p-4">
 
+                    {{-- STATUS --}}
                     <div class="bg-[#eef4f3] border border-[#e2ebe9] rounded-2xl p-4 flex items-center gap-3">
 
                         <span class="size-3 rounded-full bg-[#59b88a]"></span>
@@ -177,6 +178,35 @@
                         </div>
 
                     </div>
+
+
+                    {{-- LOGOUT --}}
+                    <form method="POST"
+                          action="{{ route('logout') }}"
+                          class="mt-3">
+
+                        @csrf
+
+                        <button type="submit"
+                                class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[#708993] hover:bg-[#fef2f2] hover:text-[#dc2626] transition">
+
+                            <svg class="size-5"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H3" />
+                            </svg>
+
+                            <span class="text-sm font-medium">
+                                Logout
+                            </span>
+
+                        </button>
+
+                    </form>
 
                 </div>
 

@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FacilityRecapExport;
 use App\Models\Facility;
+use App\Models\Report;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
@@ -12,13 +16,22 @@ class AdminController extends Controller
     {
         $totalFasilitas = Facility::count();
 
-        $fasilitasAktif = Facility::where('status', 'tersedia')->count();
+        $fasilitasAktif = Facility::where(
+            'status',
+            'tersedia'
+        )->count();
 
-        $fasilitasPerbaikan = Facility::where('status', 'dalam_perbaikan')->count();
+        $fasilitasPerbaikan = Facility::where(
+            'status',
+            'dalam_perbaikan'
+        )->count();
 
         $totalPengguna = User::count();
 
-        $menungguVerifikasi = User::where('status_verifikasi', 'menunggu')->count();
+        $menungguVerifikasi = User::where(
+            'status_verifikasi',
+            'menunggu'
+        )->count();
 
         return view('admin.dashboard', compact(
             'totalFasilitas',
@@ -34,34 +47,348 @@ class AdminController extends Controller
         $tanggalMulai = $request->tanggal_mulai;
         $tanggalAkhir = $request->tanggal_akhir;
 
+        /*
+         * Rekap penggunaan fasilitas
+         */
         $rekap = Facility::withCount([
-            'reservationDetails as jumlah_penggunaan' => function ($query) use ($tanggalMulai, $tanggalAkhir) {
-                $query->whereHas('reservation', function ($q) use ($tanggalMulai, $tanggalAkhir) {
+            'reservationDetails as jumlah_penggunaan' => function ($query) use (
+                $tanggalMulai,
+                $tanggalAkhir
+            ) {
+                $query->whereHas('reservation', function ($q) use (
+                    $tanggalMulai,
+                    $tanggalAkhir
+                ) {
                     $q->where('status', 'disetujui');
 
                     if ($tanggalMulai) {
-                        $q->whereDate('start_time', '>=', $tanggalMulai);
+                        $q->whereDate(
+                            'start_time',
+                            '>=',
+                            $tanggalMulai
+                        );
                     }
 
                     if ($tanggalAkhir) {
-                        $q->whereDate('start_time', '<=', $tanggalAkhir);
+                        $q->whereDate(
+                            'start_time',
+                            '<=',
+                            $tanggalAkhir
+                        );
                     }
                 });
             }
         ])->get();
 
+        /*
+         * Rekap frekuensi laporan kerusakan/masalah fasilitas
+         *
+         * Semua kategori laporan dihitung.
+         */
+        $rekapKerusakan = Report::with('facility')
+            ->when($tanggalMulai, function ($query) use ($tanggalMulai) {
+                $query->whereDate(
+                    'created_at',
+                    '>=',
+                    $tanggalMulai
+                );
+            })
+            ->when($tanggalAkhir, function ($query) use ($tanggalAkhir) {
+                $query->whereDate(
+                    'created_at',
+                    '<=',
+                    $tanggalAkhir
+                );
+            })
+            ->get()
+            ->groupBy(function ($report) {
+                return $report->facility_id;
+            })
+            ->map(function ($reports) {
+                $reportPertama = $reports->first();
+
+                return (object) [
+                    'facility_id' => $reportPertama->facility_id,
+                    'nama_fasilitas' =>
+                        $reportPertama->facility?->name ?? '-',
+                    'lokasi' =>
+                        $reportPertama->facility?->location ?? '-',
+                    'jumlah_kerusakan' => $reports->count(),
+                ];
+            })
+            ->values();
+
         return view('admin.rekap', compact(
             'rekap',
+            'rekapKerusakan',
             'tanggalMulai',
             'tanggalAkhir'
         ));
+    }
+
+    public function exportRekapExcel(Request $request)
+    {
+        $tanggalMulai = $request->tanggal_mulai;
+        $tanggalAkhir = $request->tanggal_akhir;
+
+        return Excel::download(
+            new FacilityRecapExport(
+                $tanggalMulai,
+                $tanggalAkhir
+            ),
+            'rekap-fasilitas.xlsx'
+        );
+    }
+
+    public function exportRekapCsv(Request $request)
+    {
+        $tanggalMulai = $request->tanggal_mulai;
+        $tanggalAkhir = $request->tanggal_akhir;
+
+        /*
+         * Rekap penggunaan fasilitas
+         */
+        $rekap = Facility::withCount([
+            'reservationDetails as jumlah_penggunaan' => function ($query) use (
+                $tanggalMulai,
+                $tanggalAkhir
+            ) {
+                $query->whereHas('reservation', function ($q) use (
+                    $tanggalMulai,
+                    $tanggalAkhir
+                ) {
+                    $q->where('status', 'disetujui');
+
+                    if ($tanggalMulai) {
+                        $q->whereDate(
+                            'start_time',
+                            '>=',
+                            $tanggalMulai
+                        );
+                    }
+
+                    if ($tanggalAkhir) {
+                        $q->whereDate(
+                            'start_time',
+                            '<=',
+                            $tanggalAkhir
+                        );
+                    }
+                });
+            }
+        ])->get();
+
+        /*
+         * Rekap frekuensi laporan kerusakan/masalah fasilitas
+         *
+         * Semua kategori laporan dihitung.
+         */
+        $rekapKerusakan = Report::with('facility')
+            ->when($tanggalMulai, function ($query) use ($tanggalMulai) {
+                $query->whereDate(
+                    'created_at',
+                    '>=',
+                    $tanggalMulai
+                );
+            })
+            ->when($tanggalAkhir, function ($query) use ($tanggalAkhir) {
+                $query->whereDate(
+                    'created_at',
+                    '<=',
+                    $tanggalAkhir
+                );
+            })
+            ->get()
+            ->groupBy('facility_id')
+            ->map(function ($reports) {
+                $reportPertama = $reports->first();
+
+                return [
+                    'nama_fasilitas' =>
+                        $reportPertama->facility?->name ?? '-',
+                    'lokasi' =>
+                        $reportPertama->facility?->location ?? '-',
+                    'jumlah_kerusakan' => $reports->count(),
+                ];
+            })
+            ->values();
+
+        return response()->streamDownload(
+            function () use ($rekap, $rekapKerusakan) {
+
+                $handle = fopen('php://output', 'w');
+
+                /*
+                 * BOM supaya karakter Indonesia terbaca
+                 * dengan baik ketika dibuka di Excel.
+                 */
+                fwrite($handle, "\xEF\xBB\xBF");
+
+                /*
+                 * =========================
+                 * REKAP PENGGUNAAN
+                 * =========================
+                 */
+
+                fputcsv($handle, [
+                    'REKAP PENGGUNAAN FASILITAS'
+                ]);
+
+                fputcsv($handle, [
+                    'Nama Fasilitas',
+                    'Tipe',
+                    'Lokasi',
+                    'Kapasitas',
+                    'Status',
+                    'Jumlah Penggunaan',
+                ]);
+
+                foreach ($rekap as $fasilitas) {
+                    fputcsv($handle, [
+                        $fasilitas->name,
+                        $fasilitas->type,
+                        $fasilitas->location,
+                        $fasilitas->capacity,
+                        $fasilitas->status,
+                        $fasilitas->jumlah_penggunaan,
+                    ]);
+                }
+
+                /*
+                 * Baris kosong sebagai pemisah
+                 */
+                fputcsv($handle, []);
+
+                /*
+                 * =========================
+                 * REKAP KERUSAKAN
+                 * =========================
+                 */
+
+                fputcsv($handle, [
+                    'REKAP FREKUENSI KERUSAKAN FASILITAS'
+                ]);
+
+                fputcsv($handle, [
+                    'Nama Fasilitas',
+                    'Lokasi',
+                    'Frekuensi Kerusakan',
+                ]);
+
+                foreach ($rekapKerusakan as $kerusakan) {
+                    fputcsv($handle, [
+                        $kerusakan['nama_fasilitas'],
+                        $kerusakan['lokasi'],
+                        $kerusakan['jumlah_kerusakan'],
+                    ]);
+                }
+
+                fclose($handle);
+            },
+            'rekap-fasilitas.csv',
+            [
+                'Content-Type' => 'text/csv; charset=UTF-8',
+            ]
+        );
+    }
+
+    public function exportRekapPdf(Request $request)
+    {
+        $tanggalMulai = $request->tanggal_mulai;
+        $tanggalAkhir = $request->tanggal_akhir;
+
+        /*
+         * Rekap penggunaan fasilitas
+         */
+        $rekap = Facility::withCount([
+            'reservationDetails as jumlah_penggunaan' => function ($query) use (
+                $tanggalMulai,
+                $tanggalAkhir
+            ) {
+                $query->whereHas('reservation', function ($q) use (
+                    $tanggalMulai,
+                    $tanggalAkhir
+                ) {
+                    $q->where('status', 'disetujui');
+
+                    if ($tanggalMulai) {
+                        $q->whereDate(
+                            'start_time',
+                            '>=',
+                            $tanggalMulai
+                        );
+                    }
+
+                    if ($tanggalAkhir) {
+                        $q->whereDate(
+                            'start_time',
+                            '<=',
+                            $tanggalAkhir
+                        );
+                    }
+                });
+            }
+        ])->get();
+
+        /*
+         * Rekap frekuensi laporan kerusakan/masalah fasilitas
+         *
+         * Semua kategori laporan dihitung.
+         */
+        $rekapKerusakan = Report::with('facility')
+            ->when($tanggalMulai, function ($query) use ($tanggalMulai) {
+                $query->whereDate(
+                    'created_at',
+                    '>=',
+                    $tanggalMulai
+                );
+            })
+            ->when($tanggalAkhir, function ($query) use ($tanggalAkhir) {
+                $query->whereDate(
+                    'created_at',
+                    '<=',
+                    $tanggalAkhir
+                );
+            })
+            ->get()
+            ->groupBy(function ($report) {
+                return $report->facility_id;
+            })
+            ->map(function ($reports) {
+                $reportPertama = $reports->first();
+
+                return (object) [
+                    'facility_id' => $reportPertama->facility_id,
+                    'nama_fasilitas' =>
+                        $reportPertama->facility?->name ?? '-',
+                    'lokasi' =>
+                        $reportPertama->facility?->location ?? '-',
+                    'jumlah_kerusakan' => $reports->count(),
+                ];
+            })
+            ->values();
+
+        $pdf = Pdf::loadView(
+            'admin.rekap-pdf',
+            compact(
+                'rekap',
+                'rekapKerusakan',
+                'tanggalMulai',
+                'tanggalAkhir'
+            )
+        );
+
+        return $pdf->download('rekap-fasilitas.pdf');
     }
 
     public function fasilitas()
     {
         $fasilitas = Facility::orderBy('name')->get();
 
-        return view('admin.fasilitas.index', compact('fasilitas'));
+        return view(
+            'admin.fasilitas.index',
+            compact('fasilitas')
+        );
     }
 
     public function createFasilitas()
@@ -84,7 +411,9 @@ class AdminController extends Controller
         $namaFoto = null;
 
         if ($request->hasFile('image')) {
-            $namaFoto = $request->file('image')->store('facilities', 'public');
+            $namaFoto = $request
+                ->file('image')
+                ->store('facilities', 'public');
         }
 
         Facility::create([
@@ -99,18 +428,26 @@ class AdminController extends Controller
 
         return redirect()
             ->route('admin.facilities.index')
-            ->with('success', 'Fasilitas berhasil ditambahkan.');
+            ->with(
+                'success',
+                'Fasilitas berhasil ditambahkan.'
+            );
     }
 
     public function editFasilitas($id)
     {
         $fasilitas = Facility::findOrFail($id);
 
-        return view('admin.fasilitas.edit', compact('fasilitas'));
+        return view(
+            'admin.fasilitas.edit',
+            compact('fasilitas')
+        );
     }
 
-    public function updateFasilitas(Request $request, $id)
-    {
+    public function updateFasilitas(
+        Request $request,
+        $id
+    ) {
         $fasilitas = Facility::findOrFail($id);
 
         $request->validate([
@@ -133,14 +470,19 @@ class AdminController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('facilities', 'public');
+            $data['image'] = $request
+                ->file('image')
+                ->store('facilities', 'public');
         }
 
         $fasilitas->update($data);
 
         return redirect()
             ->route('admin.facilities.index')
-            ->with('success', 'Fasilitas berhasil diperbarui.');
+            ->with(
+                'success',
+                'Fasilitas berhasil diperbarui.'
+            );
     }
 
     public function nonaktifkanFasilitas($id)
@@ -153,7 +495,10 @@ class AdminController extends Controller
 
         return redirect()
             ->route('admin.facilities.index')
-            ->with('success', 'Fasilitas berhasil dinonaktifkan.');
+            ->with(
+                'success',
+                'Fasilitas berhasil dinonaktifkan.'
+            );
     }
 
     public function pengguna()
@@ -162,11 +507,16 @@ class AdminController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.pengguna.index', compact('pengguna'));
+        return view(
+            'admin.pengguna.index',
+            compact('pengguna')
+        );
     }
 
-    public function updateStatusPengguna(Request $request, $id)
-    {
+    public function updateStatusPengguna(
+        Request $request,
+        $id
+    ) {
         $pengguna = User::findOrFail($id);
 
         $request->validate([
@@ -179,7 +529,10 @@ class AdminController extends Controller
 
         return redirect()
             ->route('admin.pengguna.index')
-            ->with('success', 'Status akun berhasil diperbarui.');
+            ->with(
+                'success',
+                'Status akun berhasil diperbarui.'
+            );
     }
 
     public function verifikasiPengguna($id)
@@ -193,7 +546,10 @@ class AdminController extends Controller
 
         return redirect()
             ->route('admin.pengguna.index')
-            ->with('success', 'Pengguna berhasil diverifikasi.');
+            ->with(
+                'success',
+                'Pengguna berhasil diverifikasi.'
+            );
     }
 
     public function tolakPengguna($id)
@@ -207,6 +563,9 @@ class AdminController extends Controller
 
         return redirect()
             ->route('admin.pengguna.index')
-            ->with('success', 'Pengguna ditolak.');
+            ->with(
+                'success',
+                'Pengguna ditolak.'
+            );
     }
 }

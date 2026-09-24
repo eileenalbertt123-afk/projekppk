@@ -14,16 +14,17 @@
 
                         <div class="size-10 rounded-xl bg-[#19183b] flex items-center justify-center">
 
-                            <svg class="size-5 text-white"
-                                 fill="none"
-                                 viewBox="0 0 24 24"
-                                 stroke="currentColor"
-                                 stroke-width="2">
+                            <svg
+                                class="size-5 text-white"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2">
 
                                 <path
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
-                                    d="M6.75 3v2.25M17.25 3v2.25M3 8.25h18M5.25 5.25h13.5A2.25 2.25 0 0121 7.5v11.25A2.25 2.25 0 0118.75 21H5.25A2.25 2.25 0 013 18.75V7.5a2.25 2.25 0 012.25-2.25z" />
+                                    d="M6.75 3v2.25M17.25 3v2.25M3 8.25h18M5.25 5.25h13.5A2.25 2.25 0 0121 7.5v11.25A2.25 2.25 0 0118.75 21H5.25A2.25 2.25 0 013 18.75V7.5A2.25 2.25 0 015.25 5.25z" />
 
                             </svg>
 
@@ -61,22 +62,24 @@
 
 
                         {{-- DASHBOARD --}}
-                        <a href="{{ route('admin') }}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
-                           {{ request()->routeIs('admin')
+                        <a
+                            href="{{ route('admin') }}"
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
+                            {{ request()->routeIs('admin')
                                 ? 'bg-[#19183b] text-white'
                                 : 'text-[#708993] hover:bg-[#f4f8f7]' }}">
 
-                            <svg class="size-5"
-                                 fill="none"
-                                 viewBox="0 0 24 24"
-                                 stroke="currentColor"
-                                 stroke-width="2">
+                            <svg
+                                class="size-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2">
 
                                 <path
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
-                                    d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 018.25 20.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                                    d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 8.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 018.25 20.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25A2.25 2.25 0 0113.5 8.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
 
                             </svg>
 
@@ -88,17 +91,19 @@
 
 
                         {{-- FASILITAS --}}
-                        <a href="{{ route('admin.facilities.index') }}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
-                           {{ request()->routeIs('admin.facilities.*')
+                        <a
+                            href="{{ route('admin.facilities.index') }}"
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
+                            {{ request()->routeIs('admin.facilities.*')
                                 ? 'bg-[#19183b] text-white'
                                 : 'text-[#708993] hover:bg-[#f4f8f7]' }}">
 
-                            <svg class="size-5"
-                                 fill="none"
-                                 viewBox="0 0 24 24"
-                                 stroke="currentColor"
-                                 stroke-width="2">
+                            <svg
+                                class="size-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2">
 
                                 <path
                                     stroke-linecap="round"
@@ -115,17 +120,19 @@
 
 
                         {{-- PENGGUNA --}}
-                        <a href="{{ route('admin.pengguna.index') }}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
-                           {{ request()->routeIs('admin.pengguna.*')
+                        <a
+                            href="{{ route('admin.pengguna.index') }}"
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
+                            {{ request()->routeIs('admin.pengguna.*')
                                 ? 'bg-[#19183b] text-white'
                                 : 'text-[#708993] hover:bg-[#f4f8f7]' }}">
 
-                            <svg class="size-5"
-                                 fill="none"
-                                 viewBox="0 0 24 24"
-                                 stroke="currentColor"
-                                 stroke-width="2">
+                            <svg
+                                class="size-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2">
 
                                 <path
                                     stroke-linecap="round"
@@ -147,17 +154,19 @@
 
 
                         {{-- LAPORAN --}}
-                        <a href="{{ route('admin.rekap') }}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl
-                           {{ request()->routeIs('admin.rekap')
+                        <a
+                            href="{{ route('admin.rekap') }}"
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl
+                            {{ request()->routeIs('admin.rekap')
                                 ? 'bg-[#19183b] text-white'
                                 : 'text-[#708993] hover:bg-[#f4f8f7]' }}">
 
-                            <svg class="size-5"
-                                 fill="none"
-                                 viewBox="0 0 24 24"
-                                 stroke="currentColor"
-                                 stroke-width="2">
+                            <svg
+                                class="size-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2">
 
                                 <path
                                     stroke-linecap="round"
@@ -216,15 +225,117 @@
                         </h1>
 
                         <p class="text-sm text-[#708993] mt-1">
-                            Lihat rekap penggunaan fasilitas berdasarkan periode.
+                            Lihat rekap penggunaan dan kerusakan fasilitas berdasarkan periode.
                         </p>
+
+                    </div>
+
+
+                    {{-- EXPORT --}}
+                    <div class="flex items-center gap-2">
+
+                        {{-- EXPORT CSV --}}
+                        <a
+                            href="{{ route('admin.rekap.export.csv', [
+                                'tanggal_mulai' => $tanggalMulai,
+                                'tanggal_akhir' => $tanggalAkhir
+                            ]) }}"
+                            class="inline-flex items-center gap-2
+                                   h-10 px-4 rounded-lg
+                                   border border-[#dfe7e6]
+                                   bg-white text-[#52656d]
+                                   text-xs font-semibold
+                                   hover:bg-[#f7f9f9]
+                                   transition">
+
+                            <svg
+                                class="size-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2">
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M12 3v12m0 0l4-4m-4 4l-4-4M5 21h14a2 2 0 002-2v-3" />
+
+                            </svg>
+
+                            Export CSV
+
+                        </a>
+
+
+                        {{-- EXPORT EXCEL --}}
+                        <a
+                            href="{{ route('admin.rekap.export.excel', [
+                                'tanggal_mulai' => $tanggalMulai,
+                                'tanggal_akhir' => $tanggalAkhir
+                            ]) }}"
+                            class="inline-flex items-center gap-2
+                                   h-10 px-4 rounded-lg
+                                   bg-[#24865b] text-white
+                                   text-xs font-semibold
+                                   hover:bg-[#1f754f]
+                                   transition">
+
+                            <svg
+                                class="size-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2">
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M12 3v12m0 0l4-4m-4 4l-4-4M5 21h14a2 2 0 002-2v-3" />
+
+                            </svg>
+
+                            Export Excel
+
+                        </a>
+
+
+                        {{-- EXPORT PDF --}}
+                        <a
+                            href="{{ route('admin.rekap.export.pdf', [
+                                'tanggal_mulai' => $tanggalMulai,
+                                'tanggal_akhir' => $tanggalAkhir
+                            ]) }}"
+                            class="inline-flex items-center gap-2
+                                   h-10 px-4 rounded-lg
+                                   bg-[#19183b] text-white
+                                   text-xs font-semibold
+                                   hover:bg-[#252451]
+                                   transition">
+
+                            <svg
+                                class="size-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2">
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M12 3v12m0 0l4-4m-4 4l-4-4M5 21h14a2 2 0 002-2v-3" />
+
+                            </svg>
+
+                            Export PDF
+
+                        </a>
 
                     </div>
 
                 </div>
 
 
-                {{-- TABEL LAPORAN --}}
+                {{-- CARD REKAP PENGGUNAAN --}}
                 <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-sm overflow-hidden">
 
 
@@ -290,7 +401,7 @@
                                 </div>
 
 
-                                {{-- TOMBOL FILTER --}}
+                                {{-- TAMPILKAN --}}
                                 <button
                                     type="submit"
                                     class="h-10 px-4 rounded-lg
@@ -328,7 +439,7 @@
                     </div>
 
 
-                    {{-- TABLE --}}
+                    {{-- TABLE PENGGUNAAN --}}
                     <div class="overflow-x-auto">
 
                         <table class="w-full text-sm">
@@ -612,7 +723,7 @@
                     </div>
 
 
-                    {{-- FOOTER --}}
+                    {{-- FOOTER PENGGUNAAN --}}
                     <div class="px-5 py-3 border-t border-[#eef1f1]
                                 flex items-center justify-between">
 
@@ -648,6 +759,238 @@
                             </p>
 
                         @endif
+
+                    </div>
+
+                </div>
+
+
+                {{-- REQ 7: REKAP KERUSAKAN --}}
+                <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-sm overflow-hidden mt-6">
+
+                    {{-- HEADER --}}
+                    <div class="px-5 py-5 border-b border-[#eef1f1]">
+
+                        <div class="flex items-center justify-between gap-4">
+
+                            <div>
+
+                                <h2 class="font-bold text-[18px] text-[#19183b]">
+                                    Rekap Frekuensi Kerusakan Fasilitas
+                                </h2>
+
+                                <p class="text-xs text-[#708993] mt-1">
+                                    Jumlah laporan kerusakan elektronik dan audio visual berdasarkan fasilitas dan lokasi.
+                                </p>
+
+                            </div>
+
+
+                            {{-- TOTAL --}}
+                            <div class="shrink-0 text-right">
+
+                                <p class="text-[11px] text-[#93a3aa] uppercase tracking-wide font-bold">
+                                    Total Laporan
+                                </p>
+
+                                <p class="text-xl font-extrabold text-[#19183b] mt-0.5">
+                                    {{ $rekapKerusakan->sum('jumlah_kerusakan') }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- TABLE KERUSAKAN --}}
+                    <div class="overflow-x-auto">
+
+                        <table class="w-full text-sm">
+
+                            <thead class="bg-[#fbfcfc]">
+
+                                <tr>
+
+                                    <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
+                                        Fasilitas
+                                    </th>
+
+                                    <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
+                                        Lokasi
+                                    </th>
+
+                                    <th class="px-5 py-4 text-center text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
+                                        Frekuensi Kerusakan
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody class="divide-y divide-[#eef1f1]">
+
+                                @forelse($rekapKerusakan as $item)
+
+                                    <tr class="hover:bg-[#fafcfc] transition">
+
+                                        {{-- FASILITAS --}}
+                                        <td class="px-5 py-4">
+
+                                            <div class="flex items-center gap-3">
+
+                                                <div class="size-9 rounded-full
+                                                            bg-[#fff4f5]
+                                                            text-[#c94b5b]
+                                                            flex items-center justify-center
+                                                            shrink-0">
+
+                                                    <svg
+                                                        class="size-4"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                        stroke-width="2">
+
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            d="M12 9v3.75m0 3.75h.008v.008H12v-.008zM10.5 3.75h3L21 18.75H3L10.5 3.75z" />
+
+                                                    </svg>
+
+                                                </div>
+
+                                                <div>
+
+                                                    <p class="font-semibold text-[14px] text-[#19183b]">
+                                                        {{ $item->nama_fasilitas }}
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        {{-- LOKASI --}}
+                                        <td class="px-5 py-4 text-[13px] text-[#708993]">
+
+                                            {{ $item->lokasi }}
+
+                                        </td>
+
+
+                                        {{-- FREKUENSI --}}
+                                        <td class="px-5 py-4 text-center">
+
+                                            <span class="inline-flex items-center gap-1.5
+                                                         px-2.5 py-1 rounded-full
+                                                         text-[11px] font-semibold
+                                                         bg-[#fff4f5] text-[#c94b5b]
+                                                         border border-[#f2d8dc]">
+
+                                                {{ $item->jumlah_kerusakan }}
+
+                                                kali
+
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                @empty
+
+                                    <tr>
+
+                                        <td
+                                            colspan="3"
+                                            class="px-6 py-12 text-center">
+
+                                            <div class="flex flex-col items-center">
+
+                                                <div class="size-12 rounded-full
+                                                            bg-[#f4f8f7]
+                                                            flex items-center justify-center
+                                                            mb-3">
+
+                                                    <svg
+                                                        class="size-5 text-[#9aaab0]"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                        stroke-width="2">
+
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            d="M9 17v-2m3 2v-4m3 4v-6M4 19h16M5 5h14a1 1 0 011 1v13H4V6a1 1 0 011-1z" />
+
+                                                    </svg>
+
+                                                </div>
+
+                                                <p class="text-sm font-semibold text-[#19183b]">
+                                                    Belum ada laporan kerusakan
+                                                </p>
+
+                                                <p class="text-xs text-[#708993] mt-1">
+                                                    Tidak ada laporan kerusakan pada periode yang dipilih.
+                                                </p>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                @endforelse
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    {{-- FOOTER KERUSAKAN --}}
+                    <div class="px-5 py-3 border-t border-[#eef1f1]">
+
+                        <p class="text-xs text-[#708993]">
+
+                            Menampilkan
+
+                            <span class="font-semibold text-[#19183b]">
+                                {{ $rekapKerusakan->count() }}
+                            </span>
+
+                            fasilitas dengan laporan kerusakan.
+
+                            @if($tanggalMulai || $tanggalAkhir)
+
+                                <span class="ml-1">
+
+                                    Periode:
+
+                                    <span class="font-medium text-[#19183b]">
+
+                                        {{ $tanggalMulai ?: 'Awal' }}
+
+                                        -
+
+                                        {{ $tanggalAkhir ?: 'Sekarang' }}
+
+                                    </span>
+
+                                </span>
+
+                            @endif
+
+                        </p>
 
                     </div>
 

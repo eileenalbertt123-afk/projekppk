@@ -65,6 +65,19 @@ Route::get('/admin/rekap', [AdminController::class, 'rekap'])
     ->middleware(['auth', 'account.status', 'role:admin'])
     ->name('admin.rekap');
 
+// --- ADMIN - EXPORT REKAP ---
+Route::get('/admin/rekap/export-excel', [AdminController::class, 'exportRekapExcel'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.rekap.export.excel');
+
+Route::get('/admin/rekap/export-csv', [AdminController::class, 'exportRekapCsv'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.rekap.export.csv');
+
+Route::get('/admin/rekap/export-pdf', [AdminController::class, 'exportRekapPdf'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.rekap.export.pdf');
+
 // --- ADMIN - KELOLA FASILITAS ---
 Route::get('/admin/fasilitas', [AdminController::class, 'fasilitas'])
     ->middleware(['auth', 'account.status', 'role:admin'])

@@ -93,4 +93,112 @@ class FacilityController extends Controller
 
         return $slots;
     }
+
+    public function list(Request $request)
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | KPI FASILITAS
+        |--------------------------------------------------------------------------
+        */
+
+        $statusCount = Facility::query()
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+
+        $totalFasilitas = $statusCount->sum();
+
+        $tersediaCount = $statusCount->get('tersedia', 0);
+
+        $maintenanceCount = $statusCount->get('dalam_perbaikan', 0);
+
+        $nonaktifCount = $statusCount->get('nonaktif', 0);
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | QUERY DAFTAR FASILITAS
+        |--------------------------------------------------------------------------
+        */
+
+        $query = Facility::query();
+
+
+
+        // SEARCH
+        if ($request->filled('search')) {
+
+            $query->where(
+                'name',
+                'like',
+                '%' . $request->search . '%'
+            );
+
+        }
+
+
+
+        // FILTER TYPE
+        if (
+            $request->filled('type')
+            && $request->type !== 'semua'
+        ) {
+
+            $query->where(
+                'type',
+                $request->type
+            );
+
+        }
+
+
+
+        // FILTER STATUS
+        if (
+            $request->filled('status')
+            && $request->status !== 'semua'
+        ) {
+
+            $query->where(
+                'status',
+                $request->status
+            );
+
+        }
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PAGINATION
+        |--------------------------------------------------------------------------
+        */
+
+        $facilities = $query
+            ->orderBy('name', 'asc')
+            ->paginate(5)
+            ->withQueryString();
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RETURN VIEW
+        |--------------------------------------------------------------------------
+        */
+
+        return view(
+            'petugas.fasilitas.index',
+            compact(
+                'facilities',
+                'totalFasilitas',
+                'tersediaCount',
+                'maintenanceCount',
+                'nonaktifCount'
+            )
+        );
+    }
 }

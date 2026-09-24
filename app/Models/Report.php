@@ -5,6 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property string|null $report_code
+ * @property int $user_id
+ * @property int $facility_id
+ */
 class Report extends Model
 {
     use HasFactory;
@@ -32,16 +38,16 @@ class Report extends Model
     {
         parent::boot();
 
-        static::creating(function ($report) {
-            $lastId = self::max('id') + 1;
-
-            $report->report_code =
-                'LP-' . str_pad(
-                    $lastId,
+        /** @var \App\Models\Report $report */
+        static::created(function ($report) {
+            $report->update([
+                'report_code' => 'LP-' . str_pad(
+                    $report->id,
                     3,
                     '0',
                     STR_PAD_LEFT
-                );
+                ),
+            ]);
         });
     }
 

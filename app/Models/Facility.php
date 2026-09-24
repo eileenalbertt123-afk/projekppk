@@ -39,4 +39,59 @@ class Facility extends Model
             'reservation_id'
         );
     }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
+    }
+
+    public function activeReport()
+    {
+        return $this->hasOne(Report::class)
+            ->whereIn('status', [
+                'baru',
+                'diproses'
+            ])
+            ->latestOfMany();
+    }
+    public function getTypeLabelAttribute()
+    {
+        return match($this->type){
+
+            'ruangan'
+                => 'Ruangan',
+
+            'laboratorium'
+                => 'Laboratorium',
+
+            'area_olahraga'
+                => 'Area Olahraga',
+
+            'peralatan_presentasi'
+                => 'Peralatan Presentasi',
+
+            'audio_multimedia'
+                => 'Audio Multimedia',
+
+            default
+                => 'Lainnya',
+
+        };
+    }
+
+
+
+    public function show(Facility $facility)
+    {
+        $facility->load([
+            'reports',
+            'activeReport'
+        ]);
+
+
+        return view(
+            'petugas.fasilitas.detail',
+            compact('facility')
+        );
+    }
 }

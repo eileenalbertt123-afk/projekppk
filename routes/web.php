@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // --- RUTE PUBLIK ---
-Route::get('/', [FacilityController::class, 'index'])->name('home');
+Route::get('/', [FacilityController::class, 'index'])
+    ->name('home');
 
 Route::get('/fasilitas', [FacilityController::class, 'index'])
     ->name('facilities.index');
@@ -69,14 +70,6 @@ Route::get('/admin/rekap', [AdminController::class, 'rekap'])
 Route::get('/admin/rekap/export-excel', [AdminController::class, 'exportRekapExcel'])
     ->middleware(['auth', 'account.status', 'role:admin'])
     ->name('admin.rekap.export.excel');
-
-Route::get('/admin/rekap/export-csv', [AdminController::class, 'exportRekapCsv'])
-    ->middleware(['auth', 'account.status', 'role:admin'])
-    ->name('admin.rekap.export.csv');
-
-Route::get('/admin/rekap/export-pdf', [AdminController::class, 'exportRekapPdf'])
-    ->middleware(['auth', 'account.status', 'role:admin'])
-    ->name('admin.rekap.export.pdf');
 
 Route::get('/admin/rekap/export-csv', [AdminController::class, 'exportRekapCsv'])
     ->middleware(['auth', 'account.status', 'role:admin'])
@@ -178,7 +171,35 @@ Route::get('/pengguna', function () {
     ->middleware(['auth', 'account.status', 'role:pengguna'])
     ->name('pengguna');
 
-// --- RUTE PENGGUNA TERINTEGRASI (AUTH) ---
+// --- RUTE LAPORAN PETUGAS ---
+Route::get(
+    '/petugas/laporan/dashboard',
+    [ReportController::class, 'dashboard']
+)
+    ->middleware(['auth', 'account.status', 'role:petugas'])
+    ->name('petugas.laporan.dashboard');
+
+Route::get(
+    '/petugas/laporan/daftar-laporan',
+    [ReportController::class, 'index']
+)
+    ->middleware(['auth', 'account.status', 'role:petugas'])
+    ->name('petugas.laporan.index');
+
+Route::post(
+    '/laporan',
+    [ReportController::class, 'store']
+)
+    ->middleware(['auth', 'account.status'])
+    ->name('laporan.store');
+
+Route::get(
+    '/petugas/fasilitas',
+    [FacilityController::class, 'list']
+)
+    ->middleware(['auth', 'account.status', 'role:petugas'])
+    ->name('petugas.fasilitas.index');
+
 Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])
@@ -206,15 +227,21 @@ Route::middleware('auth')->group(function () {
         [ReservationController::class, 'cancel']
     )->name('reservations.cancel');
 
-    // --- Route Lapor Kerusakan ---
-    Route::get('/reports', [ReportController::class, 'index'])
-        ->name('reports.index');
+    // --- Route Lapor Kerusakan User ---
+    Route::get(
+        '/reports',
+        [ReportController::class, 'userIndex']
+    )->name('reports.index');
 
-    Route::get('/reports/create', [ReportController::class, 'create'])
-        ->name('reports.create');
+    Route::get(
+        '/reports/create',
+        [ReportController::class, 'create']
+    )->name('reports.create');
 
-    Route::post('/reports', [ReportController::class, 'store'])
-        ->name('reports.store');
+    Route::post(
+        '/reports',
+        [ReportController::class, 'userStore']
+    )->name('reports.store');
 });
 
 require __DIR__ . '/auth.php';

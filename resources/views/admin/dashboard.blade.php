@@ -1,5 +1,4 @@
-<x-app-layout>
-
+<x-admin-layout>
     <div class="min-h-screen bg-[#f5f7f7]">
 
         <div class="flex min-h-screen">
@@ -711,4 +710,4 @@
 
     </div>
 
-</x-app-layout>
+</x-admin-layout>

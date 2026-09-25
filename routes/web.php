@@ -186,6 +186,13 @@ Route::get(
     ->middleware(['auth', 'account.status', 'role:petugas'])
     ->name('petugas.laporan.index');
 
+Route::get(
+    '/petugas/laporan/detail/{report}',
+    [ReportController::class, 'show']
+)
+    ->middleware(['auth', 'account.status', 'role:petugas'])
+    ->name('petugas.laporan.detail');
+    
 Route::post(
     '/laporan',
     [ReportController::class, 'store']

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ReservationDetail;
 
 class Reservation extends Model
 {
@@ -49,6 +50,11 @@ class Reservation extends Model
             'reservation_id',
             'facility_id'
         );
+    }
+
+    public function reservationDetail()
+    {
+        return $this->hasOne(ReservationDetail::class, 'reservation_id');
     }
 
 }

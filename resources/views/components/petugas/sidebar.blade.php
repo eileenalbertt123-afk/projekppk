@@ -1,29 +1,44 @@
-<aside class="bg-white border-r border-[#e2ebe9] w-[288px] flex flex-col justify-between shrink-0">
-        <div>
-            {{-- Brand Logo Header --}}
-            <div class="flex items-center gap-3 h-[80px] px-6 border-b border-[#e2ebe9]">
-                <div class="bg-[#19183b] rounded-xl size-10 flex items-center justify-center shadow-[0px_4px_6px_-1px_rgba(25,24,59,0.2),0px_2px_4px_-2px_rgba(25,24,59,0.2)]">
-                    <svg class="size-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 14.25l2.25 2.25 5.25-5.25" />
+<aside id="sidebar" class="bg-white border-r border-[#e2ebe9] h-full flex flex-col justify-between overflow-hidden">
+
+    <div>
+        {{-- LOGO --}}
+        <div class="h-[80px] px-5 flex items-center border-b border-[#e2ebe9]">
+            <div class="flex items-center gap-2">
+                <div class="bg-[#19183b] rounded-xl size-10 flex items-center justify-center shrink-0">
+
+                    <svg class="size-5 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2">
+
+                        <path stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+
+                        <path stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M8.25 14.25l2.25 2.25 5.25-5.25" />
+
                     </svg>
+
                 </div>
-                <div>
-                    <div class="flex items-center gap-1.5">
-                        <p class="font-extrabold text-[20px] tracking-[-0.5px] text-[#19183b] leading-[28px]">
-                            Book<span class="text-[#708993]">&amp;</span>Fix
-                        </p>
-                        <span class="bg-[#eef4f3] border border-[#bacdc9] rounded px-[7px] py-[3px] text-[10px] font-bold uppercase tracking-[0.5px] text-[#19183b] leading-[15px]">
-                            petugas
-                        </span>
-                    </div>
-                    <p class="text-[11px] font-medium text-[#708993] leading-4">Campus Facility Management</p>
-                </div>
+            <div class="sidebar-text">
+                <p class="font-bold text-[18px] text-[#19183b] leading-5">
+                    Book<span class="text-[#708993]">&amp;</span>Fix
+                </p>
+                <p class="text-[10px] text-[#708993]">
+                    Petugas
+                </p>
             </div>
- 
+        </div>
+    </div>
+
             {{-- Navigation --}}
             <nav class="flex flex-col gap-1.5 px-4 pt-[15px] pb-4">
-                <p class="px-3 pb-2 text-[11px] font-bold uppercase tracking-[0.55px] text-[#708993]">Menu Utama</p>
+                <p class="sidebar-text px-3 pb-2 text-[11px] font-bold uppercase tracking-[0.55px] text-[#708993]">
+                    Menu Utama
+                </p>
  
             @php
                 $isLaporan = request()->routeIs([
@@ -90,7 +105,7 @@
  
                 @foreach ($navItems as $item)
                     <a href="{{ Route::has($item['route']) ? route($item['route']) : '#' }}"
-                       class="flex items-center justify-between gap-3.5 rounded-xl px-3.5 py-3 w-full
+                            class="sidebar-link flex items-center justify-between gap-3.5 rounded-xl px-3.5 py-3 w-full
                               {{ $item['active'] ? 'bg-[#19183b] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)]' : '' }}">
                         <span class="flex items-center gap-3.5">
                             <svg class="size-5 shrink-0 {{ $item['active'] ? 'text-white' : 'text-[#708993]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -111,13 +126,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                                 @endif
                             </svg>
-                            <span class="text-sm leading-5 whitespace-nowrap {{ $item['active'] ? 'font-semibold text-white' : 'font-medium text-[#708993]' }}">
+                            <span class="sidebar-text text-sm leading-5 whitespace-nowrap {{ $item['active'] ? 'font-semibold text-white' : 'font-medium text-[#708993]' }}">
                                 {{ $item['label'] }}
                             </span>
                         </span>
  
                         @if ($item['badge'])
-                            <span class="bg-[#fef3c7] rounded-full px-2 py-0.5 text-xs font-semibold text-[#92400e] leading-4 whitespace-nowrap">
+                            <span class="sidebar-text bg-[#fef3c7] rounded-full px-2 py-0.5 text-xs font-semibold text-[#92400e] leading-4 whitespace-nowrap">
                                 {{ $item['badge'] }} Baru
                             </span>
                         @endif
@@ -126,21 +141,33 @@
             </nav>
         </div>
  
-        {{-- Sidebar bottom status --}}
+        {{-- Sidebar bottom user profile --}}
         <div class="p-4">
-            <div class="bg-[#eef4f3] border border-[#e2ebe9] rounded-2xl p-[17px] flex items-center gap-3">
-                <span class="relative flex size-3 shrink-0">
-                    <span class="absolute inline-flex h-full w-full rounded-full bg-[#34d399] opacity-75"></span>
-                    <span class="relative inline-flex rounded-full size-3 bg-[#10b981]"></span>
-                </span>
-                <div>
-                    <p class="text-xs font-semibold text-[#19183b] leading-4">
-                        {{ $systemStatusTitle ?? 'Sistem Booking Aktif' }}
-                    </p>
-                    <p class="text-[11px] font-normal text-[#708993] leading-4">
-                        {{ $systemStatusSubtitle ?? 'Server Kampus Normal' }}
-                    </p>
+
+            <div class="flex items-center gap-3">
+
+                {{-- Avatar --}}
+                <div class="size-12 rounded-full bg-[#19183b] flex items-center justify-center shrink-0">
+                    <span class="text-white font-semibold text-lg">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    </span>
                 </div>
+
+
+                {{-- User info --}}
+                <div class="min-w-0">
+
+                    <p class="text-sm font-bold text-[#19183b] leading-5 truncate">
+                        {{ ucwords(auth()->user()->name) }}
+                    </p>
+
+                    <p class="text-sm font-normal text-[#708993] leading-5 truncate">
+                        {{ auth()->user()->email }}
+                    </p>
+
+                </div>
+
             </div>
+
         </div>
     </aside>

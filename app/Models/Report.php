@@ -63,4 +63,9 @@ class Report extends Model
         return $this->belongsTo(Facility::class);
     }
 
+    public function statusHistories()
+    {
+        return $this->hasMany(ReportStatusHistory::class);
+    }
+
 }

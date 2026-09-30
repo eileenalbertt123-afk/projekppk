@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 
 use App\Models\Report;
 use App\Models\Facility;
+use App\Models\Reservation;
+use App\Models\ReportStatusHistory;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 
 class ReportController extends Controller
@@ -467,4 +471,182 @@ class ReportController extends Controller
 
     }
 
+    public function show(Report $report)
+    {
+        $report->load([
+            'user',
+            'facility',
+        ]);
+
+        $affectedReservations = [];
+
+        if ($report->facility) {
+
+            $affectedReservations = Reservation::whereHas('reservationDetail', function ($query) use ($report) {
+                    $query->where('facility_id', $report->facility->id);
+                })
+                ->where('status', 'disetujui')
+                ->whereDate('start_time', '>=', now())
+                ->get()
+                ->map(function ($reservation) {
+
+                    return [
+                        'id' => $reservation->reservation_code ?? $reservation->id,
+                        'status' => 'Approved',
+                        'date' => $reservation->start_time,
+                        'time' => $reservation->start_time . ' - ' . $reservation->end_time,
+                    ];
+
+                });
+
+        }
+        $rejectedHistory = $report->statusHistories()
+            ->with('changedBy')
+            ->where('status', 'ditolak')
+            ->latest('created_at')
+            ->first();
+
+        $completedHistory = $report->statusHistories()
+            ->with('changedBy')
+            ->where('status', 'selesai')
+            ->latest('created_at')
+            ->first();
+        
+        $isRepairReady = false;
+
+        if ($report->status === 'diproses') {
+            $isRepairReady = true;
+        }
+
+        return view('petugas.laporan.detail', compact(
+            'report',
+            'rejectedHistory',
+            'completedHistory',
+            'isRepairReady',
+            'affectedReservations'
+        ));
+    }
+
+    public function process(Report $report)
+    {
+        abort_unless($report->status === 'baru', 422);
+
+        DB::transaction(function () use ($report) {
+
+            $affected = Report::whereKey($report->id)
+                ->where('status', 'baru')
+                ->update([
+                    'status' => 'diproses',
+                ]);
+
+            abort_unless($affected === 1, 422);
+
+
+            // ubah fasilitas menjadi dalam perbaikan
+            $report->facility?->update([
+                'status' => 'dalam_perbaikan',
+            ]);
+
+
+            ReportStatusHistory::create([
+                'report_id' => $report->id,
+                'status' => 'diproses',
+                'changed_by' => Auth::id(),
+                'reason' => null,
+            ]);
+
+        });
+
+
+        return redirect()
+            ->route('petugas.laporan.detail', $report)
+            ->with('success', 'Laporan mulai diproses.');
+    }
+
+    public function startRepair(Report $report)
+    {
+        abort_unless($report->status === 'diproses', 422);
+
+        DB::transaction(function () use ($report) {
+
+            $report->facility?->update([
+                'status' => 'dalam_perbaikan',
+            ]);
+        });
+
+        return redirect()
+            ->route('petugas.laporan.detail', $report)
+            ->with('success', 'Fasilitas telah ditandai dalam perbaikan.');
+    }
+
+    public function reject(Request $request, Report $report)
+    {
+        abort_unless($report->status === 'baru', 422);
+
+        $validated = $request->validate([
+            'rejection_category' => [
+                'required',
+                'in:bukti_tidak_memadai,laporan_tidak_valid,duplikat_laporan,bukan_kerusakan_fasilitas,informasi_tidak_lengkap,fasilitas_tidak_sesuai,lainnya',
+            ],
+            'rejection_reason' => [
+                'required',
+                'string',
+                'max:1000',
+            ],
+        ]);
+
+        DB::transaction(function () use ($report, $validated) {
+
+            $report->update([
+                'status' => 'ditolak',
+            ]);
+
+            ReportStatusHistory::create([
+                'report_id' => $report->id,
+                'status' => 'ditolak',
+                'changed_by' => Auth::id(),
+                'reason_category' => $validated['rejection_category'],
+                'reason' => $validated['rejection_reason'],
+            ]);
+        });
+
+        return redirect()
+            ->route('petugas.laporan.detail', $report)
+            ->with('success', 'Laporan berhasil ditolak.');
+    }
+
+    public function complete(Request $request, Report $report)
+    {
+        abort_unless($report->status === 'diproses', 422);
+
+        $validated = $request->validate([
+            'completion_note' => [
+                'nullable',
+                'string',
+                'max:1000',
+            ],
+        ]);
+
+        DB::transaction(function () use ($report, $validated) {
+
+            $report->update([
+                'status' => 'selesai',
+            ]);
+
+            $report->facility?->update([
+                'status' => 'Tersedia',
+            ]);
+
+            ReportStatusHistory::create([
+                'report_id' => $report->id,
+                'status' => 'selesai',
+                'changed_by' => Auth::id(),
+                'reason' => $validated['completion_note'] ?? null,
+            ]);
+        });
+
+        return redirect()
+            ->route('petugas.laporan.detail', $report)
+            ->with('success', 'Laporan berhasil diselesaikan.');
+    }
 }

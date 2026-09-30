@@ -29,26 +29,108 @@
     },
 
     toggleSlot(slotKey, isSelectable) {
-        if (!isSelectable) return; // Mencegah klik jika slot tidak tersedia / lewat
-        
-        if (this.selectedSlots.includes(slotKey)) {
-            this.selectedSlots = this.selectedSlots.filter(s => s !== slotKey);
-        } else {
-            this.selectedSlots.push(slotKey);
-            this.selectedSlots.sort(); // Mengurutkan slot berurutan
-        }
-    },
-    get startTime() {
-        if (this.selectedSlots.length === 0) return '';
-        return this.selectedSlots[0].split(' - ')[0];
-    },
-    get endTime() {
-        if (this.selectedSlots.length === 0) return '';
-        return this.selectedSlots[this.selectedSlots.length - 1].split(' - ')[1];
-    },
-    get totalDuration() {
-        return (this.selectedSlots.length * 30) + ' Menit (' + this.selectedSlots.length + ' Slot)';
-    }
+        if (!isSelectable) return;
+
+            const clickedIndex = this.slots.findIndex(
+                slot => `${slot.start} - ${slot.end}` === slotKey
+            );
+
+            if (clickedIndex === -1) return;
+
+            // Belum ada slot yang dipilih
+            if (this.selectedSlots.length === 0) {
+                this.selectedSlots = [slotKey];
+                return;
+            }
+
+            // Ambil index slot yang sedang dipilih
+            const selectedIndexes = this.selectedSlots
+                .map(selected => {
+                    return this.slots.findIndex(
+                        slot => `${slot.start} - ${slot.end}` === selected
+                    );
+                })
+                .filter(index => index !== -1)
+                .sort((a, b) => a - b);
+
+            const firstIndex = selectedIndexes[0];
+            const lastIndex = selectedIndexes[selectedIndexes.length - 1];
+
+            // =====================================================
+            // KLIK SLOT YANG SUDAH TERPILIH
+            // =====================================================
+            if (this.selectedSlots.includes(slotKey)) {
+
+                // Hanya satu slot yang dipilih
+                if (firstIndex === lastIndex) {
+                    this.selectedSlots = [];
+                    return;
+                }
+
+                // Klik ujung kiri → buang slot pertama
+                if (clickedIndex === firstIndex) {
+                    this.selectedSlots = this.slots
+                        .slice(firstIndex + 1, lastIndex + 1)
+                        .map(slot => `${slot.start} - ${slot.end}`);
+
+                    return;
+                }
+
+                // Klik ujung kanan → buang slot terakhir
+                if (clickedIndex === lastIndex) {
+                    this.selectedSlots = this.slots
+                        .slice(firstIndex, lastIndex)
+                        .map(slot => `${slot.start} - ${slot.end}`);
+
+                    return;
+                }
+
+                // Klik bagian tengah
+                // Potong range dari slot yang diklik sampai akhir.
+                this.selectedSlots = this.slots
+                    .slice(firstIndex, clickedIndex)
+                    .map(slot => `${slot.start} - ${slot.end}`);
+
+                return;
+            }
+
+            // =====================================================
+            // KLIK SLOT BARU → PERLUAS RANGE
+            // =====================================================
+
+            const newFirstIndex = Math.min(firstIndex, clickedIndex);
+            const newLastIndex = Math.max(lastIndex, clickedIndex);
+
+            // Pastikan seluruh slot di antara range tersedia
+            const rangeSlots = this.slots.slice(
+                newFirstIndex,
+                newLastIndex + 1
+            );
+
+            const hasUnavailableSlot = rangeSlots.some(
+                slot => slot.status !== 'tersedia' || slot.is_past
+            );
+
+            // Jangan izinkan range melewati slot yang terisi/lewat
+            if (hasUnavailableSlot) {
+                return;
+            }
+
+            this.selectedSlots = rangeSlots.map(
+                slot => `${slot.start} - ${slot.end}`
+            );
+            },
+            get startTime() {
+                if (this.selectedSlots.length === 0) return '';
+                return this.selectedSlots[0].split(' - ')[0];
+            },
+            get endTime() {
+                if (this.selectedSlots.length === 0) return '';
+                return this.selectedSlots[this.selectedSlots.length - 1].split(' - ')[1];
+            },
+            get totalDuration() {
+                return (this.selectedSlots.length * 30) + ' Menit (' + this.selectedSlots.length + ' Slot)';
+            }
 }">
     <!-- Tombol Kembali -->
     <a href="{{ route('home') }}" class="text-brand-primary text-sm font-medium hover:underline mb-4 inline-block">&larr; Kembali ke Daftar Fasilitas</a>

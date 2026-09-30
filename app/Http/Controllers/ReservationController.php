@@ -450,12 +450,18 @@ class ReservationController extends Controller
             '<=',
             $reservation->created_at
         )->count();
+        
+        $rejectionHistory = $reservation->statusHistories
+        ->where('status', 'ditolak')
+        ->sortByDesc('created_at')
+        ->first();
 
         return view('petugas.reservasi.detail', compact(
             'reservation',
             'queueNumber',
             'hasConflict',
-            'conflictingReservation'
+            'conflictingReservation',
+            'rejectionHistory'
         ));
     }
 
@@ -470,7 +476,9 @@ class ReservationController extends Controller
 
         $oldStatus = $reservation->status;
         $newStatus = $validated['status'];
+        $reservation->load('details');
 
+        // Validasi approve
         if ($newStatus === 'disetujui') {
 
             $verification = $validated['verification'] ?? [];
@@ -493,11 +501,11 @@ class ReservationController extends Controller
             'selesai' => [],
         ];
 
-        if (! in_array($newStatus, $allowedTransitions[$oldStatus] ?? [])) {
+        if (!in_array($newStatus, $allowedTransitions[$oldStatus] ?? [])) {
             return back()->with('error', 'Perubahan status tidak diizinkan.');
         }
 
-        // reason wajib untuk ditolak / dibatalkan
+        // Reason wajib untuk ditolak / dibatalkan
         if (
             in_array($newStatus, ['ditolak', 'dibatalkan']) &&
             empty($validated['reason'])
@@ -514,12 +522,51 @@ class ReservationController extends Controller
             $newStatus,
             $validated
         ) {
-            // update status utama
+
+            // Jika reservasi disetujui, tolak reservasi lain yang masih menunggu dan bentrok
+            // Jika reservasi disetujui, tolak reservasi lain yang masih menunggu dan bentrok
+            if ($newStatus === 'disetujui') {
+
+                // Ambil fasilitas yang sedang disetujui
+                $facilityIds = $reservation->details()
+                    ->pluck('facility_id')
+                    ->toArray();
+
+                // Cari reservasi lain yang masih menunggu dan bentrok
+                $conflictReservations = Reservation::where('id', '!=', $reservation->id)
+                    ->where('status', 'menunggu')
+                    ->whereHas('details', function ($q) use ($facilityIds) {
+                        $q->whereIn('facility_id', $facilityIds);
+                    })
+                    ->where(function ($q) use ($reservation) {
+                        $q->where('start_time', '<', $reservation->end_time)
+                        ->where('end_time', '>', $reservation->start_time);
+                    })
+                    ->get();
+
+                foreach ($conflictReservations as $conflict) {
+
+                    // Update status menjadi ditolak
+                    $conflict->update([
+                        'status' => 'ditolak',
+                    ]);
+
+                    // Simpan history auto reject
+                    ReservationStatusHistory::create([
+                        'reservation_id' => $conflict->id,
+                        'status' => 'ditolak',
+                        'reason_category' => 'Jadwal Tidak Memungkinkan',
+                        'reason' => 'Reservasi otomatis ditolak karena jadwal fasilitas sudah disetujui untuk reservasi lain.',
+                        'changed_by' => null,
+                    ]);
+                }
+            }
+            // Update status reservasi utama
             $reservation->update([
                 'status' => $newStatus,
             ]);
 
-            // simpan riwayat perubahan status
+            // Simpan riwayat perubahan status
             ReservationStatusHistory::create([
                 'reservation_id' => $reservation->id,
                 'status' => $newStatus,
@@ -782,7 +829,7 @@ class ReservationController extends Controller
 
         $conflict = Reservation::whereIn(
             'status',
-            ['menunggu', 'disetujui']
+            ['disetujui']
         )
             ->whereHas('details', function ($q) use ($request) {
                 $q->where(

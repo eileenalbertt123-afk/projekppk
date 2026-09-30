@@ -44,6 +44,7 @@
     'cancelAction' => null,
 
     'reservationId' => null,
+    'rejectionHistory' => null,
 ])
  
 @php
@@ -538,9 +539,15 @@
                     </div>
 
                     <span class="text-[11px] font-medium text-[#be123c] text-right">
-                        Ditolak oleh {{ $displayRejectedBy }}
+                        @if ($rejectionHistory?->changedBy)
+                            Ditolak oleh {{ $rejectionHistory->changedBy->name }}
+                        @else
+                            Ditolak oleh Sistem
+                        @endif
+
                         <br>
-                        {{ $rejectedAt }}
+
+                        {{ $rejectionHistory?->created_at?->format('d M Y H:i') }}
                     </span>
 
                 </div>

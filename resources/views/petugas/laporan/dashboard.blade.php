@@ -12,11 +12,11 @@
 
         <div>
             <h1 class="font-extrabold text-[30px] tracking-[-0.75px] text-[#19183b] leading-9">
-                Laporan
+                {{ $pageTitle ?? 'Laporan' }}
             </h1>
 
             <p class="text-sm font-normal text-[#708993] leading-5">
-                Manajemen & Pemantauan Perbaikan Fasilitas Kampus Terpadu
+                {{ $pageSubtitle ?? 'Selamat datang, ' . ucwords(auth()->user()->name) . ' 👋 · Kelola laporan kerusakan, pantau fasilitas, dan tindak lanjuti kebutuhan perbaikan kampus di sini.' }}
             </p>
         </div>
 

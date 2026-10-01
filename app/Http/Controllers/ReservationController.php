@@ -814,6 +814,7 @@ class ReservationController extends Controller
         $opEnd = Carbon::parse(
             $request->date . ' 20:00'
         );
+        
 
         if ($start < $opStart || $end > $opEnd) {
             return back()->withInput()->withErrors([
@@ -896,7 +897,7 @@ class ReservationController extends Controller
         ]);
 
         return redirect()
-            ->route('dashboard')
+            ->route('riwayat')
             ->with(
                 'success',
                 'Pengajuan reservasi berhasil dikirim!'
@@ -936,4 +937,18 @@ class ReservationController extends Controller
             'Reservasi berhasil dibatalkan.'
         );
     }
+
+    public function detail(Reservation $reservation)
+    {
+        if ($reservation->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $reservation->load(['user.userType', 'details.facility']);
+
+        $facility = $reservation->details->first()?->facility;
+
+        return view('reservations.detail', compact('reservation', 'facility'));
+    }
 }
+

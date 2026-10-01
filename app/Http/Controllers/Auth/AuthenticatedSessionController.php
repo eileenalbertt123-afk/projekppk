@@ -51,7 +51,7 @@ class AuthenticatedSessionController extends Controller
     return match ($user->role) {
         'admin' => redirect('/admin'),
         'petugas' => redirect()->route('petugas.reservasi.dashboard'),
-        'pengguna' => redirect('/pengguna'),
+        'pengguna' => redirect()->route('facilities.index'),
         default => redirect('/'),
     };
 }

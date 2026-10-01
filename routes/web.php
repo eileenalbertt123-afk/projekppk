@@ -21,8 +21,8 @@ Route::get('/fasilitas', [FacilityController::class, 'index'])
 Route::get('/fasilitas/{facility}', [FacilityController::class, 'availability'])
     ->name('facilities.availability');
 
-// --- RUTE DASHBOARD USER (PENGGUNA) ---
-Route::get('/dashboard', function () {
+// --- RUTE RIWAYAT & STATUS (PENGGUNA) ---
+Route::get('/riwayat', function () {
     $userId = Auth::id();
 
     $activeReservations = Reservation::where('user_id', $userId)
@@ -46,7 +46,7 @@ Route::get('/dashboard', function () {
         ->latest()
         ->get();
 
-    return view('dashboard', compact(
+    return view('pengguna.riwayat', compact(
         'activeReservations',
         'pendingReservations',
         'reportsCount',
@@ -55,8 +55,8 @@ Route::get('/dashboard', function () {
     ));
 })
     ->middleware(['auth', 'account.status'])
-    ->name('dashboard');
-
+    ->name('riwayat');
+    
 // --- RUTE ADMIN ---
 Route::get('/admin', [AdminController::class, 'index'])
     ->middleware(['auth', 'account.status', 'role:admin'])
@@ -166,7 +166,7 @@ Route::patch(
 
 // --- RUTE PENGGUNA ---
 Route::get('/pengguna', function () {
-    return redirect()->route('dashboard');
+    return redirect()->route('riwayat');
 })
     ->middleware(['auth', 'account.status', 'role:pengguna'])
     ->name('pengguna');
@@ -185,13 +185,6 @@ Route::get(
 )
     ->middleware(['auth', 'account.status', 'role:petugas'])
     ->name('petugas.laporan.index');
-
-Route::get(
-    '/petugas/laporan/detail/{report}',
-    [ReportController::class, 'show']
-)
-    ->middleware(['auth', 'account.status', 'role:petugas'])
-    ->name('petugas.laporan.detail');
     
 Route::post(
     '/laporan',
@@ -262,6 +255,11 @@ Route::middleware('auth')->group(function () {
         [ReservationController::class, 'cancel']
     )->name('reservations.cancel');
 
+    Route::get(
+        '/reservations/{reservation}/detail',
+        [ReservationController::class, 'detail']
+    )->name('reservations.detail');
+
     // --- Route Lapor Kerusakan User ---
     Route::get(
         '/reports',
@@ -272,6 +270,11 @@ Route::middleware('auth')->group(function () {
         '/reports/create',
         [ReportController::class, 'create']
     )->name('reports.create');
+
+    Route::get(
+        '/reports/{report}', 
+        [ReportController::class, 'userShow']
+    )->name('reports.show');
 
     Route::post(
         '/reports',

@@ -20,6 +20,10 @@
                     fontFamily: {
                         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
                     },
+                    boxShadow: {
+                        card: '0 2px 10px rgba(15, 23, 42, 0.07)',
+                        panel: '0 8px 30px -8px rgba(15, 23, 42, 0.15)',
+                    },
                     colors: {
                         brand: {
                             primary: '#19183B',
@@ -35,12 +39,22 @@
 </head>
 <body class="font-sans text-brand-primary antialiased bg-brand-neutral">
     <div class="min-h-screen flex flex-col justify-center items-center px-4 py-10">
-        <div class="flex items-center gap-2.5 mb-6">
-            <div class="bg-brand-primary text-white px-2.5 py-1 rounded-md font-extrabold text-xs tracking-wider">BF</div>
-            <span class="font-bold text-xl text-brand-primary tracking-tight">Book & Fix</span>
+
+        <!-- Logo (di tengah) -->
+        <div class="w-full flex items-center justify-center gap-3 mb-8">
+            <div class="bg-brand-primary rounded-xl size-12 flex items-center justify-center shrink-0 shadow-card">
+                <svg class="size-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 14.25l2.25 2.25 5.25-5.25" />
+                </svg>
+            </div>
+            <h1 class="text-3xl font-extrabold text-brand-primary tracking-tight">
+                Book<span class="text-brand-secondary">&amp;</span>Fix
+            </h1>
         </div>
 
-        <div class="w-full sm:max-w-md px-6 py-6 bg-white border border-gray-200 shadow-sm rounded-2xl">
+        <!-- Kartu -->
+        <div class="w-full sm:max-w-lg px-6 sm:px-10 py-8 sm:py-10 bg-white border border-gray-200 shadow-panel rounded-3xl">
             {{ $slot }}
         </div>
     </div>

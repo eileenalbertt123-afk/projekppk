@@ -333,6 +333,17 @@ class ReportController extends Controller
             );
     }
 
+    public function userShow(Report $report)
+    {
+        $report->load(['user', 'facility']);
+
+        return view('reports.show', [
+            'report'   => $report,
+            'facility' => $report->facility,
+            'user'     => $report->user,
+        ]);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | LAPORAN PETUGAS - STORE

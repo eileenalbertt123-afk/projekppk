@@ -2,32 +2,22 @@
 
 @section('content')
 
-<!-- Header Selamat Datang -->
+<!-- Header -->
 <div class="mb-8">
     <h2 class="text-brand-primary" style="font-size: 30px; font-style: normal; font-weight: 800; line-height: 36px; letter-spacing: -0.75px;">
-        Beranda
+        Riwayat &amp; Status
     </h2>
     <p class="text-sm text-brand-secondary mt-1">
-        Selamat datang, {{ Auth::user()->name }} 👋 &middot; Cari fasilitas, buat reservasi, dan lihat aktivitas Anda di sini.
+        Pantau reservasi dan laporan kerusakan Anda di sini.
     </p>
 </div>
 
-<!-- Card Cari & Lihat Fasilitas -->
-<div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-xs mb-6">
-    <h3 class="font-bold text-lg text-brand-primary">Cari &amp; Lihat Fasilitas</h3>
-    <p class="text-sm text-brand-secondary mb-5">Filter berdasarkan tipe, lokasi, dan kapasitas.</p>
-
-    <a href="{{ route('home') }}" class="inline-flex items-center gap-2 bg-brand-primary hover:opacity-90 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition shadow-xs">
-        Lihat Semua Fasilitas <span>→</span>
-    </a>
-</div>
-
-<div x-data="{ tab: 'semua' }">
+<div x-data="{ tab: new URLSearchParams(location.search).get('tab') || 'semua' }">
 
     <!-- Ringkasan Aktivitas (3 CARD CLICKABLE) -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <!-- Card 1: Reservasi Aktif -->
-        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between">
+        <div style="animation-delay: 0ms" class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
             <div>
                 <span class="text-[10px] text-brand-secondary uppercase tracking-wider block">Reservasi Aktif</span>
                 <span class="font-bold text-brand-primary text-2xl mt-1 block">{{ $activeReservations ?? 0 }}</span>
@@ -40,7 +30,7 @@
         </div>
 
         <!-- Card 2: Menunggu Validasi -->
-        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between">
+        <div style="animation-delay: 80ms" class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
             <div>
                 <span class="text-[10px] text-brand-secondary uppercase tracking-wider block">Menunggu Validasi</span>
                 <span class="font-bold text-brand-primary text-2xl mt-1 block">{{ $pendingReservations ?? 0 }}</span>
@@ -53,7 +43,7 @@
         </div>
 
         <!-- Card 3: Laporan Kerusakan -->
-        <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between">
+        <div style="animation-delay: 160ms" class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
             <div>
                 <span class="text-[10px] text-brand-secondary uppercase tracking-wider block">Laporan Kerusakan</span>
                 <span class="font-bold text-brand-primary text-2xl mt-1 block">{{ $reportsCount ?? 0 }}</span>
@@ -69,44 +59,45 @@
     <!-- SECTION 1: RIWAYAT RESERVASI & LAPORAN -->
     @php
         $all = collect($reservations ?? []);
-        $countSemua     = $all->count();
+        $countSemua     = $all->count() + collect($reports ?? [])->count();
         $countDisetujui = $all->where('status', 'disetujui')->count();
         $countMenunggu  = $all->where('status', 'menunggu')->count();
         $countLainnya   = $all->whereNotIn('status', ['disetujui', 'menunggu'])->count();
         $countLaporan   = collect($reports ?? [])->count();
     @endphp
 
-    <div id="riwayat-reservasi" class="mt-8 scroll-mt-6">
+    <div id="riwayat-reservasi" class="mt-8 scroll-mt-6 bg-white rounded-3xl border border-gray-200/80 shadow-panel p-5 sm:p-8">
         <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
-            <h3 class="font-bold text-lg text-brand-primary" x-text="tab === 'laporan' ? 'Riwayat Laporan Kerusakan' : 'Riwayat Reservasi'"></h3>
+            <h3 class="font-bold text-lg text-brand-primary" x-text="tab === 'laporan' ? 'Riwayat Laporan Kerusakan' : (tab === 'semua' ? 'Semua Aktivitas' : 'Riwayat Reservasi')"></h3>
 
             <!-- Tab Filter -->
             <div class="flex gap-2 flex-wrap">
                 <button type="button" @click="tab = 'semua'"
-                    :class="tab === 'semua' ? 'bg-brand-primary text-white' : 'bg-white border border-gray-300 text-brand-primary hover:bg-gray-50'"
+                    :class="tab === 'semua' ? 'bg-brand-primary text-white' : 'bg-white border border-gray-300 text-brand-primary hover:bg-gray-50 shadow-card'"
                     class="px-4 py-1.5 rounded-xl text-xs font-semibold transition">
                     Semua ({{ $countSemua }})
                 </button>
                 <button type="button" @click="tab = 'disetujui'"
-                    :class="tab === 'disetujui' ? 'bg-brand-primary text-white' : 'bg-white border border-gray-300 text-brand-primary hover:bg-gray-50'"
+                    :class="tab === 'disetujui' ? 'bg-brand-primary text-white' : 'bg-white border border-gray-300 text-brand-primary hover:bg-gray-50 shadow-card'"
                     class="px-4 py-1.5 rounded-xl text-xs font-semibold transition">
                     Disetujui ({{ $countDisetujui }})
                 </button>
                 <button type="button" @click="tab = 'menunggu'"
-                    :class="tab === 'menunggu' ? 'bg-brand-primary text-white' : 'bg-white border border-gray-300 text-brand-primary hover:bg-gray-50'"
+                    :class="tab === 'menunggu' ? 'bg-brand-primary text-white' : 'bg-white border border-gray-300 text-brand-primary hover:bg-gray-50 shadow-card'"
                     class="px-4 py-1.5 rounded-xl text-xs font-semibold transition">
                     Menunggu ({{ $countMenunggu }})
                 </button>
+                <button type="button" @click="tab = 'laporan'"
+                    :class="tab === 'laporan' ? 'bg-brand-primary text-white' : 'bg-white border border-gray-300 text-brand-primary hover:bg-gray-50 shadow-card'"
+                    class="px-4 py-1.5 rounded-xl text-xs font-semibold transition border-l border-gray-300">
+                    Laporan Kerusakan ({{ $countLaporan }})
+                </button> 
                 <button type="button" @click="tab = 'lainnya'"
-                    :class="tab === 'lainnya' ? 'bg-brand-primary text-white' : 'bg-white border border-gray-300 text-brand-primary hover:bg-gray-50'"
+                    :class="tab === 'lainnya' ? 'bg-brand-primary text-white' : 'bg-white border border-gray-300 text-brand-primary hover:bg-gray-50 shadow-card'"
                     class="px-4 py-1.5 rounded-xl text-xs font-semibold transition">
                     Lainnya ({{ $countLainnya }})
                 </button>
-                <button type="button" @click="tab = 'laporan'"
-                    :class="tab === 'laporan' ? 'bg-brand-primary text-white' : 'bg-white border border-gray-300 text-brand-primary hover:bg-gray-50'"
-                    class="px-4 py-1.5 rounded-xl text-xs font-semibold transition border-l border-gray-300">
-                    Laporan Kerusakan ({{ $countLaporan }})
-                </button>
+                
             </div>
         </div>
 
@@ -154,7 +145,7 @@
                         : ($reservation->status === 'menunggu' ? 'menunggu' : 'lainnya');
                 @endphp
 
-                <div x-show="tab === 'semua' || tab === '{{ $tabGroup }}'" class="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs mb-4">
+                <div x-show="tab === 'semua' || tab === '{{ $tabGroup }}'" style="animation-delay: {{ min($loop->index, 8) * 80 }}ms" class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card mb-4">
                     <div class="flex items-start justify-between gap-4">
                         <div>
                             <p class="text-[10px] font-bold text-brand-secondary uppercase tracking-wider">{{ $reservation->reservation_code }}</p>
@@ -178,20 +169,29 @@
                         </span>
                     </div>
 
-                    @if($canCancel)
-                        <form id="cancel-form-{{ $reservation->id }}" action="{{ route('reservations.cancel', $reservation) }}" method="POST" class="mt-4">
-                            @csrf
-                            @method('PATCH')
-                            <button
-                                type="button"
-                                @click="$dispatch('open-cancel-modal', { formId: 'cancel-form-{{ $reservation->id }}', code: '{{ $reservation->reservation_code }}' })"
-                                class="text-xs font-bold text-rose-600 border border-rose-200 hover:bg-rose-50 px-4 py-2 rounded-xl transition cursor-pointer">
-                                Batalkan Reservasi
-                            </button>
-                        </form>
-                    @elseif(in_array($reservation->status, ['menunggu', 'disetujui']))
-                        <p class="text-xs text-gray-400 mt-4">Sudah melewati batas waktu pembatalan (24 jam sebelum mulai).</p>
-                    @endif
+                    <div class="mt-4 flex items-end justify-between gap-4 flex-wrap">
+                    <div>
+                        @if($canCancel)
+                            <form id="cancel-form-{{ $reservation->id }}" action="{{ route('reservations.cancel', $reservation) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <button
+                                    type="button"
+                                    @click="$dispatch('open-cancel-modal', { formId: 'cancel-form-{{ $reservation->id }}', code: '{{ $reservation->reservation_code }}' })"
+                                    class="text-xs font-bold text-rose-600 border border-rose-200 hover:bg-rose-50 px-4 py-2 rounded-xl transition cursor-pointer">
+                                    Batalkan Reservasi
+                                </button>
+                            </form>
+                        @elseif(in_array($reservation->status, ['menunggu', 'disetujui']))
+                            <p class="text-xs text-gray-400">Sudah melewati batas waktu pembatalan (24 jam sebelum mulai).</p>
+                        @endif
+                    </div>
+
+                    <a href="{{ route('reservations.detail', $reservation) }}"
+                        class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-primary border border-brand-tertiary bg-brand-neutral hover:bg-brand-tertiary/30 px-4 py-2 rounded-xl transition ml-auto">
+                            Lihat selengkapnya 
+                    </a>
+                </div>
                 </div>
             @empty
                 <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-xs text-sm text-brand-secondary">
@@ -200,25 +200,34 @@
             @endforelse
         </div>
 
-        <!-- DAFTAR LAPORAN KERUSAKAN (Hanya muncul jika tab = 'laporan') -->
-        <div x-show="tab === 'laporan'">
+        <!-- DAFTAR LAPORAN KERUSAKAN -->
+        <div x-show="tab === 'laporan' || tab === 'semua'">
             @forelse($reports ?? [] as $report)
-                <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs mb-3 flex items-center justify-between gap-4">
-                    <div class="space-y-1">
-                        <span class="text-[10px] font-bold text-brand-secondary uppercase bg-brand-neutral px-2 py-0.5 rounded border border-gray-200">{{ $report->category }}</span>
-                        <h4 class="text-sm font-bold text-brand-primary">{{ $report->facility->name ?? 'Fasilitas' }}</h4>
-                        <p class="text-xs text-brand-secondary">{{ $report->description }}</p>
-                        <span class="text-[10px] text-gray-400 block mt-1">
-                            Dilaporkan: {{ \Carbon\Carbon::parse($report->created_at)->translatedFormat('d M Y, H:i') }} WIB
+                <div style="animation-delay: {{ min($loop->index, 8) * 80 }}ms" class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card mb-3">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-bold text-brand-secondary uppercase bg-brand-neutral px-2 py-0.5 rounded border border-gray-200">{{ $report->category }}</span>
+                            <h4 class="text-sm font-bold text-brand-primary">{{ $report->facility->name ?? 'Fasilitas' }}</h4>
+                            <p class="text-xs text-brand-secondary">{{ $report->description }}</p>
+                            <span class="text-[10px] text-gray-400 block mt-1">
+                                Dilaporkan: {{ \Carbon\Carbon::parse($report->created_at)->translatedFormat('d M Y, H:i') }} WIB
+                            </span>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shrink-0
+                            {{ $report->status === 'selesai' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : ($report->status === 'diproses' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-amber-50 text-amber-700 border border-amber-200') }}">
+                            {{ $report->status }}
                         </span>
                     </div>
-                    <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shrink-0
-                        {{ $report->status === 'selesai' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : ($report->status === 'diproses' ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-amber-50 text-amber-700 border border-amber-200') }}">
-                        {{ $report->status }}
-                    </span>
+
+                    <div class="mt-4 flex justify-end">
+                        <a href="{{ route('reports.show', $report) }}"
+                            class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-primary border border-brand-tertiary bg-brand-neutral hover:bg-brand-tertiary/30 px-4 py-2 rounded-xl transition">
+                            Lihat selengkapnya
+                        </a>
+                    </div>
                 </div>
             @empty
-                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-xs text-sm text-brand-secondary">
+                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-card text-sm text-brand-secondary">
                     Belum ada riwayat laporan kerusakan.
                 </div>
             @endforelse

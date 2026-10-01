@@ -20,6 +20,20 @@
                     fontFamily: {
                         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
                     },
+                    boxShadow: {
+                        panel: '0 8px 30px -8px rgba(15, 23, 42, 0.15)',
+                        card: '0 2px 10px rgba(15, 23, 42, 0.07)',
+                        'card-hover': '0 8px 20px rgba(15, 23, 42, 0.12)',
+                    },
+                    keyframes: {
+                        'fade-up': {
+                            '0%':   { opacity: '0', transform: 'translateY(24px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                    },
+                    animation: {
+                        'fade-up': 'fade-up 0.5s ease-out both',
+                    },
                     colors: {
                         brand: {
                             primary: '#19183B',
@@ -54,12 +68,18 @@
             <!-- Header Logo -->
             <div class="flex items-center justify-between pb-5 border-b border-gray-100 mb-6">
                 <div class="flex items-center gap-2.5">
-                    <div class="bg-brand-primary text-white px-2.5 py-1 rounded-md font-extrabold text-xs tracking-wider">BF</div>
-                    <span class="font-bold text-lg text-brand-primary tracking-tight">Book & Fix</span>
+                    <div class="flex items-center gap-2.5">
+                        <div class="bg-brand-primary rounded-xl size-10 flex items-center justify-center shrink-0">
+                            <svg class="size-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 14.25l2.25 2.25 5.25-5.25" />
+                            </svg>
+                        </div>
+                        <p class="font-bold text-lg text-brand-primary leading-5">
+                            Book<span class="text-brand-secondary">&amp;</span>Fix
+                        </p>
+                    </div>
                 </div>
-                <button @click="sidebarOpen = false" class="text-brand-secondary hover:text-brand-primary p-1 rounded-lg hover:bg-gray-100 md:hidden">
-                    ✕
-                </button>
             </div>
 
             <!-- Navigasi Menu -->
@@ -71,7 +91,7 @@
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
-                    <span>Beranda / Fasilitas</span>
+                    <span>Beranda</span>
                 </a>
                 @endguest
 
@@ -82,12 +102,11 @@
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
-                    <span>Beranda / Fasilitas</span>
+                    <span>Beranda</span>
                 </a>
 
-                @if(Auth::user()->isMahasiswa() || Auth::user()->isDosen())
-                <a href="{{ route('dashboard') }}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition {{ request()->routeIs('dashboard') ? 'bg-brand-primary text-white shadow-xs' : 'text-brand-secondary hover:bg-gray-100 hover:text-brand-primary' }}">
+                <a href="{{ route('riwayat') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition {{ request()->routeIs('riwayat') || request()->routeIs('reservations.detail') || request()->routeIs('reports.show') ? 'bg-brand-primary text-white shadow-xs' : 'text-brand-secondary hover:bg-gray-100 hover:text-brand-primary' }}">
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7c0-1.105-.895-2-2-2H5C3.895 5 3 5.895 3 7v12c0 1.105.895 2 2 2h14a2 2 0 002-2V7" />
                     </svg>
@@ -95,31 +114,12 @@
                 </a>
 
                 <a href="{{ route('reports.index') }}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition {{ request()->routeIs('reports.*') ? 'bg-brand-primary text-white shadow-xs' : 'text-brand-secondary hover:bg-gray-100 hover:text-brand-primary' }}">
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition {{ request()->routeIs('reports.*') && !request()->routeIs('reports.show') ? 'bg-brand-primary text-white shadow-xs' : 'text-brand-secondary hover:bg-gray-100 hover:text-brand-primary' }}">
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                     <span>Lapor Kerusakan</span>
                 </a>
-
-                @endif
-
-                @if(Auth::user()->isPetugas())
-                <div class="pt-4 pb-2 px-3 text-[11px] font-bold text-brand-secondary uppercase tracking-wider">Menu Petugas</div>
-                <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-brand-secondary hover:bg-gray-100 hover:text-brand-primary font-medium transition text-sm">
-                    <span>📋 Validasi Reservasi</span>
-                </a>
-                @endif
-
-                @if(Auth::user()->isAdmin())
-                <div class="pt-4 pb-2 px-3 text-[11px] font-bold text-brand-secondary uppercase tracking-wider">Menu Admin</div>
-                <a href="{{ route('admin') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-brand-secondary hover:bg-gray-100 hover:text-brand-primary font-medium transition text-sm">
-                    <span>🏠 Dashboard Admin</span>
-                </a>
-                <a href="{{ route('admin.rekap') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-brand-secondary hover:bg-gray-100 hover:text-brand-primary font-medium transition text-sm">
-                    <span>📊 Laporan</span>
-                </a>
-                @endif
                 @endauth
             </nav>
         </div>
@@ -169,8 +169,10 @@
         </header>
 
         <!-- Tempat Konten Berubah-ubah -->
-        <main class="flex-1 overflow-y-auto p-6 max-w-7xl w-full mx-auto">
-            @yield('content')
+        <main class="flex-1 overflow-y-auto p-6 full">
+            <div class="max-w-7xl mx-auto">
+                @yield('content')
+            </div>
         </main>
     </div>
 

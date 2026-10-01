@@ -7,7 +7,7 @@
             <h1 class="text-2xl font-bold text-brand-primary">Laporan Kerusakan Fasilitas</h1>
             <p class="text-sm text-brand-secondary mt-1">Pantau status laporan kendala atau kerusakan fasilitas yang Anda kirimkan.</p>
         </div>
-        <a href="{{ route('reports.create') }}" class="bg-brand-primary hover:opacity-90 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-sm">
+        <a href="{{ route('reports.create') }}" class="bg-brand-primary hover:opacity-90 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-card hover:shadow-card-hover">
             + Buat Laporan Baru
         </a>
     </div>
@@ -18,9 +18,9 @@
         </div>
     @endif
 
-    <div class="space-y-4">
+    <div class="space-y-4 bg-white rounded-3xl border border-gray-200/80 shadow-panel p-5 sm:p-8">
         @forelse($reports as $report)
-            <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex flex-col md:flex-row justify-between gap-4">
+            <div style="animation-delay: {{ min($loop->index, 8) * 80 }}ms" class="animate-fade-up bg-white rounded-2xl border border-gray-200 p-5 shadow-card flex flex-col md:flex-row justify-between gap-4">
                 <div class="space-y-2 flex-1">
                     <div class="flex items-center gap-2">
                         <span class="px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-brand-neutral text-brand-primary border border-gray-200">
@@ -36,7 +36,7 @@
                         </span>
                         <h3 class="text-base font-bold text-brand-primary">{{ $report->facility->name ?? 'Fasilitas' }}</h3>
                     </div>
-                    <p class="text-sm text-brand-secondary leading-relaxed">{{ $report->description }}</p>
+                    <p class="text-sm text-brand-secondary leading-relaxed">{{ \Illuminate\Support\Str::limit($report->description, 120) }}</p>
                     <span class="text-[11px] text-gray-400 block">
                         Dilaporkan pada {{ \Carbon\Carbon::parse($report->created_at)->translatedFormat('d F Y, H:i') }} WIB
                     </span>
@@ -61,16 +61,10 @@
                     <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider {{ $statusColor }}">
                         Status: {{ $statusLabel }}
                     </span>
-
-                    @if($report->image_path)
-                        <a href="{{ asset('storage/' . $report->image_path) }}" target="_blank" class="text-xs font-bold text-indigo-600 hover:underline mt-2">
-                            🖼️ Lihat Foto Bukti
-                        </a>
-                    @endif
                 </div>
             </div>
         @empty
-            <div class="bg-white rounded-2xl border border-gray-200 p-12 text-center text-brand-secondary">
+            <div class="bg-white rounded-2xl border border-gray-200 p-12 text-center text-brand-secondary shadow-card">
                 <p class="text-sm font-semibold">Belum ada laporan kerusakan yang dikirimkan.</p>
             </div>
         @endforelse

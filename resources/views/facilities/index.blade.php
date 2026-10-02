@@ -41,6 +41,18 @@
     <!-- PANDUAN RESERVASI -->
     <div class="animate-fade-up bg-brand-primary/5 border border-brand-primary/15 rounded-xl p-4 mb-6 shadow-md">
             <p class="text-sm font-semibold text-brand-primary mb-3">Cara meminjam fasilitas</p>
+            <p class="text-xs text-brand-secondary mt-1 mb-3 flex items-center gap-1.5">
+                <svg class="size-3.5 shrink-0 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>
+                    Anda bisa melihat jadwal tanpa login.
+                    @guest
+                    Login hanya diperlukan saat mengajukan peminjaman.
+                    @endguest
+                </span>
+            </p>
+
             <ol class="grid gap-3 sm:grid-cols-3">
 
                 <!-- Langkah 1: Pilih fasilitas -->
@@ -78,7 +90,6 @@
                         Pilih waktu kosong lalu ajukan peminjaman
                     </span>
                 </li>
-
             </ol>
         </div>
 

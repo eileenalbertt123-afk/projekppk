@@ -200,6 +200,20 @@ Route::get(
     ->middleware(['auth', 'account.status', 'role:petugas'])
     ->name('petugas.fasilitas.index');
 
+Route::get(
+    '/reservasi/{reservation}/dokumen',
+    [ReservationController::class, 'document']
+)
+    ->middleware(['auth', 'account.status'])
+    ->name('reservations.document');
+
+Route::get(
+    '/laporan/{report}/foto',
+    [ReportController::class, 'image']
+)
+    ->middleware(['auth', 'account.status'])
+    ->name('reports.image');
+
 Route::middleware(['auth', 'account.status', 'role:petugas'])->group(function () {
 
     Route::get(

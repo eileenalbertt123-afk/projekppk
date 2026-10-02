@@ -163,10 +163,15 @@
                 <div class="border border-gray-200 rounded-2xl p-4">
                     <p class="text-[10px] font-bold text-brand-secondary uppercase tracking-wider">Dokumen Surat</p>
                     @if($reservation->document)
-                        <a href="{{ asset('storage/' . $reservation->document) }}" target="_blank"
-                           class="inline-block mt-1 font-bold text-brand-primary underline">Lihat dokumen</a>
+                        <a href="{{ route('reservations.document', $reservation) }}"
+                        target="_blank"
+                        class="inline-block mt-1 font-bold text-brand-primary underline">
+                            Lihat dokumen
+                        </a>
                     @else
-                        <p class="mt-1 text-sm text-brand-secondary">Tidak ada dokumen</p>
+                        <p class="mt-1 text-sm text-brand-secondary">
+                            Tidak ada dokumen
+                        </p>
                     @endif
                 </div>
             </div>

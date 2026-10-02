@@ -152,12 +152,16 @@
 
                 <div class="border border-gray-200 rounded-2xl p-4">
                     <p class="text-[10px] font-bold text-brand-secondary uppercase tracking-wider">Foto Bukti</p>
-                    @if($imgUrl)
-                        <a href="{{ $imgUrl }}" target="_blank" class="inline-block mt-1 font-bold text-brand-primary underline underline-offset-2 hover:text-brand-secondary transition">
+                    @if($report->image_path)
+                        <a href="{{ route('reports.image', $report) }}"
+                        target="_blank"
+                        class="font-semibold text-brand-primary underline">
                             Lihat foto
                         </a>
                     @else
-                        <p class="font-bold text-brand-secondary mt-1">Tidak ada foto</p>
+                        <span class="text-gray-400">
+                            Tidak ada foto
+                        </span>
                     @endif
                 </div>
             </div>

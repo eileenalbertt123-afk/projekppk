@@ -207,6 +207,34 @@ Route::get(
     ->middleware(['auth', 'account.status', 'role:petugas'])
     ->name('petugas.fasilitas.index');
 
+Route::middleware(['auth', 'account.status', 'role:petugas'])->group(function () {
+
+    Route::get(
+        '/petugas/laporan/detail/{report}',
+        [ReportController::class, 'show']
+    )->name('petugas.laporan.detail');
+
+    Route::post(
+        '/petugas/laporan/{report}/process',
+        [ReportController::class, 'process']
+    )->name('petugas.laporan.process');
+
+    Route::post(
+        '/petugas/laporan/{report}/start-repair',
+        [ReportController::class, 'startRepair']
+    )->name('petugas.laporan.start-repair');
+
+    Route::patch(
+        '/petugas/laporan/{report}/reject',
+        [ReportController::class, 'reject']
+    )->name('petugas.laporan.reject');
+
+    Route::patch(
+        '/petugas/laporan/{report}/complete',
+        [ReportController::class, 'complete']
+    )->name('petugas.laporan.complete');
+});
+
 Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])

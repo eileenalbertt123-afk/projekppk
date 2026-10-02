@@ -12,7 +12,7 @@
                         {{ $pageTitle ?? 'Reservasi' }}
                     </h1>
                     <p class="text-sm font-normal text-[#708993] leading-5">
-                        {{ $pageSubtitle ?? 'Manajemen Fasilitas & Pemesanan Kampus Terpadu' }}
+                        {{ $pageSubtitle ?? 'Selamat datang, ' . ucwords(auth()->user()->name) . ' 👋 · Kelola reservasi, pantau fasilitas, dan tindak lanjuti laporan kampus di sini.' }}
                     </p>
                 </div>
                 <div class="bg-[#d1fae5] border border-[#a7f3d0] rounded-lg px-[13px] py-[7px] flex items-center gap-1.5">

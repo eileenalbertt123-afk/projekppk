@@ -38,6 +38,11 @@ class ReportController extends Controller
 
         $laporanBaruCount = $statusCounts->get('baru', 0);
 
+        $laporanTerlambatCount = Report::query()
+            ->where('status', 'baru')
+            ->where('created_at', '<=', now()->subWeeks(3))
+            ->count();
+
         $startLastMonth = $now->copy()
             ->subMonth()
             ->startOfMonth();
@@ -119,6 +124,7 @@ class ReportController extends Controller
             compact(
                 'totalLaporan',
                 'laporanBaruCount',
+                'laporanTerlambatCount',
                 'laporanGrowth',
                 'incomingReports',
                 'statusSummary',
@@ -229,7 +235,7 @@ class ReportController extends Controller
 
         $query->when(
             $request->filled('status')
-            && $request->status !== 'semua',
+                && $request->status !== 'semua',
             function ($query) use ($request) {
                 $query->where(
                     'status',
@@ -239,8 +245,20 @@ class ReportController extends Controller
         );
 
         $query->when(
+            $request->boolean('terlambat'),
+            function ($query) {
+                $query->where('status', 'baru')
+                    ->where(
+                        'created_at',
+                        '<=',
+                        now()->subWeeks(3)
+                    );
+            }
+        );
+
+        $query->when(
             $request->filled('category')
-            && $request->category !== 'semua',
+                && $request->category !== 'semua',
             function ($query) use ($request) {
                 $query->where(
                     'category',
@@ -385,22 +403,20 @@ class ReportController extends Controller
         if ($report->facility) {
 
             $affectedReservations = Reservation::whereHas('reservationDetail', function ($query) use ($report) {
-                    $query->where('facility_id', $report->facility->id);
-                })
+                $query->where('facility_id', $report->facility->id);
+            })
                 ->where('status', 'disetujui')
                 ->whereDate('start_time', '>=', now())
                 ->get()
                 ->map(function ($reservation) {
-
                     return [
+                        'reservation_id' => $reservation->id,
                         'id' => $reservation->reservation_code ?? $reservation->id,
                         'status' => 'Approved',
                         'date' => $reservation->start_time,
                         'time' => $reservation->start_time . ' - ' . $reservation->end_time,
                     ];
-
                 });
-
         }
         $rejectedHistory = $report->statusHistories()
             ->with('changedBy')
@@ -455,7 +471,6 @@ class ReportController extends Controller
                 'changed_by' => Auth::id(),
                 'reason' => null,
             ]);
-
         });
 
 

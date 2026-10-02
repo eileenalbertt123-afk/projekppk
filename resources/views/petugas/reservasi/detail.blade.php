@@ -206,15 +206,6 @@ $conflictDescription = $conflictingReservation
                 </p>
             </div>
 
-            <div class="bg-gray-50/80 border border-gray-200/80 rounded-xl px-4 py-2.5 min-w-[120px]">
-                <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-                    NOMOR ANTREAN
-                </p>
-                <p class="font-bold text-indigo-600 text-sm mt-0.5">
-                    #{{ $queueNumber }}
-                </p>
-            </div>
-
             <div class="bg-gray-50/80 border border-gray-200/80 rounded-xl px-4 py-2.5 min-w-[140px]">
                 <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                     TGL PENGAJUAN

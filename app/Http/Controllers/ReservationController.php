@@ -444,12 +444,6 @@ class ReservationController extends Controller
             ->first();
 
         $hasConflict = $conflictingReservation !== null;
-
-        $queueNumber = Reservation::where(
-            'created_at',
-            '<=',
-            $reservation->created_at
-        )->count();
         
         $rejectionHistory = $reservation->statusHistories
         ->where('status', 'ditolak')
@@ -458,7 +452,6 @@ class ReservationController extends Controller
 
         return view('petugas.reservasi.detail', compact(
             'reservation',
-            'queueNumber',
             'hasConflict',
             'conflictingReservation',
             'rejectionHistory'

@@ -33,6 +33,77 @@
 
     </div>
 
+    @if ($laporanTerlambatCount > 0)
+    <div class="mb-8 flex items-center justify-between gap-4
+                    rounded-2xl border border-[#fcd34d]
+                    bg-[#fffbeb] px-5 py-4">
+
+        <div class="flex items-center gap-3">
+
+            <div class="flex size-10 shrink-0 items-center justify-center
+                            rounded-xl bg-[#fef3c7]">
+
+                <svg
+                    class="size-5 text-[#d97706]"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2">
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M12 9v3.75m0 3h.008v.008H12v-.008zM10.29 3.86l-7.18 12a2.25 2.25 0 001.93 3.39h13.92a2.25 2.25 0 001.93-3.39l-7.18-12a2.25 2.25 0 00-3.86 0z" />
+
+                </svg>
+
+            </div>
+
+            <div>
+                <p class="text-sm font-bold text-[#92400e]">
+                    Ada {{ $laporanTerlambatCount }} laporan yang belum diproses
+                </p>
+
+                <p class="mt-0.5 text-xs text-[#a16207]">
+                    Laporan sudah lebih dari 3 minggu sejak dibuat dan masih berstatus baru.
+                    Segera proses laporan tersebut.
+                </p>
+            </div>
+
+        </div>
+
+        <a
+            href="{{ route('petugas.laporan.index', ['status' => 'baru', 'terlambat' => 1]) }}"
+            class="inline-flex shrink-0 items-center gap-1.5 rounded-lg
+                       bg-[#d97706] px-4 py-2.5 text-xs font-bold text-white
+                       transition hover:bg-[#b45309]">
+
+            Lihat Laporan
+
+            <svg
+                class="size-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2">
+
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M5 12h14m-5-5 5 5-5 5" />
+
+            </svg>
+
+        </a>
+
+    </div>
+    @endif
+
+
+    {{-- ===========================
+        KPI CARDS
+    ============================ --}}
+
 
 
     {{-- ===========================
@@ -62,8 +133,7 @@
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
-                            d="M9 5.25H7.5A2.25 2.25 0 005.25 7.5v11.25A2.25 2.25 0 007.5 21h9a2.25 2.25 0 002.25-2.25V7.5a2.25 2.25 0 00-2.25-2.25H15M9 5.25a3 3 0 006 0M9 5.25a3 3 0 016 0M9.75 12h.008v.008H9.75V12zm0 3h.008v.008H9.75V15zm0 3h.008v.008H9.75V18zM12.75 12H15m-2.25 3H15m-2.25 3H15"
-                        />
+                            d="M9 5.25H7.5A2.25 2.25 0 005.25 7.5v11.25A2.25 2.25 0 007.5 21h9a2.25 2.25 0 002.25-2.25V7.5a2.25 2.25 0 00-2.25-2.25H15M9 5.25a3 3 0 006 0M9 5.25a3 3 0 016 0M9.75 12h.008v.008H9.75V12zm0 3h.008v.008H9.75V15zm0 3h.008v.008H9.75V18zM12.75 12H15m-2.25 3H15m-2.25 3H15" />
                     </svg>
 
                 </div>
@@ -80,16 +150,16 @@
 
                 @if($laporanGrowth !== null)
 
-                    <span class="bg-[#d1fae5] border border-[#a7f3d0]
+                <span class="bg-[#d1fae5] border border-[#a7f3d0]
                                  rounded-full px-3 py-1
                                  text-xs font-bold text-[#065f46]">
 
-                        {{ $laporanGrowth > 0 ? '+' : '' }}
-                        {{ $laporanGrowth }}%
+                    {{ $laporanGrowth > 0 ? '+' : '' }}
+                    {{ $laporanGrowth }}%
 
-                        vs bulan lalu
+                    vs bulan lalu
 
-                    </span>
+                </span>
 
                 @endif
 
@@ -121,14 +191,12 @@
                         <circle
                             cx="12"
                             cy="12"
-                            r="8.5"
-                        />
+                            r="8.5" />
 
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
-                            d="M12 7.5V12l3 2"
-                        />
+                            d="M12 7.5V12l3 2" />
                     </svg>
                 </div>
 
@@ -172,14 +240,12 @@
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
-                            d="M6.75 7.5h10.5a2.25 2.25 0 012.25 2.25v8.25a2.25 2.25 0 01-2.25 2.25H6.75a2.25 2.25 0 01-2.25-2.25V9.75a2.25 2.25 0 012.25-2.25z"
-                        />
+                            d="M6.75 7.5h10.5a2.25 2.25 0 012.25 2.25v8.25a2.25 2.25 0 01-2.25 2.25H6.75a2.25 2.25 0 01-2.25-2.25V9.75a2.25 2.25 0 012.25-2.25z" />
 
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
-                            d="M8.25 7.5V6a2.25 2.25 0 012.25-2.25h3a2.25 2.25 0 012.25 2.25v1.5"
-                        />
+                            d="M8.25 7.5V6a2.25 2.25 0 012.25-2.25h3a2.25 2.25 0 012.25 2.25v1.5" />
 
                     </svg>
 
@@ -209,7 +275,7 @@
 
     </div>
 
-    
+
     {{-- ===========================
         CONTENT GRID
     ============================ --}}
@@ -263,10 +329,10 @@
 
 
                     <a href="{{ route('petugas.laporan.index') }}"
-                    class="text-xs font-bold text-[#19183b]">
+                        class="text-xs font-bold text-[#19183b]">
 
                         Lihat Semua →
-                        
+
                     </a>
 
 
@@ -351,35 +417,35 @@
                     <tbody class="divide-y divide-[#e2ebe9]">
 
 
-                    @forelse($incomingReports as $report)
+                        @forelse($incomingReports as $report)
 
 
                         @php
 
-                            $categoryMap = [
+                        $categoryMap = [
 
-                                'elektronik_av'
-                                    => 'Elektronik & AV',
+                        'elektronik_av'
+                        => 'Elektronik & AV',
 
-                                'struktur_bangunan'
-                                    => 'Struktur & Bangunan',
+                        'struktur_bangunan'
+                        => 'Struktur & Bangunan',
 
-                                'mekanikal_utilitas'
-                                    => 'Mekanikal & Utilitas',
+                        'mekanikal_utilitas'
+                        => 'Mekanikal & Utilitas',
 
-                                'furnitur'
-                                    => 'Furnitur',
+                        'furnitur'
+                        => 'Furnitur',
 
-                                'jaringan_it'
-                                    => 'Jaringan/IT',
+                        'jaringan_it'
+                        => 'Jaringan/IT',
 
-                                'kebersihan'
-                                    => 'Kebersihan',
+                        'kebersihan'
+                        => 'Kebersihan',
 
-                                'lainnya'
-                                    => 'Lainnya',
+                        'lainnya'
+                        => 'Lainnya',
 
-                            ];
+                        ];
 
                         @endphp
 
@@ -418,8 +484,7 @@
                                             bg-[#eef4f3]
                                             flex items-center justify-center
                                             text-xs font-bold
-                                            text-[#19183b]"
-                                    >
+                                            text-[#19183b]">
 
                                         {{ strtoupper(
                                             substr(
@@ -477,8 +542,7 @@
                                         px-3 py-1.5
                                         text-xs
                                         font-medium
-                                        text-[#475569]"
-                                >
+                                        text-[#475569]">
 
                                     {{ $categoryMap[$report->category] ?? '-' }}
 
@@ -495,8 +559,7 @@
 
 
                                 <x-petugas.status-laporan-badge
-                                    :status="$report->status"
-                                />
+                                    :status="$report->status" />
 
 
                             </td>
@@ -506,7 +569,7 @@
                         </tr>
 
 
-                    @empty
+                        @empty
 
 
                         <tr>
@@ -521,7 +584,7 @@
                         </tr>
 
 
-                    @endforelse
+                        @endforelse
 
 
                     </tbody>
@@ -549,14 +612,14 @@
                     <div class="bg-[#eef4f3] rounded-lg p-2">
 
                         <svg class="size-5 text-[#19183b]"
-                             fill="none"
-                             viewBox="0 0 24 24"
-                             stroke="currentColor">
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
 
                             <path stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
-                                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
 
                         </svg>
 
@@ -579,77 +642,77 @@
                 </div>
                 <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
                     @foreach($statusSummary as $status)
-                        @php
+                    @php
 
-                            $colors = [
+                    $colors = [
 
-                                'baru'=>[
-                                    'bg'=>'bg-[#fffbeb]',
-                                    'border'=>'border-[#fde68a]',
-                                    'text'=>'text-[#b45309]',
-                                ],
-
-
-                                'diproses'=>[
-                                    'bg'=>'bg-[#f3e8ff]',
-                                    'border'=>'border-[#ddd6fe]',
-                                    'text'=>'text-[#6d28d9]',
-                                ],
+                    'baru'=>[
+                    'bg'=>'bg-[#fffbeb]',
+                    'border'=>'border-[#fde68a]',
+                    'text'=>'text-[#b45309]',
+                    ],
 
 
-                                'ditolak'=>[
-                                    'bg'=>'bg-[#fff1f2]',
-                                    'border'=>'border-[#fecdd3]',
-                                    'text'=>'text-[#be123c]',
-                                ],
+                    'diproses'=>[
+                    'bg'=>'bg-[#f3e8ff]',
+                    'border'=>'border-[#ddd6fe]',
+                    'text'=>'text-[#6d28d9]',
+                    ],
 
 
-                                'selesai'=>[
-                                    'bg'=>'bg-[#bae6fd]',
-                                    'border'=>'border-[#7dd3fc]',
-                                    'text'=>'text-[#0369a1]',
-                                ],
-
-                            ];
+                    'ditolak'=>[
+                    'bg'=>'bg-[#fff1f2]',
+                    'border'=>'border-[#fecdd3]',
+                    'text'=>'text-[#be123c]',
+                    ],
 
 
-                            $style =
-                            $colors[$status['key']]
-                            ??
-                            $colors['baru'];
+                    'selesai'=>[
+                    'bg'=>'bg-[#bae6fd]',
+                    'border'=>'border-[#7dd3fc]',
+                    'text'=>'text-[#0369a1]',
+                    ],
 
-                        @endphp
-                        <div     class="{{ $style['bg'] }}
+                    ];
+
+
+                    $style =
+                    $colors[$status['key']]
+                    ??
+                    $colors['baru'];
+
+                    @endphp
+                    <div class="{{ $style['bg'] }}
                         {{ $style['border'] }}
                         border
                         rounded-xl
                         p-5
                         text-center">
 
-                            <p class="text-xs font-bold uppercase
+                        <p class="text-xs font-bold uppercase
                                       {{ $style['text'] }}">
 
-                                {{ $status['label'] }}
+                            {{ $status['label'] }}
 
-                            </p>
+                        </p>
 
 
-                            <p class="text-3xl font-extrabold
+                        <p class="text-3xl font-extrabold
                                       {{ $style['text'] }} mt-2">
 
-                                {{ $status['value'] }}
+                            {{ $status['value'] }}
 
-                            </p>
-
-
-                            <p class="text-xs text-[#708993] mt-1">
-
-                                {{ $status['desc'] }}
-
-                            </p>
+                        </p>
 
 
-                        </div>
+                        <p class="text-xs text-[#708993] mt-1">
+
+                            {{ $status['desc'] }}
+
+                        </p>
+
+
+                    </div>
 
 
                     @endforeach
@@ -668,21 +731,18 @@
                             class="flex items-center justify-center
                                     w-14 h-12
                                     rounded-xl
-                                    bg-[#fee2e2]"
-                        >
+                                    bg-[#fee2e2]">
 
                             <svg
                                 class="size-5 text-[#dc2626]"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
-                                stroke-width="2"
-                            >
+                                stroke-width="2">
                                 <path
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
-                                    d="M12 9v3m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
-                                />
+                                    d="M12 9v3m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                             </svg>
 
                         </span>
@@ -704,53 +764,53 @@
 
                 <div class="flex flex-col gap-3">
                     @forelse ($facilitiesUnderRepair as $facility)
-                        @php
-                            $activeReport = $facility->activeReport ?? null;
-                        @endphp
-                        <div class="bg-white border border-[#e2ebe9] rounded-xl p-3">
-                            <div class="flex items-start justify-between gap-2 mb-1">
-                                <p class="text-sm font-bold text-[#19183b] leading-5">
-                                    {{ $facility->name }}
-                                </p>
+                    @php
+                    $activeReport = $facility->activeReport ?? null;
+                    @endphp
+                    <div class="bg-white border border-[#e2ebe9] rounded-xl p-3">
+                        <div class="flex items-start justify-between gap-2 mb-1">
+                            <p class="text-sm font-bold text-[#19183b] leading-5">
+                                {{ $facility->name }}
+                            </p>
 
-                                {{-- No existing reusable badge covers the facility status "dalam_perbaikan" —
+                            {{-- No existing reusable badge covers the facility status "dalam_perbaikan" —
                                     see note below the code. Styled to match status-laporan-badge / status-badge. --}}
-                                <span class="inline-flex items-center gap-[6px] bg-[#fef3c7] border border-[#fde68a] px-[11px] py-[5px] rounded-full shrink-0">
-                                    <span class="size-[6px] rounded-full bg-[#f59e0b]"></span>
-                                    <span class="text-[11px] font-semibold text-[#b45309] whitespace-nowrap">Dalam Perbaikan</span>
-                                </span>
-                            </div>
-
-                            @if ($activeReport?->description)
-                                <p class="text-xs text-[#708993] leading-[18px]">
-                                    {{ $activeReport->description }}
-                                    @if ($activeReport->code)
-                                        <span class="text-[#708993]">({{ $activeReport->code }})</span>
-                                    @endif
-                                </p>
-                            @endif
-
-                            <div class="flex items-center gap-[6px] mt-1">
-                                @if ($activeReport?->technician_name)
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 text-[#708993]" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6Zm-7 9a7 7 0 1114 0H3Z" clip-rule="evenodd" />
-                                    </svg>
-                                    <span class="text-xs text-[#708993]">Teknisi: {{ $activeReport->technician_name }}</span>
-                                @elseif ($activeReport?->vendor_name)
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 text-[#708993]" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M4 2a1 1 0 00-1 1v15a1 1 0 001 1h4v-3a1 1 0 011-1h2a1 1 0 011 1v3h4a1 1 0 001-1V8.414a1 1 0 00-.293-.707l-4.414-4.414A1 1 0 0011.586 3H12V2a1 1 0 00-1-1H4Zm2 4h2v2H6V6Zm4 0h2v2h-2V6Zm-4 4h2v2H6v-2Zm4 0h2v2h-2v-2Z" clip-rule="evenodd" />
-                                    </svg>
-                                    <span class="text-xs text-[#708993]">Vendor: {{ $activeReport->vendor_name }}</span>
-                                @else
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 text-[#708993]" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6Zm-7 9a7 7 0 1114 0H3Z" clip-rule="evenodd" />
-                                    </svg>
-                                    <span class="text-xs text-[#708993]">Teknisi belum ditentukan</span>
-                                @endif
-                            </div>
+                            <span class="inline-flex items-center gap-[6px] bg-[#fef3c7] border border-[#fde68a] px-[11px] py-[5px] rounded-full shrink-0">
+                                <span class="size-[6px] rounded-full bg-[#f59e0b]"></span>
+                                <span class="text-[11px] font-semibold text-[#b45309] whitespace-nowrap">Dalam Perbaikan</span>
+                            </span>
                         </div>
+
+                        @if ($activeReport?->description)
+                        <p class="text-xs text-[#708993] leading-[18px]">
+                            {{ $activeReport->description }}
+                            @if ($activeReport->code)
+                            <span class="text-[#708993]">({{ $activeReport->code }})</span>
+                            @endif
+                        </p>
+                        @endif
+
+                        <div class="flex items-center gap-[6px] mt-1">
+                            @if ($activeReport?->technician_name)
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 text-[#708993]" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6Zm-7 9a7 7 0 1114 0H3Z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-xs text-[#708993]">Teknisi: {{ $activeReport->technician_name }}</span>
+                            @elseif ($activeReport?->vendor_name)
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 text-[#708993]" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4 2a1 1 0 00-1 1v15a1 1 0 001 1h4v-3a1 1 0 011-1h2a1 1 0 011 1v3h4a1 1 0 001-1V8.414a1 1 0 00-.293-.707l-4.414-4.414A1 1 0 0011.586 3H12V2a1 1 0 00-1-1H4Zm2 4h2v2H6V6Zm4 0h2v2h-2V6Zm-4 4h2v2H6v-2Zm4 0h2v2h-2v-2Z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-xs text-[#708993]">Vendor: {{ $activeReport->vendor_name }}</span>
+                            @else
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 text-[#708993]" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6Zm-7 9a7 7 0 1114 0H3Z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-xs text-[#708993]">Teknisi belum ditentukan</span>
+                            @endif
+                        </div>
+                    </div>
                     @empty
-                        <p class="text-xs text-[#708993] italic">Tidak ada fasilitas dalam perbaikan saat ini.</p>
+                    <p class="text-xs text-[#708993] italic">Tidak ada fasilitas dalam perbaikan saat ini.</p>
                     @endforelse
                 </div>
             </div>
@@ -801,8 +861,7 @@
                                 border border-[#e2ebe9]
                                 text-xs
                                 font-semibold
-                                text-[#19183b]"
-                        >
+                                text-[#19183b]">
                             1
                         </span>
 
@@ -826,8 +885,7 @@
                                 border border-[#e2ebe9]
                                 text-xs
                                 font-semibold
-                                text-[#19183b]"
-                        >
+                                text-[#19183b]">
                             2
                         </span>
 
@@ -856,8 +914,7 @@
                                 border border-[#e2ebe9]
                                 text-xs
                                 font-semibold
-                                text-[#19183b]"
-                        >
+                                text-[#19183b]">
                             3
                         </span>
 
@@ -893,8 +950,7 @@
                         px-4
                         py-3
                         w-full
-                        whitespace-nowrap"
-                >
+                        whitespace-nowrap">
 
                     <span> Buka Daftar Laporan Lengkap</span>
                     <svg
@@ -902,13 +958,11 @@
                         fill="none"
                         viewBox="0 0 22 22"
                         stroke="currentColor"
-                        stroke-width="2"
-                    >
+                        stroke-width="2">
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
-                            d="M5 12h14M13 6l6 6-6 6"
-                        />
+                            d="M5 12h14M13 6l6 6-6 6" />
                     </svg>
                 </a>
 
@@ -916,4 +970,4 @@
             </div>
 
         </div>
-@endsection
+        @endsection

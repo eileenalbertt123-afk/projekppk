@@ -220,14 +220,6 @@
                 </span>
             </div>
 
-            {{-- Nomor Antrean --}}
-            <div class="bg-[#f8fafc] border border-[#e2e8f0] flex flex-col items-start px-[17px] py-[11px] rounded-[12px]">
-                <span class="font-bold text-[#94a3b8] text-[11px] tracking-[0.55px] uppercase leading-[16.5px]">Nomor Antrean</span>
-                <span class="font-extrabold text-[#1d4ed8] text-[16px] leading-[24px]">
-                    #{{ $report->queue_number ?? '-' }}  {{-- @NOTE: adjust field name --}}
-                </span>
-            </div>
-
             {{-- Tanggal Pengajuan --}}
             <div class="bg-[#f8fafc] border border-[#e2e8f0] flex flex-col gap-[1.75px] items-start px-[17px] py-[11px] rounded-[12px]">
                 <span class="font-bold text-[#94a3b8] text-[11px] tracking-[0.55px] uppercase leading-[16.5px]">Tgl Pengajuan</span>

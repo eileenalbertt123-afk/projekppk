@@ -108,7 +108,7 @@
             );
 
             const hasUnavailableSlot = rangeSlots.some(
-                slot => slot.status !== 'tersedia' || slot.is_past
+                slot => slot.status !== 'tersedia' || slot.is_past || this.isTooSoon(slot)
             );
 
             // Jangan izinkan range melewati slot yang terisi/lewat
@@ -130,6 +130,10 @@
             },
             get totalDuration() {
                 return (this.selectedSlots.length * 30) + ' Menit (' + this.selectedSlots.length + ' Slot)';
+            },
+                isTooSoon(slot) {
+                const start = new Date(this.currentDate + 'T' + slot.start + ':00');
+                return start < new Date(Date.now() + 24 * 60 * 60 * 1000);
             }
 }">
     <!-- Tombol Kembali -->
@@ -262,7 +266,7 @@
                         @endphp
                         <div>
                             <!-- KOTAK JAM TERSEDIA (BISA DIPILIH / MULTISELECT) -->
-                            <template x-if="{{ $isFacilityAvailable ? 'true' : 'false' }} && slot.status === 'tersedia' && !slot.is_past">
+                            <template x-if="{{ $isFacilityAvailable ? 'true' : 'false' }} && slot.status === 'tersedia' && !slot.is_past && !isTooSoon(slot)">
                                 <button 
                                     type="button"
                                     @click="toggleSlot(slot.start + ' - ' + slot.end, true)"
@@ -282,13 +286,13 @@
                             </template>
 
                             <!-- KOTAK JAM TIDAK BISA DIPILIH (DISABLED) -->
-                            <template x-if="!({{ $isFacilityAvailable ? 'true' : 'false' }} && slot.status === 'tersedia' && !slot.is_past)">
+                            <template x-if="!({{ $isFacilityAvailable ? 'true' : 'false' }} && slot.status === 'tersedia' && !slot.is_past && !isTooSoon(slot))">
                                 <button 
                                     type="button" 
                                     disabled 
                                     @click.prevent
                                     :style="'animation-delay:' + (Math.min(index, 10) * 30) + 'ms'"
-                                    class="flex flex-col items-center justify-center py-3.5 rounded-xl border border-gray-200 bg-gray-100/80 text-gray-400 cursor-not-allowed opacity-60 w-full select-none">
+                                    class="animate-fade-up flex flex-col items-center justify-center py-3.5 rounded-xl border border-gray-200 bg-gray-100/80 text-gray-400 cursor-not-allowed opacity-60 w-full select-none">
                                     <span class="text-[10px] mb-0.5 opacity-60">30 Menit</span>
                                     <span class="text-sm font-bold line-through" x-text="slot.start + ' - ' + slot.end"></span>
                                     
@@ -298,7 +302,8 @@
                                         <span class="text-[10px] font-semibold text-gray-500 mt-0.5">Nonaktif</span>
                                     @else
                                         <span x-show="slot.is_past" class="text-[10px] font-semibold text-gray-500 mt-0.5">Selesai / Lewat</span>
-                                        <span x-show="!slot.is_past" class="text-[10px] font-semibold text-rose-500 mt-0.5">Terisi</span>
+                                        <span x-show="!slot.is_past && isTooSoon(slot) && slot.status === 'tersedia'" class="text-[10px] font-semibold text-amber-600 mt-0.5">Min. 24 jam sebelumnya</span>
+                                        <span x-show="!slot.is_past && !isTooSoon(slot)" class="text-[10px] font-semibold text-rose-500 mt-0.5">Terisi</span>
                                     @endif
                                 </button>
                             </template>
@@ -335,7 +340,7 @@
             </div>
 
         </div>
-
+    </div>    
     </div>
 </div>
 

@@ -220,6 +220,7 @@
                 </span>
             </div>
 
+
             {{-- Tanggal Pengajuan --}}
             <div class="bg-[#f8fafc] border border-[#e2e8f0] flex flex-col gap-[1.75px] items-start px-[17px] py-[11px] rounded-[12px]">
                 <span class="font-bold text-[#94a3b8] text-[11px] tracking-[0.55px] uppercase leading-[16.5px]">Tgl Pengajuan</span>

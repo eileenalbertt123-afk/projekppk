@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Reservation;
 use App\Models\Facility;
 use App\Models\ReservationStatusHistory;
@@ -942,6 +943,41 @@ class ReservationController extends Controller
         $facility = $reservation->details->first()?->facility;
 
         return view('reservations.detail', compact('reservation', 'facility'));
+    }
+
+    public function document(Reservation $reservation)
+    {
+        $user = Auth::user();
+
+        if (
+            $user->role === 'pengguna' &&
+            $reservation->user_id !== $user->id
+        ) {
+            abort(403);
+        }
+
+        abort_unless(
+            in_array($user->role, ['pengguna', 'petugas', 'admin']),
+            403
+        );
+
+        abort_if(
+            empty($reservation->document),
+            404,
+            'Dokumen tidak tersedia.'
+        );
+
+        $filePath = storage_path(
+            'app/public/' . $reservation->document
+        );
+
+        abort_unless(
+            file_exists($filePath),
+            404,
+            'File dokumen tidak ditemukan.'
+        );
+
+        return response()->file($filePath);
     }
 }
 

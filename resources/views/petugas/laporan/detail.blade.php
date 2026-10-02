@@ -11,7 +11,15 @@
 
     $reporter = $report->user ?? null;
     $facility = $report->facility ?? null;
-    $category = $report->category ?? null;
+    $categoryLabel = match($report->category ?? null) {
+        'jaringan_it' => 'Jaringan / IT',
+        'kelistrikan' => 'Kelistrikan',
+        'kebersihan' => 'Kebersihan',
+        'peralatan' => 'Peralatan',
+        'fasilitas_fisik' => 'Fasilitas Fisik',
+        'lainnya' => 'Lainnya',
+        default => ucwords(str_replace('_', ' ', $report->category ?? '-')),
+    };
 
     $facilityStatus = strtolower(str_replace([' ', '-'], '_', $facility?->status ?? 'tersedia'));
 
@@ -25,13 +33,6 @@
         count($affectedReservations) > 0
         && $status === 'diproses'
         && $facilityStatus === 'dalam_perbaikan';
-
-    // dd([
-    //     'affected' => count($affectedReservations),
-    //     'status' => $status,
-    //     'facilityStatus' => $facilityStatus,
-    //     'conflict' => $hasFacilityConflict
-    // ]);
 
     // =========================================================
     // REPORT ACTION PANEL STATE
@@ -221,6 +222,8 @@
             </div>
 
 
+
+
             {{-- Tanggal Pengajuan --}}
             <div class="bg-[#f8fafc] border border-[#e2e8f0] flex flex-col gap-[1.75px] items-start px-[17px] py-[11px] rounded-[12px]">
                 <span class="font-bold text-[#94a3b8] text-[11px] tracking-[0.55px] uppercase leading-[16.5px]">Tgl Pengajuan</span>
@@ -230,7 +233,6 @@
             </div>
         </div>
     </div>
-
     {{-- ── 4.  MAIN GRID  (2/3 content + 1/3 sidebar) ─────────────── --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
@@ -450,7 +452,7 @@
                                 <line x1="12" y1="16" x2="12.01" y2="16"/>
                             </svg>
                             <span class="font-bold text-[#0f172a] text-[14px] leading-[20px]">
-                                {{ $category?->name ?? $report->damage_category ?? '-' }}  {{-- @NOTE: adjust field --}}
+                                {{ $categoryLabel }}
                             </span>
                         </div>
                     </div>
@@ -476,11 +478,8 @@
                         <p class="font-normal text-[#94a3b8] text-[12px] leading-[16px] m-0">Deskripsi yang diberikan oleh pelapor</p>
                     </div>
                     <div class="bg-[#f8fafc] border border-[#e2e8f0] flex flex-col gap-3 p-[17px] rounded-[8px]">
-                        <p class="font-bold text-[#0f172a] text-[14px] leading-[20px] m-0">
-                            {{ $report->damage_title ?? $report->title ?? '-' }}  {{-- @NOTE: adjust field --}}
-                        </p>
                         <p class="font-normal text-[#334155] text-[13px] leading-[20px] m-0 whitespace-pre-line">
-                            {{ $report->description ?? $report->damage_description ?? '-' }}  {{-- @NOTE: adjust field --}}
+                            {{ $report->description ?? $report->description ?? '-' }}  {{-- @NOTE: adjust field --}}
                         </p>
                     </div>
                 </div>
@@ -493,62 +492,64 @@
                     </div>
 
                     {{-- Photo grid / single --}}
-                    @php
-                        $photos = $report->photos ?? ($report->attachments ?? []);
-                        // Normalize: accept a single URL string, an Eloquent collection, or a plain array
-                        if (is_string($photos)) $photos = [$photos];
-                        if ($photos instanceof \Illuminate\Support\Collection) $photos = $photos->toArray();
-                    @endphp
+                    @if($report->image_path)
 
-                    @if (count($photos) > 0)
-                    <div class="border border-[#e2e8f0] overflow-hidden relative rounded-[12px]">
-                        {{-- Main photo --}}
-                        <div class="relative w-full" style="padding-top:44%;">
-                            <img src="{{ is_array($photos[0]) ? ($photos[0]['url'] ?? $photos[0]['path'] ?? '') : $photos[0] }}"
-                                 alt="Bukti Kerusakan"
-                                 class="absolute inset-0 w-full h-full object-cover" />
-                            {{-- Bottom overlay --}}
-                            <div class="absolute bottom-0 left-0 right-0 bg-[rgba(0,0,0,0.55)] backdrop-blur-sm flex items-center justify-between px-3 py-3">
-                                <span class="font-normal text-white text-[12px] leading-[16px]">
-                                    {{ count($photos) }} foto tersedia
-                                </span>
-                                @if (count($photos) > 1)
-                                <button type="button" class="bg-white/20 border border-white/30 text-white text-[11px] font-semibold leading-[16px] px-3 py-[5px] rounded-[6px] flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24"
-                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                        <circle cx="8.5" cy="8.5" r="1.5"/>
-                                        <polyline points="21 15 16 10 5 21"/>
-                                    </svg>
-                                    Lihat Semua Foto
-                                </button>
-                                @endif
+                        <div class="border border-[#e2e8f0] overflow-hidden relative rounded-[12px]">
+
+                            <div class="relative w-full" style="padding-top:44%;">
+
+                                <img
+                                    src="{{ route('reports.image', $report) }}"
+                                    alt="Bukti kerusakan"
+                                    class="absolute inset-0 w-full h-full object-cover"
+                                >
+
+                                <div class="absolute bottom-0 left-0 right-0
+                                            bg-[rgba(0,0,0,0.55)]
+                                            backdrop-blur-sm
+                                            flex items-center justify-between
+                                            px-3 py-3">
+
+                                    <span class="font-normal text-white text-[12px] leading-[16px]">
+                                        Foto bukti kerusakan
+                                    </span>
+
+                                </div>
+
                             </div>
+
                         </div>
 
-                        {{-- Thumbnails strip (if more than 1 photo) --}}
-                        @if (count($photos) > 1)
-                        <div class="flex gap-2 p-3 bg-[#f8fafc] overflow-x-auto">
-                            @foreach (array_slice($photos, 0, 5) as $photo)
-                            <div class="bg-[#e2e8f0] overflow-hidden relative rounded-[6px] shrink-0 size-[56px]">
-                                <img src="{{ is_array($photo) ? ($photo['url'] ?? $photo['path'] ?? '') : $photo }}"
-                                     alt="Foto {{ $loop->iteration }}"
-                                     class="absolute inset-0 w-full h-full object-cover" />
-                            </div>
-                            @endforeach
-                        </div>
-                        @endif
-                    </div>
                     @else
-                    <div class="bg-[#f8fafc] border border-[#e2e8f0] border-dashed flex flex-col items-center justify-center gap-2 p-8 rounded-[12px]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
-                             fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                            <circle cx="8.5" cy="8.5" r="1.5"/>
-                            <polyline points="21 15 16 10 5 21"/>
-                        </svg>
-                        <p class="font-normal text-[#94a3b8] text-[13px] leading-[20px] m-0 text-center">Tidak ada foto bukti kerusakan</p>
-                    </div>
+
+                        <div class="bg-[#f8fafc]
+                                    border border-[#e2e8f0]
+                                    border-dashed
+                                    flex flex-col items-center justify-center
+                                    gap-2 p-8 rounded-[12px]">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                width="28"
+                                height="28"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#cbd5e1"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round">
+
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <polyline points="21 15 16 10 5 21"/>
+
+                            </svg>
+
+                            <p class="font-normal text-[#94a3b8] text-[13px] leading-[20px] m-0 text-center">
+                                Tidak ada foto bukti kerusakan
+                            </p>
+
+                        </div>
+
                     @endif
                 </div>
             </div>

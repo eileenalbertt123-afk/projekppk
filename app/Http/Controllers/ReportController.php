@@ -565,4 +565,43 @@ class ReportController extends Controller
             ->route('petugas.laporan.detail', $report)
             ->with('success', 'Laporan berhasil diselesaikan.');
     }
+
+    public function image(Report $report)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            abort(401);
+        }
+
+        // User hanya boleh melihat foto laporannya sendiri
+        if (
+            $user->role === 'pengguna' &&
+            $report->user_id !== $user->id
+        ) {
+            abort(403);
+        }
+
+        // Petugas, pengguna, dan admin boleh mengakses
+        if (!in_array($user->role, ['pengguna', 'petugas', 'admin'])) {
+            abort(403);
+        }
+
+        if (!$report->image_path) {
+            abort(404, 'Path foto tidak tersedia.');
+        }
+
+        $filePath = storage_path(
+            'app/public/' . $report->image_path
+        );
+
+        if (!file_exists($filePath)) {
+            abort(
+                404,
+                'File tidak ditemukan: ' . $filePath
+            );
+        }
+
+        return response()->file($filePath);
+    }
 }

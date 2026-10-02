@@ -17,10 +17,12 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'account.status'])->name('dashboard');
 
 Route::get('/admin', [AdminController::class, 'index'])
-    ->middleware(['auth', 'account.status', 'role:admin']) ->name('admin');
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin');
 
 Route::get('/admin/rekap', [AdminController::class, 'rekap'])
-    ->middleware(['auth', 'account.status', 'role:admin']) ->name('admin.rekap');
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.rekap');
 
 Route::get('/admin/rekap/export-excel', [AdminController::class, 'exportRekapExcel'])
     ->middleware(['auth', 'account.status', 'role:admin'])
@@ -33,6 +35,7 @@ Route::get('/admin/rekap/export-csv', [AdminController::class, 'exportRekapCsv']
 Route::get('/admin/rekap/export-pdf', [AdminController::class, 'exportRekapPdf'])
     ->middleware(['auth', 'account.status', 'role:admin'])
     ->name('admin.rekap.export.pdf');
+
 
 // Admin - Kelola Fasilitas
 Route::get('/admin/fasilitas', [AdminController::class, 'fasilitas'])
@@ -59,10 +62,22 @@ Route::put('/admin/fasilitas/{id}/nonaktifkan', [AdminController::class, 'nonakt
     ->middleware(['auth', 'account.status', 'role:admin'])
     ->name('admin.facilities.deactivate');
 
+
 // Admin - Kelola Pengguna
 Route::get('/admin/pengguna', [AdminController::class, 'pengguna'])
     ->middleware(['auth', 'account.status', 'role:admin'])
     ->name('admin.pengguna.index');
+
+
+// Admin - Tambah Petugas
+Route::get('/admin/pengguna/tambah-petugas', [AdminController::class, 'createPetugas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.pengguna.create.petugas');
+
+Route::post('/admin/pengguna/tambah-petugas', [AdminController::class, 'storePetugas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.pengguna.store.petugas');
+
 
 Route::put('/admin/pengguna/{id}/status', [AdminController::class, 'updateStatusPengguna'])
     ->middleware(['auth', 'account.status', 'role:admin'])
@@ -75,7 +90,8 @@ Route::put('/admin/pengguna/{id}/verifikasi', [AdminController::class, 'verifika
 Route::put('/admin/pengguna/{id}/tolak', [AdminController::class, 'tolakPengguna'])
     ->middleware(['auth', 'account.status', 'role:admin'])
     ->name('admin.pengguna.tolak');
-    
+
+
 Route::get('/petugas', function () {
     return 'Halaman Petugas';
 })->middleware(['auth', 'account.status', 'role:petugas,admin'])->name('petugas');
@@ -96,10 +112,18 @@ Route::get('/petugas/reservasi/jadwal-reservasi', function () {
     return view('petugas.reservasi.jadwal-reservasi');
 })->name('petugas.reservasi.jadwal');
 
+
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
 });
+
 
 require __DIR__.'/auth.php';

@@ -8,6 +8,8 @@ use App\Models\Report;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
@@ -82,9 +84,11 @@ class AdminController extends Controller
         /*
          * Rekap frekuensi laporan kerusakan/masalah fasilitas
          *
-         * Semua kategori laporan dihitung.
+         * Laporan dikelompokkan berdasarkan fasilitas,
+         * tetapi setiap kelompok tetap membawa detail laporan
+         * beserta data pelapor.
          */
-        $rekapKerusakan = Report::with('facility')
+        $rekapKerusakan = Report::with(['facility', 'user'])
             ->when($tanggalMulai, function ($query) use ($tanggalMulai) {
                 $query->whereDate(
                     'created_at',
@@ -108,11 +112,21 @@ class AdminController extends Controller
 
                 return (object) [
                     'facility_id' => $reportPertama->facility_id,
+
                     'nama_fasilitas' =>
                         $reportPertama->facility?->name ?? '-',
+
                     'lokasi' =>
                         $reportPertama->facility?->location ?? '-',
+
                     'jumlah_kerusakan' => $reports->count(),
+
+                    /*
+                     * Detail setiap laporan kerusakan.
+                     * Data user ikut dibawa untuk menampilkan
+                     * nama dan email pelapor pada halaman rekap.
+                     */
+                    'laporan' => $reports->values(),
                 ];
             })
             ->values();
@@ -231,8 +245,10 @@ class AdminController extends Controller
          * Rekap frekuensi laporan kerusakan/masalah fasilitas
          *
          * Semua kategori laporan dihitung.
+         * Data user ikut diambil jika nantinya diperlukan
+         * pada proses export.
          */
-        $rekapKerusakan = Report::with('facility')
+        $rekapKerusakan = Report::with(['facility', 'user'])
             ->when($tanggalMulai, function ($query) use ($tanggalMulai) {
                 $query->whereDate(
                     'created_at',
@@ -255,8 +271,10 @@ class AdminController extends Controller
                 return [
                     'nama_fasilitas' =>
                         $reportPertama->facility?->name ?? '-',
+
                     'lokasi' =>
                         $reportPertama->facility?->location ?? '-',
+
                     'jumlah_kerusakan' => $reports->count(),
                 ];
             })
@@ -383,8 +401,10 @@ class AdminController extends Controller
          * Rekap frekuensi laporan kerusakan/masalah fasilitas
          *
          * Semua kategori laporan dihitung.
+         * Data user ikut diambil untuk kebutuhan detail
+         * jika diperlukan pada view PDF.
          */
-        $rekapKerusakan = Report::with('facility')
+        $rekapKerusakan = Report::with(['facility', 'user'])
             ->when($tanggalMulai, function ($query) use ($tanggalMulai) {
                 $query->whereDate(
                     'created_at',
@@ -408,11 +428,20 @@ class AdminController extends Controller
 
                 return (object) [
                     'facility_id' => $reportPertama->facility_id,
+
                     'nama_fasilitas' =>
                         $reportPertama->facility?->name ?? '-',
+
                     'lokasi' =>
                         $reportPertama->facility?->location ?? '-',
+
                     'jumlah_kerusakan' => $reports->count(),
+
+                    /*
+                     * Detail laporan tetap dibawa
+                     * untuk kebutuhan view PDF jika diperlukan.
+                     */
+                    'laporan' => $reports->values(),
                 ];
             })
             ->values();
@@ -560,6 +589,42 @@ class AdminController extends Controller
             'admin.pengguna.index',
             compact('pengguna')
         );
+    }
+
+    /*
+     * Halaman form tambah petugas.
+     */
+    public function createPetugas()
+    {
+        return view('admin.pengguna.create-petugas');
+    }
+
+    /*
+     * Menyimpan akun petugas yang dibuat langsung oleh admin.
+     */
+    public function storePetugas(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'petugas',
+            'status_akun' => 'aktif',
+            'status_verifikasi' => 'diverifikasi',
+        ]);
+
+        return redirect()
+            ->route('admin.pengguna.index')
+            ->with(
+                'success',
+                'Akun petugas berhasil dibuat.'
+            );
     }
 
     public function updateStatusPengguna(

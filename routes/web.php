@@ -56,7 +56,7 @@ Route::get('/riwayat', function () {
 })
     ->middleware(['auth', 'account.status'])
     ->name('riwayat');
-    
+
 // --- RUTE ADMIN ---
 Route::get('/admin', [AdminController::class, 'index'])
     ->middleware(['auth', 'account.status', 'role:admin'])
@@ -108,6 +108,15 @@ Route::put('/admin/fasilitas/{id}/nonaktifkan', [AdminController::class, 'nonakt
 Route::get('/admin/pengguna', [AdminController::class, 'pengguna'])
     ->middleware(['auth', 'account.status', 'role:admin'])
     ->name('admin.pengguna.index');
+
+// Admin - Tambah Petugas
+Route::get('/admin/pengguna/tambah-petugas', [AdminController::class, 'createPetugas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.pengguna.create.petugas');
+
+Route::post('/admin/pengguna/tambah-petugas', [AdminController::class, 'storePetugas'])
+    ->middleware(['auth', 'account.status', 'role:admin'])
+    ->name('admin.pengguna.store.petugas');
 
 Route::put('/admin/pengguna/{id}/status', [AdminController::class, 'updateStatusPengguna'])
     ->middleware(['auth', 'account.status', 'role:admin'])
@@ -185,7 +194,7 @@ Route::get(
 )
     ->middleware(['auth', 'account.status', 'role:petugas'])
     ->name('petugas.laporan.index');
-    
+
 Route::post(
     '/laporan',
     [ReportController::class, 'store']
@@ -272,7 +281,7 @@ Route::middleware('auth')->group(function () {
     )->name('reports.create');
 
     Route::get(
-        '/reports/{report}', 
+        '/reports/{report}',
         [ReportController::class, 'userShow']
     )->name('reports.show');
 

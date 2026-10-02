@@ -12,7 +12,7 @@
     </p>
 </div>
 
-<div x-data="{ tab: new URLSearchParams(location.search).get('tab') || 'semua' }">
+<div x-data="{ tab: '{{ request('tab', 'semua') }}' }">
 
     <!-- Ringkasan Aktivitas (3 CARD CLICKABLE) -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -145,7 +145,10 @@
             : ($reservation->status === 'menunggu' ? 'menunggu' : 'lainnya');
             @endphp
 
-            <div x-show="tab === 'semua' || tab === '{{ $tabGroup }}'" style="animation-delay: {{ min($loop->index, 8) * 80 }}ms" class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card mb-4">
+            <div
+                x-show="tab === 'semua' || tab === '{{ $tabGroup }}'"
+                @style(['animation-delay: ' . (min($loop->index, 8) * 80) . ' ms'])
+                class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card mb-4">
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <p class="text-[10px] font-bold text-brand-secondary uppercase tracking-wider">{{ $reservation->reservation_code }}</p>
@@ -207,7 +210,9 @@
         <!-- DAFTAR LAPORAN KERUSAKAN -->
         <div x-show="tab === 'laporan' || tab === 'semua'">
             @forelse($reports ?? [] as $report)
-            <div style="animation-delay: {{ min($loop->index, 8) * 80 }}ms" class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card mb-3">
+            <div
+                @style(['animation-delay: ' . (min($loop->index, 8) * 80) . ' ms'])
+                class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card mb-3">
                 <div class="flex items-start justify-between gap-4">
                     <div class="space-y-1">
                         <span class="text-[10px] font-bold text-brand-secondary uppercase bg-brand-neutral px-2 py-0.5 rounded border border-gray-200">{{ $report->category }}</span>

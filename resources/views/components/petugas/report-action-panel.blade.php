@@ -1,63 +1,3 @@
-@if($hasFacilityConflict)
-
-{{-- ========================= --}}
-{{-- FACILITY CONFLICT --}}
-{{-- ========================= --}}
-
-<div class="bg-[#fff7ed] border border-[#fed7aa] rounded-xl p-4">
-
-    <div class="font-bold text-[#9a3412]">
-        Facility Conflict
-    </div>
-
-    <p class="text-sm text-[#7c2d12] mt-1">
-        Terdapat reservasi approved yang terdampak.
-        Selesaikan konflik reservasi terlebih dahulu sebelum melanjutkan perbaikan fasilitas.
-    </p>
-
-    {{-- daftar reservasi terdampak --}}
-    @foreach($affectedReservations as $reservation)
-
-    {{-- card reservasi kamu yang tadi --}}
-
-    @endforeach
-
-</div>
-
-
-@else
-
-
-{{-- ========================= --}}
-{{-- PANEL NORMAL --}}
-{{-- ========================= --}}
-
-@if($state === 'diproses')
-
-<div class="bg-white border rounded-xl p-4">
-
-    <h3 class="font-bold">
-        Tindakan Perbaikan
-    </h3>
-
-    <p class="text-sm text-gray-500">
-        Fasilitas siap ditangani.
-    </p>
-
-    <button>
-        Mulai Perbaikan
-    </button>
-
-    <button>
-        Selesaikan Laporan
-    </button>
-
-</div>
-
-@endif
-
-
-@endif
 @props([
 'state' => 'waiting',
 'reportId' => null,
@@ -507,9 +447,8 @@ $repairPanelId =
             document.addEventListener('DOMContentLoaded', function() {
 
                 const panel = document.getElementById(
-                    @json($verificationPanelId)
+                    '{{ $verificationPanelId }}'
                 );
-
                 if (!panel) return;
 
                 const checkboxes = panel.querySelectorAll(
@@ -894,7 +833,7 @@ $repairPanelId =
             document.addEventListener('DOMContentLoaded', function() {
 
                 const panel = document.getElementById(
-                    @json($repairPanelId)
+                    '{{ $repairPanelId }}'
                 );
 
                 if (!panel) return;
@@ -903,11 +842,11 @@ $repairPanelId =
                     '.repair-verification-checkbox'
                 );
 
-                const completeButton = document.querySelector(
+                const completeButton = panel.querySelector(
                     '[data-complete-button]'
                 );
 
-                const hint = document.querySelector(
+                const hint = panel.querySelector(
                     '[data-repair-hint]'
                 );
 
@@ -1024,7 +963,6 @@ $repairPanelId =
             @method($method)
             @endif
 
-            @endif
 
 
             <div
@@ -1240,7 +1178,7 @@ $repairPanelId =
             @method($method)
             @endif
 
-            @endif
+
 
 
             <div

@@ -771,7 +771,8 @@ $conflictDescription = $conflictingReservation
             :cancelled-at="$cancelledHistory?->created_at
                 ? $cancelledHistory->created_at->locale('id')->translatedFormat('d M Y H.i') . ' WIB'
                 : '-'"
-            :cancel-reason-detail="$cancelledHistory?->reason" />
+            :cancel-reason-detail="$cancelledHistory?->reason" 
+            :rejectionHistory="$rejectionHistory" />
 
         {{-- ATURAN TRANSISI STATUS --}}
         <div class="bg-white border border-gray-200 rounded-2xl p-6">

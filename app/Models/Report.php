@@ -71,6 +71,4 @@ class Report extends Model
     {
         return $this->hasMany(ReportStatusHistory::class);
     }
-
-
 }

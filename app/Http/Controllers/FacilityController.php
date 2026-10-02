@@ -35,12 +35,12 @@ class FacilityController extends Controller
 
     public function availability(Request $request, Facility $facility)
 {
-    $date = $request->input('date', Carbon::today('Asia/Jakarta')->toDateString());
+    $date = $request->input('date', Carbon::tomorrow('Asia/Jakarta')->toDateString());
 
     $slots = $this->getSlotsForDate($facility, $date);
 
     $days = collect(range(0, 6))->map(function ($i) use ($date) {
-        $d = Carbon::today('Asia/Jakarta')->addDays($i);
+        $d = Carbon::tomorrow('Asia/Jakarta')->addDays($i);
         return [
             'key' => $d->toDateString(),
             'day' => $d->translatedFormat('D'),
@@ -61,7 +61,7 @@ class FacilityController extends Controller
         // Ambil reservasi yang aktif pada tanggal tersebut, lewat relasi reservation_detail
         $booked = \App\Models\ReservationDetail::where('facility_id', $facility->id)
             ->whereHas('reservation', function ($q) use ($date) {
-                $q->whereIn('status', ['menunggu', 'disetujui'])
+                $q->whereIn('status', ['disetujui'])
                 ->whereDate('start_time', $date);
             })
             ->with('reservation')

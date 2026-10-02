@@ -29,32 +29,121 @@
     },
 
     toggleSlot(slotKey, isSelectable) {
-        if (!isSelectable) return; // Mencegah klik jika slot tidak tersedia / lewat
-        
-        if (this.selectedSlots.includes(slotKey)) {
-            this.selectedSlots = this.selectedSlots.filter(s => s !== slotKey);
-        } else {
-            this.selectedSlots.push(slotKey);
-            this.selectedSlots.sort(); // Mengurutkan slot berurutan
-        }
-    },
-    get startTime() {
-        if (this.selectedSlots.length === 0) return '';
-        return this.selectedSlots[0].split(' - ')[0];
-    },
-    get endTime() {
-        if (this.selectedSlots.length === 0) return '';
-        return this.selectedSlots[this.selectedSlots.length - 1].split(' - ')[1];
-    },
-    get totalDuration() {
-        return (this.selectedSlots.length * 30) + ' Menit (' + this.selectedSlots.length + ' Slot)';
-    }
+        if (!isSelectable) return;
+
+            const clickedIndex = this.slots.findIndex(
+                slot => `${slot.start} - ${slot.end}` === slotKey
+            );
+
+            if (clickedIndex === -1) return;
+
+            // Belum ada slot yang dipilih
+            if (this.selectedSlots.length === 0) {
+                this.selectedSlots = [slotKey];
+                return;
+            }
+
+            // Ambil index slot yang sedang dipilih
+            const selectedIndexes = this.selectedSlots
+                .map(selected => {
+                    return this.slots.findIndex(
+                        slot => `${slot.start} - ${slot.end}` === selected
+                    );
+                })
+                .filter(index => index !== -1)
+                .sort((a, b) => a - b);
+
+            const firstIndex = selectedIndexes[0];
+            const lastIndex = selectedIndexes[selectedIndexes.length - 1];
+
+            // =====================================================
+            // KLIK SLOT YANG SUDAH TERPILIH
+            // =====================================================
+            if (this.selectedSlots.includes(slotKey)) {
+
+                // Hanya satu slot yang dipilih
+                if (firstIndex === lastIndex) {
+                    this.selectedSlots = [];
+                    return;
+                }
+
+                // Klik ujung kiri → buang slot pertama
+                if (clickedIndex === firstIndex) {
+                    this.selectedSlots = this.slots
+                        .slice(firstIndex + 1, lastIndex + 1)
+                        .map(slot => `${slot.start} - ${slot.end}`);
+
+                    return;
+                }
+
+                // Klik ujung kanan → buang slot terakhir
+                if (clickedIndex === lastIndex) {
+                    this.selectedSlots = this.slots
+                        .slice(firstIndex, lastIndex)
+                        .map(slot => `${slot.start} - ${slot.end}`);
+
+                    return;
+                }
+
+                // Klik bagian tengah
+                // Potong range dari slot yang diklik sampai akhir.
+                this.selectedSlots = this.slots
+                    .slice(firstIndex, clickedIndex)
+                    .map(slot => `${slot.start} - ${slot.end}`);
+
+                return;
+            }
+
+            // =====================================================
+            // KLIK SLOT BARU → PERLUAS RANGE
+            // =====================================================
+
+            const newFirstIndex = Math.min(firstIndex, clickedIndex);
+            const newLastIndex = Math.max(lastIndex, clickedIndex);
+
+            // Pastikan seluruh slot di antara range tersedia
+            const rangeSlots = this.slots.slice(
+                newFirstIndex,
+                newLastIndex + 1
+            );
+
+            const hasUnavailableSlot = rangeSlots.some(
+                slot => slot.status !== 'tersedia' || slot.is_past
+            );
+
+            // Jangan izinkan range melewati slot yang terisi/lewat
+            if (hasUnavailableSlot) {
+                return;
+            }
+
+            this.selectedSlots = rangeSlots.map(
+                slot => `${slot.start} - ${slot.end}`
+            );
+            },
+            get startTime() {
+                if (this.selectedSlots.length === 0) return '';
+                return this.selectedSlots[0].split(' - ')[0];
+            },
+            get endTime() {
+                if (this.selectedSlots.length === 0) return '';
+                return this.selectedSlots[this.selectedSlots.length - 1].split(' - ')[1];
+            },
+            get totalDuration() {
+                return (this.selectedSlots.length * 30) + ' Menit (' + this.selectedSlots.length + ' Slot)';
+            }
 }">
     <!-- Tombol Kembali -->
-    <a href="{{ route('home') }}" class="text-brand-primary text-sm font-medium hover:underline mb-4 inline-block">&larr; Kembali ke Daftar Fasilitas</a>
+    <a href="{{ route('home') }}" class="text-sm font-medium text-brand-secondary hover:text-brand-primary mb-4 inline-flex items-center gap-1.5 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        <span>Kembali ke Daftar Fasilitas</span>
+    </a>
+
+    <div class="bg-white rounded-3xl border border-gray-200/80 shadow-panel p-5 sm:p-8 mb-6">
 
     <!-- Foto Fasilitas -->
-    <div class="h-72 rounded-2xl overflow-hidden bg-gradient-to-br from-brand-secondary/25 to-brand-tertiary/25 mb-6">
+    <div class="animate-fade-up h-72 rounded-2xl overflow-hidden border border-gray-200/80 shadow-card bg-gradient-to-br from-brand-secondary/25 to-brand-tertiary/25 mb-6">
         @if ($facility->image)
             <img src="{{ asset('storage/' . $facility->image) }}" alt="{{ $facility->name }}" class="w-full h-full object-cover">
         @else
@@ -84,33 +173,33 @@
 
             <!-- Badge Info -->
             <div class="grid grid-cols-3 gap-3 mb-6">
-                <div class="bg-blue-50 border border-blue-100 rounded-xl p-3">
+                <div style="animation-delay: 100ms" class="animate-fade-up bg-blue-50 border border-blue-100 rounded-xl p-3 shadow-card">
                     <span class="text-[10px] font-semibold text-blue-600 uppercase tracking-wider block mb-0.5">Tipe</span>
                     <span class="text-sm font-bold text-brand-primary">{{ ucfirst($facility->type) }}</span>
                 </div>
-                <div class="bg-amber-50 border border-amber-100 rounded-xl p-3">
+                <div style="animation-delay: 180ms" class="animate-fade-up bg-amber-50 border border-amber-100 rounded-xl p-3 shadow-card">
                     <span class="text-[10px] font-semibold text-amber-600 uppercase tracking-wider block mb-0.5">Lokasi</span>
                     <span class="text-sm font-bold text-brand-primary">{{ $facility->location }}</span>
                 </div>
-                <div class="bg-purple-50 border border-purple-100 rounded-xl p-3">
+                <div style="animation-delay: 260ms" class="animate-fade-up bg-purple-50 border border-purple-100 rounded-xl p-3 shadow-card">
                     <span class="text-[10px] font-semibold text-purple-600 uppercase tracking-wider block mb-0.5">Kapasitas</span>
                     <span class="text-sm font-bold text-brand-primary">{{ $facility->capacity }} Orang</span>
                 </div>
             </div>
 
             @if ($facility->description)
-            <div class="mb-6">
+            <div style="animation-delay: 340ms" class="animate-fade-up mb-6">
                 <h3 class="font-bold text-brand-primary mb-2">Tentang Ruangan</h3>
                 <p class="text-sm text-brand-secondary leading-relaxed">{{ $facility->description }}</p>
             </div>
             @endif
 
             @if ($facility->equipment && count($facility->equipment))
-            <div>
+            <div style="animation-delay: 420ms" class="animate-fade-up">
                 <h3 class="font-bold text-brand-primary mb-3">Fasilitas & Peralatan</h3>
                 <div class="flex flex-wrap gap-2">
                     @foreach ($facility->equipment as $item)
-                        <span class="inline-flex items-center gap-1.5 bg-white border border-gray-200 text-brand-primary text-xs font-medium px-3 py-1.5 rounded-lg shadow-2xs">
+                        <span class="inline-flex items-center gap-1.5 bg-white border border-gray-200 text-brand-primary text-xs font-medium px-3 py-1.5 rounded-lg shadow-card">
                             <span class="text-emerald-600">✓</span> {{ $item }}
                         </span>
                     @endforeach
@@ -119,8 +208,8 @@
             @endif
         </div>
 
-        <!-- KANAN: PILIH TANGGAL & JAM (DENGAN FLOATING ACTION BAR) -->
-        <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm relative flex flex-col h-[560px]">
+        <!-- KANAN: PILIH TANGGAL & JAM  -->
+        <div style="animation-delay: 200ms" class="animate-fade-up bg-white rounded-2xl border border-gray-200 p-5 shadow-card relative flex flex-col h-[560px]">
             
             <!-- Header Judul (Tetap diam di atas) -->
             <div class="shrink-0 mb-4">
@@ -139,7 +228,7 @@
                             @click="fetchSlots('{{ $d['key'] }}')"
                             :class="currentDate === '{{ $d['key'] }}' 
                                 ? 'bg-brand-primary border-brand-primary text-white shadow-sm' 
-                                : 'bg-white border-gray-200 text-brand-secondary hover:border-brand-primary hover:text-brand-primary'"
+                                : 'bg-white border-gray-200 text-brand-secondary hover:border-brand-primary hover:text-brand-primary shadow-card'"
                             class="flex flex-col items-center justify-center w-12 h-14 rounded-xl border shrink-0 transition-all cursor-pointer">
                             <span class="text-[10px] font-medium">{{ $d['day'] }}</span>
                             <span class="text-sm font-bold">{{ $d['date'] }}</span>
@@ -167,7 +256,7 @@
             <!-- AREA GRID SLOT JAM (Hanya bagian ini yang bisa di-scroll) -->
             <div x-show="!loading" class="flex-1 overflow-y-auto pr-1">
                 <div class="grid grid-cols-2 gap-2.5">
-                    <template x-for="slot in slots" :key="slot.start">
+                    <template x-for="(slot, index) in slots" :key="slot.start">
                         @php 
                             $isFacilityAvailable = ($facility->status === 'tersedia');
                         @endphp
@@ -177,10 +266,11 @@
                                 <button 
                                     type="button"
                                     @click="toggleSlot(slot.start + ' - ' + slot.end, true)"
+                                    :style="'animation-delay:' + (Math.min(index, 10) * 30) + 'ms'"
                                     :class="selectedSlots.includes(slot.start + ' - ' + slot.end) 
                                         ? 'bg-brand-primary border-brand-primary text-white shadow-md' 
-                                        : 'bg-white border-gray-200 text-brand-primary hover:border-brand-primary/50'"
-                                    class="relative flex flex-col items-center justify-center py-3.5 rounded-xl border-2 transition-all cursor-pointer w-full">
+                                        : 'bg-white border-gray-200 text-brand-primary hover:border-brand-primary/50 shadow-card hover:shadow-card-hover'"
+                                    class="animate-fade-up relative flex flex-col items-center justify-center py-3.5 rounded-xl border-2 transition-all cursor-pointer w-full">
                                     
                                     <div x-show="selectedSlots.includes(slot.start + ' - ' + slot.end)" class="absolute top-1.5 right-1.5 bg-white text-brand-primary rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold shadow-xs">
                                         ✓
@@ -197,6 +287,7 @@
                                     type="button" 
                                     disabled 
                                     @click.prevent
+                                    :style="'animation-delay:' + (Math.min(index, 10) * 30) + 'ms'"
                                     class="flex flex-col items-center justify-center py-3.5 rounded-xl border border-gray-200 bg-gray-100/80 text-gray-400 cursor-not-allowed opacity-60 w-full select-none">
                                     <span class="text-[10px] mb-0.5 opacity-60">30 Menit</span>
                                     <span class="text-sm font-bold line-through" x-text="slot.start + ' - ' + slot.end"></span>

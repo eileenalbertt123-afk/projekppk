@@ -106,7 +106,7 @@
                 <select name="type" class="bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-2 py-1.5 text-xs text-brand-primary focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/30">
                     <option value="">Semua Tipe</option>
                     @foreach ($types as $type)
-                    <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>{{ ucfirst($type) }}</option>
+                    <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>{{ ucwords(str_replace('_', ' ', $type)) }}</option>
                     @endforeach
                 </select>
             </div>
@@ -206,7 +206,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                                 </svg>
                             </span>
-                            <span class="font-medium">{{ ucfirst($facility->type) }}</span>
+                            <span class="font-medium">{{ $facility->type_label }}</span>
                         </li>
 
                         <!-- Lokasi -->

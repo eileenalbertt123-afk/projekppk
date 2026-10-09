@@ -507,23 +507,6 @@ $conflictDescription = $conflictingReservation
                             </p>
                         </div>
 
-                        {{-- Peralatan --}}
-                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">
-                                Peralatan
-                            </p>
-
-                            <p class="font-semibold text-gray-900 text-sm">
-                                @if (!empty($facility?->equipment))
-                                {{ is_array($facility->equipment)
-                                            ? implode(', ', $facility->equipment)
-                                            : $facility->equipment }}
-                                @else
-                                -
-                                @endif
-                            </p>
-                        </div>
-
                     </div>
 
                     {{-- Deskripsi --}}

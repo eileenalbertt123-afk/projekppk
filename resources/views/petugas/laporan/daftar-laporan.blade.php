@@ -117,6 +117,10 @@
                             <input type="hidden" name="status" value="{{ request('status') }}">
                         @endif
 
+                        @if (request('sort'))
+                            <input type="hidden" name="sort" value="{{ request('sort') }}">
+                        @endif
+
                         <span class="absolute inset-y-0 left-0 pl-[14px] flex items-center pointer-events-none">
                             <svg class="size-4 text-[#94a3b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -128,6 +132,7 @@
                             name="search"
                             value="{{ request('search') }}"
                             placeholder="Cari ID, pelapor, atau fasilitas..."
+                            autocomplete="off"
                             class="w-full bg-white border border-[#e2e8f0] rounded-xl pl-[41px] pr-[17px] py-[11px] text-xs font-medium text-[#0f172a] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#0f172a]/10">
 
                     </form>
@@ -233,7 +238,7 @@
                                 Tanggal</th>
                             <th class="px-4 py-3.5 text-[11px] font-bold uppercase tracking-[0.55px] text-[#94a3b8]">
                                 Status</th>
-                            <th class="pl-4 pr-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.55px] text-[#94a3b8] text-right">
+                            <th class="pl-4 pr-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.55px] text-[#94a3b8] text-center">
                                 Aksi</th>
                         </tr>
                     </thead>

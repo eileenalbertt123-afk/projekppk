@@ -402,12 +402,6 @@
                                     {{ $facility?->capacity ? $facility->capacity . ' Peserta' : '-' }}
                                 </span>
                             </div>
-                            <div class="bg-[#f8fafc] border border-[#f1f5f9] flex flex-col gap-1 px-[11px] py-[10px] rounded-[8px] min-w-[100px]">
-                                <span class="font-semibold text-[#94a3b8] text-[11px] uppercase leading-[16.5px]">KONDISI PERANGKAT</span>
-                                <span class="font-bold text-[#1e293b] text-[12px] leading-[16px]">
-                                    {{ $facility?->condition ?? $facility?->device_condition ?? '-' }}  {{-- @NOTE: adjust field --}}
-                                </span>
-                            </div>
                         </div>
                     </div>
                 </div>

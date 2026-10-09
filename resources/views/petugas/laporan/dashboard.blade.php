@@ -407,6 +407,10 @@
 
                             </th>
 
+                            <th class="w-[15%] px-4 py-3 text-left text-[11px] uppercase tracking-wide text-[#708993]">
+                                Aksi
+                            </th>
+
 
                         </tr>
 
@@ -555,13 +559,17 @@
 
 
                             {{-- STATUS --}}
-                            <td class="px-6 py-5">
-
-
+                            <td class="px-4 py-5">
                                 <x-petugas.status-laporan-badge
                                     :status="$report->status" />
+                            </td>
 
-
+                            {{-- AKSI --}}
+                            <td class="px-4 py-5">
+                                <a href="{{ route('petugas.laporan.detail', $report->id) }}"
+                                    class="inline-flex items-center justify-center rounded-xl border border-[#dce5f0] px-4 py-2 text-sm font-medium text-[#19183b] whitespace-nowrap hover:bg-gray-50 transition">
+                                    Detail
+                                </a>
                             </td>
 
 
@@ -574,7 +582,7 @@
 
                         <tr>
 
-                            <td colspan="5"
+                            <td colspan="6"
                                 class="px-6 py-8 text-center text-sm text-[#708993]">
 
                                 Belum ada laporan masuk.

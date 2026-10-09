@@ -38,6 +38,9 @@ $status === 'dibatalkan'
 $status === 'ditolak'
 => 'rejected',
 
+$status === 'selesai'
+=> 'completed',
+
 default
 => 'waiting',
 };
@@ -71,6 +74,9 @@ $panelState === 'cancelled'
 
 $panelState === 'rejected'
 => 'rejected',
+
+$panelState === 'completed'
+=> 'completed',
 
 default
 => 'waiting',

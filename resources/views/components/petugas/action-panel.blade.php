@@ -1,6 +1,6 @@
 @props([
     // One of: 'waiting', 'approved', 'cancellation_form', 'cancelled',
-    //         'waiting_conflict', 'rejection_form', 'rejected'
+    //         'waiting_conflict', 'rejection_form', 'rejected', 'completed'
     'state' => 'waiting',
 
     'rejectCategoryOptions' => [
@@ -56,6 +56,7 @@
         'cancelled' => 'Reservasi ini tidak dapat dilanjutkan dan memerlukan pengajuan baru apabila ingin melakukan reservasi kembali.',
         'rejection_form' => 'Pastikan alasan penolakan telah sesuai sebelum konfirmasi. Tindakan ini akan tercatat pada riwayat reservasi.',
         'rejected' => 'Reservasi ini tidak dapat dilanjutkan dan memerlukan pengajuan baru apabila ingin melakukan reservasi kembali.',
+        'completed' => 'Reservasi telah selesai dan tidak memerlukan tindakan lanjutan dari petugas.',
     ];
     $footnote = $footnotes[$state] ?? $footnotes['waiting'];
 
@@ -568,6 +569,41 @@
                     </div>
 
                 @endif
+
+            @break
+
+            {{-- ============================= COMPLETED ============================= --}}
+            @case('completed')
+
+                <div class="flex flex-col gap-1 bg-[#f0f9ff] border border-[#bae6fd] rounded-xl p-[15px]">
+
+                    <div class="flex items-center justify-between">
+
+                        <div class="flex items-center gap-2">
+                            <span class="size-2 rounded-full bg-[#0ea5e9]"></span>
+
+                            <span class="text-sm font-bold text-[#0369a1]">
+                                Selesai
+                            </span>
+                        </div>
+
+                        <span class="bg-[#e0f2fe] text-[10px] font-bold uppercase text-[#0369a1] px-2 py-0.5 rounded-full">
+                            Selesai
+                        </span>
+
+                    </div>
+
+                    <p class="text-[11px] text-[#0284c7]">
+                        Waktu penggunaan fasilitas telah berakhir.
+                    </p>
+
+                </div>
+
+                <div class="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-[15px]">
+                    <p class="text-xs text-[#64748b] leading-5">
+                        Reservasi ini telah selesai dan tidak tersedia tindakan lanjutan.
+                    </p>
+                </div>
 
             @break
         @endswitch

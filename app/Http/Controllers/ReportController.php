@@ -267,6 +267,14 @@ class ReportController extends Controller
             }
         );
 
+        $sort = $request->get('sort', 'terbaru');
+
+        if ($sort === 'terlama') {
+            $query->orderBy('created_at', 'asc');
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+        
         $reports = $query
             ->latest('created_at')
             ->paginate(10)

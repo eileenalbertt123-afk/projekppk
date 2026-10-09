@@ -179,7 +179,7 @@
             <div class="grid grid-cols-3 gap-3 mb-6">
                 <div style="animation-delay: 100ms" class="animate-fade-up bg-blue-50 border border-blue-100 rounded-xl p-3 shadow-card">
                     <span class="text-[10px] font-semibold text-blue-600 uppercase tracking-wider block mb-0.5">Tipe</span>
-                    <span class="text-sm font-bold text-brand-primary">{{ ucfirst($facility->type) }}</span>
+                    <span class="text-sm font-bold text-brand-primary">{{ $facility->type_label }}</span>
                 </div>
                 <div style="animation-delay: 180ms" class="animate-fade-up bg-amber-50 border border-amber-100 rounded-xl p-3 shadow-card">
                     <span class="text-[10px] font-semibold text-amber-600 uppercase tracking-wider block mb-0.5">Lokasi</span>

@@ -61,7 +61,20 @@ $config = match ($type) {
 'descColorClass' => 'text-[#0369a1]',
 'defaultTitle' => 'Laporan Selesai',
 'defaultDesc' => 'Penanganan laporan telah selesai dan fasilitas telah tersedia kembali.',
-'icon' => '',
+'icon' => '
+        <svg xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#0369a1"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M8.5 12.5l2.5 2.5 4.5-5"/>
+        </svg>
+    ',
 ],
 
 
@@ -72,7 +85,21 @@ $config = match ($type) {
 'descColorClass' => 'text-[#9f1239]',
 'defaultTitle' => 'Laporan Ditolak',
 'defaultDesc' => 'Laporan telah ditolak oleh petugas.',
-'icon' => '',
+'icon' => '
+        <svg xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#e11d48"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M9 9l6 6"/>
+            <path d="M15 9l-6 6"/>
+        </svg>
+    ',
 ],
 
 

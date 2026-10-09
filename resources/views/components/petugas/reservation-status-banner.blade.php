@@ -1,5 +1,5 @@
 @props([
-    // One of: 'waiting', 'approved', 'cancellation_pending', 'cancelled', 'conflict', 'rejected'
+    // One of: 'waiting', 'approved', 'cancellation_pending', 'cancelled', 'conflict', 'rejected', 'completed'
     'status' => 'waiting',
     'title' => null,
     'description' => null,
@@ -70,6 +70,17 @@
             'iconColor' => 'text-[#475569]',
             'titleColor' => 'text-[#1e293b]',
             'descColor' => 'text-[#475569]',
+        ],
+
+        'completed' => [
+            'title' => 'Reservasi telah selesai.',
+            'description' => 'Waktu penggunaan fasilitas telah berakhir dan reservasi telah ditandai selesai oleh sistem.',
+            'bg' => 'bg-[#f0f9ff]',
+            'border' => 'border-[#7dd3fc]',
+            'iconBg' => 'bg-[#e0f2fe]',
+            'iconColor' => 'text-[#0284c7]',
+            'titleColor' => 'text-[#0369a1]',
+            'descColor' => 'text-[#0284c7]',
         ],
     ];
  

@@ -789,25 +789,6 @@
                             @endif
                         </p>
                         @endif
-
-                        <div class="flex items-center gap-[6px] mt-1">
-                            @if ($activeReport?->technician_name)
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 text-[#708993]" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6Zm-7 9a7 7 0 1114 0H3Z" clip-rule="evenodd" />
-                            </svg>
-                            <span class="text-xs text-[#708993]">Teknisi: {{ $activeReport->technician_name }}</span>
-                            @elseif ($activeReport?->vendor_name)
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 text-[#708993]" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M4 2a1 1 0 00-1 1v15a1 1 0 001 1h4v-3a1 1 0 011-1h2a1 1 0 011 1v3h4a1 1 0 001-1V8.414a1 1 0 00-.293-.707l-4.414-4.414A1 1 0 0011.586 3H12V2a1 1 0 00-1-1H4Zm2 4h2v2H6V6Zm4 0h2v2h-2V6Zm-4 4h2v2H6v-2Zm4 0h2v2h-2v-2Z" clip-rule="evenodd" />
-                            </svg>
-                            <span class="text-xs text-[#708993]">Vendor: {{ $activeReport->vendor_name }}</span>
-                            @else
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 text-[#708993]" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6Zm-7 9a7 7 0 1114 0H3Z" clip-rule="evenodd" />
-                            </svg>
-                            <span class="text-xs text-[#708993]">Teknisi belum ditentukan</span>
-                            @endif
-                        </div>
                     </div>
                     @empty
                     <p class="text-xs text-[#708993] italic">Tidak ada fasilitas dalam perbaikan saat ini.</p>
@@ -938,7 +919,7 @@
 
                 {{-- Button --}}
                 <a
-                    href=""
+                    href="{{ route('petugas.laporan.index') }}"
                     class="flex items-center justify-center gap-3
                         bg-[#19183b]
                         hover:bg-[#19183b]/90

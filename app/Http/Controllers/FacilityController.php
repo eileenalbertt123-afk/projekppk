@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Facility;
+use App\Models\Reservation;
+use Illuminate\Support\Facades\Auth;
 use App\Models\ReservationDetail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -34,58 +36,74 @@ class FacilityController extends Controller
     }
 
     public function availability(Request $request, Facility $facility)
-{
-    $date = $request->input('date', Carbon::tomorrow('Asia/Jakarta')->toDateString());
+    {
+        $date = $request->input('date', Carbon::tomorrow('Asia/Jakarta')->toDateString());
 
-    $slots = $this->getSlotsForDate($facility, $date);
+        $slots = $this->getSlotsForDate($facility, $date);
 
-    $days = collect(range(0, 6))->map(function ($i) use ($date) {
-        $d = Carbon::tomorrow('Asia/Jakarta')->addDays($i);
-        return [
-            'key' => $d->toDateString(),
-            'day' => $d->translatedFormat('D'),
-            'date' => $d->day,
-            'active' => $d->toDateString() === $date,
-        ];
-    });
+        $days = collect(range(0, 6))->map(function ($i) use ($date) {
+            $d = Carbon::tomorrow('Asia/Jakarta')->addDays($i);
+            return [
+                'key' => $d->toDateString(),
+                'day' => $d->translatedFormat('D'),
+                'date' => $d->day,
+                'active' => $d->toDateString() === $date,
+            ];
+        });
 
-    return view('facilities.availability', compact('facility', 'slots', 'date', 'days'));
-}
+        return view('facilities.availability', compact('facility', 'slots', 'date', 'days'));
+    }
+
+
+
 
     public function getSlotsForDate(Facility $facility, $date)
     {
-        $start = \Carbon\Carbon::parse($date . ' 07:00', 'Asia/Jakarta');
-        $end   = \Carbon\Carbon::parse($date . ' 20:00', 'Asia/Jakarta');
-        $now   = \Carbon\Carbon::now('Asia/Jakarta');
+        $start = Carbon::parse($date . ' 07:00', 'Asia/Jakarta');
+        $end = Carbon::parse($date . ' 20:00', 'Asia/Jakarta');
+        $now = Carbon::now('Asia/Jakarta');
 
-        // Ambil reservasi yang aktif pada tanggal tersebut, lewat relasi reservation_detail
-        $booked = \App\Models\ReservationDetail::where('facility_id', $facility->id)
-            ->whereHas('reservation', function ($q) use ($date) {
-                $q->whereIn('status', ['disetujui'])
-                ->whereDate('start_time', $date);
+        // Reservasi disetujui memblokir slot untuk semua pengguna.
+        $approved = ReservationDetail::where('facility_id', $facility->id)
+            ->whereHas('reservation', function ($q) use ($start, $end) {
+                $q->where('status', 'disetujui')
+                    ->where('start_time', '<', $end)
+                    ->where('end_time', '>', $start);
             })
             ->with('reservation')
             ->get();
 
+        // Reservasi menunggu hanya memblokir slot bagi pemiliknya.
+        $pending = ReservationDetail::where('facility_id', $facility->id)
+            ->whereHas('reservation', function ($q) use ($start, $end) {
+                $q->where('status', 'menunggu')
+                    ->where('user_id', Auth::id())
+                    ->where('start_time', '<', $end)
+                    ->where('end_time', '>', $start);
+            })
+            ->with('reservation')
+            ->get();
+
+        $blocked = $approved->concat($pending);
         $slots = [];
 
         while ($start < $end) {
             $slotEnd = $start->copy()->addMinutes(30);
 
-            // Cek apakah slot bentrok dengan reservasi yang ada
-            $isBooked = $booked->contains(function ($b) use ($start, $slotEnd) {
-                $resStart = \Carbon\Carbon::parse($b->reservation->start_time, 'Asia/Jakarta');
-                $resEnd   = \Carbon\Carbon::parse($b->reservation->end_time, 'Asia/Jakarta');
-                return ($start < $resEnd && $slotEnd > $resStart);
+            $isBooked = $blocked->contains(function ($item) use ($start, $slotEnd) {
+                $reservation = $item->reservation;
+
+                $resStart = Carbon::parse($reservation->start_time, 'Asia/Jakarta');
+                $resEnd = Carbon::parse($reservation->end_time, 'Asia/Jakarta');
+
+                return $start < $resEnd && $slotEnd > $resStart;
             });
 
-            $isPast = $start->lt($now);
-
             $slots[] = [
-                'start'   => $start->format('H:i'),
-                'end'     => $slotEnd->format('H:i'),
-                'status'  => $isBooked ? 'terisi' : 'tersedia',
-                'is_past' => $isPast,
+                'start' => $start->format('H:i'),
+                'end' => $slotEnd->format('H:i'),
+                'status' => $isBooked ? 'terisi' : 'tersedia',
+                'is_past' => $start->lt($now),
             ];
 
             $start = $slotEnd;
@@ -93,6 +111,8 @@ class FacilityController extends Controller
 
         return $slots;
     }
+
+
 
     public function list(Request $request)
     {
@@ -136,7 +156,6 @@ class FacilityController extends Controller
                 'like',
                 '%' . $request->search . '%'
             );
-
         }
 
 
@@ -151,7 +170,6 @@ class FacilityController extends Controller
                 'type',
                 $request->type
             );
-
         }
 
 
@@ -166,7 +184,6 @@ class FacilityController extends Controller
                 'status',
                 $request->status
             );
-
         }
 
 

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RegistrableUser extends Model
 {
+    protected $table = 'registrable_users';
     protected $fillable = [
         'identifier',
         'name',

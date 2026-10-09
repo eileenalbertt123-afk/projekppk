@@ -19,7 +19,7 @@
         #sidebar {
             position: fixed;
             top: 0; left: 0;
-            width: 228px;
+            width: 250px;
             height: 100vh;
             z-index: 50;
             transition: width 0.3s ease;
@@ -27,7 +27,7 @@
         }
 
         #mainContent {
-            margin-left: 228px;
+            margin-left: 250px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;

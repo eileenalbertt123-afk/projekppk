@@ -445,11 +445,11 @@ class ReservationController extends Controller
             ->first();
 
         $hasConflict = $conflictingReservation !== null;
-        
+
         $rejectionHistory = $reservation->statusHistories
-        ->where('status', 'ditolak')
-        ->sortByDesc('created_at')
-        ->first();
+            ->where('status', 'ditolak')
+            ->sortByDesc('created_at')
+            ->first();
 
         return view('petugas.reservasi.detail', compact(
             'reservation',
@@ -534,7 +534,7 @@ class ReservationController extends Controller
                     })
                     ->where(function ($q) use ($reservation) {
                         $q->where('start_time', '<', $reservation->end_time)
-                        ->where('end_time', '>', $reservation->start_time);
+                            ->where('end_time', '>', $reservation->start_time);
                     })
                     ->get();
 
@@ -789,9 +789,20 @@ class ReservationController extends Controller
             'end_time'             => 'required|date_format:H:i|after:start_time',
             'purpose'              => 'required|string|max:255',
             'activity_description' => 'nullable|string',
-            'participant_count'    => 'nullable|integer|min:1',
-            'document'             => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:2048',
+            'participant_count'    => 'required|integer|min:1',
+            'document'              => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:2048',
         ]);
+
+        // Validasi jumlah peserta terhadap kapasitas fasilitas
+        $facility = Facility::findOrFail($request->facility_id);
+
+        if ($request->participant_count > $facility->capacity) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'participant_count' => 'Jumlah peserta melebihi kapasitas fasilitas (' . $facility->capacity . ' orang).',
+                ]);
+        }
 
         $start = Carbon::parse(
             $request->date . ' ' . $request->start_time
@@ -808,7 +819,7 @@ class ReservationController extends Controller
         $opEnd = Carbon::parse(
             $request->date . ' 20:00'
         );
-        
+
 
         if ($start < $opStart || $end > $opEnd) {
             return back()->withInput()->withErrors([
@@ -822,6 +833,18 @@ class ReservationController extends Controller
             ]);
         }
 
+        // Cegah pengguna mengajukan reservasi pada fasilitas dan rentang waktu yang sudah dia ajukan atau miliki. 
+        $duplicate = Reservation::where('user_id', Auth::id())
+            ->whereIn('status', ['menunggu', 'disetujui'])
+            ->where('start_time', '<', $end)->where('end_time', '>', $start)
+            ->whereHas('details', function ($q) use ($request) {
+                $q->where('facility_id', $request->facility_id);
+            })
+            ->exists();
+
+        if ($duplicate) {
+            return back()->withInput()->withErrors(['conflict' => 'Kamu sudah memiliki pengajuan reservasi untuk fasilitas ini pada rentang waktu tersebut.',]);
+        }
         $conflict = Reservation::whereIn(
             'status',
             ['disetujui']
@@ -980,4 +1003,3 @@ class ReservationController extends Controller
         return response()->file($filePath);
     }
 }
-

@@ -1051,10 +1051,13 @@
 
             </div>
 
-
-            @if ($action)
-                </form>
-            @endif
+        @if ($action)
+            </form>
+        @else
+            <p class="text-sm text-slate-500">
+                Formulir penyelesaian tidak tersedia.
+            </p>
+        @endif
 
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
@@ -1373,16 +1376,41 @@
 
             </div>
 
+        @if ($action)
+            </form>
+        @else
+            <p class="text-sm text-slate-500">
+                Formulir penolakan tidak tersedia.
+            </p>
+        @endif
 
-            @if ($action)
-                </form>
-            @endif
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const category = document.querySelector('[data-rejection-category]');
+                const reason = document.querySelector('[data-rejection-reason]');
+                const button = document.querySelector('[data-rejection-submit]');
 
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const category = document.querySelector('[data-rejection-category]');
-                    const reason = document.querySelector('[data-rejection-reason]');
-                    const button = document.querySelector('[data-rejection-submit]');
+                if (!category || !reason || !button) return;
+
+                function updateRejectionButton() {
+                    const valid =
+                        category.value.trim() !== '' &&
+                        reason.value.trim() !== '';
+
+                    button.disabled = !valid;
+                    button.classList.toggle('opacity-60', !valid);
+                    button.classList.toggle('cursor-not-allowed', !valid);
+                    button.classList.toggle('bg-[#f1f5f9]', !valid);
+                    button.classList.toggle('text-[#94a3b8]', !valid);
+                    button.classList.toggle('bg-[#e11d48]', valid);
+                    button.classList.toggle('text-white', valid);
+                }
+
+                category.addEventListener('change', updateRejectionButton);
+                reason.addEventListener('input', updateRejectionButton);
+                updateRejectionButton();
+            });
+        </script>
 
                     if (!category || !reason || !button) return;
 

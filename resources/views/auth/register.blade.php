@@ -21,7 +21,7 @@
             <div class="relative mt-1">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-brand-secondary">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                 </span>
                 <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name"
@@ -37,7 +37,7 @@
             <div class="relative mt-1">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-brand-secondary">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                 </span>
                 <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username"
@@ -49,19 +49,21 @@
 
         <!-- NIM / NIP -->
         <div class="mt-4">
-            <x-input-label for="nim_nip" value="NIM / NIP" />
+            <x-input-label for="identifier" value="NIM / NIP" />
             <div class="relative mt-1">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-brand-secondary">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
                     </svg>
                 </span>
-                <input id="nim_nip" type="text" name="nim_nip" value="{{ old('nim_nip') }}" required inputmode="numeric"
+                <input id="identifier" type="text" name="identifier" value="{{ old('identifier') }}" required inputmode="numeric"
                     placeholder="Masukkan NIM/NIP 14 digit"
                     class="block w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-brand-primary placeholder-gray-400 shadow-none focus:border-brand-primary focus:ring-0 transition" />
             </div>
-            <x-input-error :messages="$errors->get('nim_nip')" class="mt-2" />
+            <x-input-error :messages="$errors->get('identifier')" class="mt-2" />
         </div>
+      
+
 
         <!-- Password -->
         <div class="mt-4">
@@ -69,7 +71,7 @@
             <div class="relative mt-1">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-brand-secondary">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                 </span>
                 <input id="password" type="password" name="password" required autocomplete="new-password"
@@ -86,7 +88,7 @@
             <div class="relative mt-1">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-brand-secondary">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                 </span>
                 <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password"

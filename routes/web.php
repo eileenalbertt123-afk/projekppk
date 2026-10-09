@@ -11,9 +11,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// --- RUTE PUBLIK ---
-Route::get('/', [FacilityController::class, 'index'])
-    ->name('home');
+
+Route::get('/', function () {
+    $user = \Illuminate\Support\Facades\Auth::user();
+
+    if ($user) {
+        if ($user->role === 'admin') {
+            return redirect()->route('admin');
+        }
+
+        if ($user->role === 'petugas') {
+            return redirect()->route('petugas.reservasi.dashboard');
+        }
+    }
+
+    return redirect()->route('facilities.index');
+})->name('home');
 
 Route::get('/fasilitas', [FacilityController::class, 'index'])
     ->name('facilities.index');
@@ -21,9 +34,13 @@ Route::get('/fasilitas', [FacilityController::class, 'index'])
 Route::get('/fasilitas/{facility}', [FacilityController::class, 'availability'])
     ->name('facilities.availability');
 
-// --- RUTE RIWAYAT & STATUS (PENGGUNA) ---
-Route::get('/riwayat', function () {
+// Riwayat Reservasi Pengguna
+
+Route::get('/riwayat/reservasi', function (Request $request) {
     $userId = Auth::id();
+
+    $urutan = $request->query('urutan', 'terbaru');
+    $status = $request->query('status', 'semua');
 
     $activeReservations = Reservation::where('user_id', $userId)
         ->where('status', 'disetujui')
@@ -33,26 +50,90 @@ Route::get('/riwayat', function () {
         ->where('status', 'menunggu')
         ->count();
 
-    $reportsCount = Report::where('user_id', $userId)
-        ->count();
-
     $reservations = Reservation::where('user_id', $userId)
         ->with('details.facility')
-        ->latest('start_time')
+        ->orderBy('created_at', $urutan === 'terlama' ? 'asc' : 'desc')
         ->get();
 
-    $reports = Report::where('user_id', $userId)
-        ->with('facility')
-        ->latest()
-        ->get();
+    $filteredReservations = $status === 'semua'
+        ? $reservations
+        : $reservations->where('status', $status)->values();
 
-    return view('pengguna.riwayat', compact(
+    if ($request->ajax()) {
+        return view('pengguna.partials.daftar-reservasi', compact(
+            'filteredReservations'
+        ));
+    }
+
+    return view('pengguna.riwayat-reservasi', compact(
         'activeReservations',
         'pendingReservations',
-        'reportsCount',
         'reservations',
-        'reports'
+        'filteredReservations'
     ));
+})
+    ->middleware(['auth', 'account.status'])
+    ->name('riwayat.reservasi');
+
+
+// Riwayat Laporan Pengguna
+Route::get('/riwayat/laporan', function (Request $request) {
+    $userId = Auth::id();
+
+    $urutan = $request->query('urutan', 'terbaru');
+    $status = $request->query('status', 'semua');
+
+    // Ringkasan jumlah laporan milik pengguna yang login.
+    $laporanBaru = Report::where('user_id', $userId)
+        ->whereIn('status', ['baru', 'menunggu'])
+        ->count();
+
+    $laporanDiproses = Report::where('user_id', $userId)
+        ->where('status', 'diproses')
+        ->count();
+
+    $laporanDitolak = Report::where('user_id', $userId)
+        ->where('status', 'ditolak')
+        ->count();
+
+    $laporanSelesai = Report::where('user_id', $userId)
+        ->where('status', 'selesai')
+        ->count();
+
+    // Ambil laporan sesuai filter dan urutan.
+    $query = Report::where('user_id', $userId)
+        ->with('facility');
+
+    if ($status === 'baru') {
+        $query->whereIn('status', ['baru', 'menunggu']);
+    } elseif (in_array($status, ['diproses', 'ditolak', 'selesai'])) {
+        $query->where('status', $status);
+    }
+
+    $reports = $query
+        ->orderBy('created_at', $urutan === 'terlama' ? 'asc' : 'desc')
+        ->get();
+
+    // AJAX hanya mengembalikan isi daftar laporan.
+    if ($request->ajax()) {
+        return view('pengguna.partials.daftar-laporan', compact('reports'));
+    }
+
+    return view('pengguna.riwayat-laporan', compact(
+        'reports',
+        'laporanBaru',
+        'laporanDiproses',
+        'laporanDitolak',
+        'laporanSelesai'
+    ));
+})
+    ->middleware(['auth', 'account.status'])
+    ->name('riwayat.laporan');
+
+
+// Route lama tetap tersedia
+Route::get('/riwayat', function () {
+    return redirect()->route('riwayat.reservasi');
 })
     ->middleware(['auth', 'account.status'])
     ->name('riwayat');

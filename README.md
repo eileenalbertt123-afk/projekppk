@@ -6,7 +6,7 @@
 
 Aplikasi telah di-*deploy* menggunakan **Railway** dan dapat diakses melalui:
 
-**[Buka Book&Fix](https://projekppk-production.up.railway.app/)**
+**[Book&Fix](https://projekppk-production.up.railway.app/)**
 
 Pengunjung dapat melihat informasi fasilitas tanpa login. Pengguna, petugas, dan admin perlu login untuk mengakses fitur sesuai hak akses masing-masing.
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Cloudinary\Cloudinary;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -870,9 +872,21 @@ class ReservationController extends Controller
         $documentPath = null;
 
         if ($request->hasFile('document')) {
-            $documentPath = $request
-                ->file('document')
-                ->store('documents', 'public');
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                    'api_key'    => env('CLOUDINARY_API_KEY'),
+                    'api_secret' => env('CLOUDINARY_API_SECRET'),
+                ]
+            ]);
+            $result = $cloudinary->uploadApi()->upload(
+                $request->file('document')->getRealPath(),
+                [
+                    'folder' => 'documents',
+                    'resource_type' => 'auto'
+                ]
+            );
+            $documentPath = $result['secure_url'];
         }
 
         $lastCode = Reservation::orderBy(
@@ -972,34 +986,12 @@ class ReservationController extends Controller
     {
         $user = Auth::user();
 
-        if (
-            $user->role === 'pengguna' &&
-            $reservation->user_id !== $user->id
-        ) {
-            abort(403);
-        }
+        if ($user->role === 'pengguna' && $reservation->user_id !== $user->id) abort(403);
 
-        abort_unless(
-            in_array($user->role, ['pengguna', 'petugas', 'admin']),
-            403
-        );
+        abort_unless(in_array($user->role, ['pengguna', 'petugas', 'admin']), 403);
 
-        abort_if(
-            empty($reservation->document),
-            404,
-            'Dokumen tidak tersedia.'
-        );
+        abort_if(empty($reservation->document), 404, 'Dokumen tidak tersedia.');
 
-        $filePath = storage_path(
-            'app/public/' . $reservation->document
-        );
-
-        abort_unless(
-            file_exists($filePath),
-            404,
-            'File dokumen tidak ditemukan.'
-        );
-
-        return response()->file($filePath);
+        return redirect($reservation->document);
     }
 }

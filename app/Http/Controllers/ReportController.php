@@ -1,5 +1,5 @@
 <?php
-
+use Cloudinary\Cloudinary
 namespace App\Http\Controllers;
 
 use App\Models\Facility;
@@ -274,7 +274,7 @@ class ReportController extends Controller
         } else {
             $query->orderBy('created_at', 'desc');
         }
-        
+
         $reports = $query
             ->latest('created_at')
             ->paginate(10)
@@ -337,9 +337,18 @@ class ReportController extends Controller
         $imagePath = null;
 
         if ($request->hasFile('image')) {
-            $imagePath = $request
-                ->file('image')
-                ->store('reports', 'public');
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                    'api_key'    => env('CLOUDINARY_API_KEY'),
+                    'api_secret' => env('CLOUDINARY_API_SECRET'),
+                ]
+            ]);
+            $result = $cloudinary->uploadApi()->upload(
+                $request->file('image')->getRealPath(),
+                ['folder' => 'reports']
+            );
+            $imagePath = $result['secure_url'];
         }
 
         Report::create([
@@ -575,41 +584,17 @@ class ReportController extends Controller
     }
 
     public function image(Report $report)
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        if (!$user) {
-            abort(401);
-        }
+    if (!$user) abort(401);
 
-        // User hanya boleh melihat foto laporannya sendiri
-        if (
-            $user->role === 'pengguna' &&
-            $report->user_id !== $user->id
-        ) {
-            abort(403);
-        }
+    if ($user->role === 'pengguna' && $report->user_id !== $user->id) abort(403);
 
-        // Petugas, pengguna, dan admin boleh mengakses
-        if (!in_array($user->role, ['pengguna', 'petugas', 'admin'])) {
-            abort(403);
-        }
+    if (!in_array($user->role, ['pengguna', 'petugas', 'admin'])) abort(403);
 
-        if (!$report->image_path) {
-            abort(404, 'Path foto tidak tersedia.');
-        }
+    if (!$report->image_path) abort(404);
 
-        $filePath = storage_path(
-            'app/public/' . $report->image_path
-        );
-
-        if (!file_exists($filePath)) {
-            abort(
-                404,
-                'File tidak ditemukan: ' . $filePath
-            );
-        }
-
-        return response()->file($filePath);
-    }
+    return redirect($report->image_path);
+}
 }

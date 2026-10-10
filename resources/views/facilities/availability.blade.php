@@ -149,7 +149,7 @@
     <!-- Foto Fasilitas -->
     <div class="animate-fade-up h-72 rounded-2xl overflow-hidden border border-gray-200/80 shadow-card bg-gradient-to-br from-brand-secondary/25 to-brand-tertiary/25 mb-6">
         @if ($facility->image)
-            <img src="{{ asset('storage/' . $facility->image) }}" alt="{{ $facility->name }}" class="w-full h-full object-cover">
+            <img src="{{ (\Illuminate\Support\Str::startsWith($facility->image, 'http') ? $facility->image : asset('storage/' . $facility->image)) }}" alt="{{ $facility->name }}" class="w-full h-full object-cover">
         @else
             <div class="w-full h-full flex flex-col items-center justify-center gap-1 text-brand-secondary">
                 <svg class="w-10 h-10 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">

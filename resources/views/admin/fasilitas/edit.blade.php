@@ -254,7 +254,7 @@
                                 </p>
 
                                 <img
-                                    src="{{ asset('storage/' . $fasilitas->image) }}"
+                                    src="{{ (\Illuminate\Support\Str::startsWith($fasilitas->image, 'http') ? $fasilitas->image : asset('storage/' . $fasilitas->image)) }}"
                                     alt="{{ $fasilitas->name }}"
                                     class="w-32 h-24 rounded-xl object-cover
                                            border border-[#e2ebe9]">

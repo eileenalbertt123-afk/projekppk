@@ -339,7 +339,7 @@
                         @if ($facility?->image)
 
                             <img
-                                src="{{ asset('storage/' . $facility->image) }}"
+                                src="{{ (\Illuminate\Support\Str::startsWith($facility->image, 'http') ? $facility->image : asset('storage/' . $facility->image)) }}"
                                 alt="Foto {{ $facility->name }}"
                                 class="absolute inset-0 w-full h-full object-cover"
                             >

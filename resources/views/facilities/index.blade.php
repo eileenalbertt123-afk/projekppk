@@ -154,7 +154,7 @@
                 <!-- Gambar & Badge Status -->
                 <div class="relative h-48 bg-gradient-to-br from-brand-secondary/25 to-brand-tertiary/25 overflow-hidden">
                     @if ($facility->image)
-                        <img src="{{ asset('storage/' . $facility->image) }}" alt="{{ $facility->name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        <img src="{{ (\Illuminate\Support\Str::startsWith($facility->image, 'http') ? $facility->image : asset('storage/' . $facility->image)) }}" alt="{{ $facility->name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                     @else
                         <div class="w-full h-full flex flex-col items-center justify-center gap-1 text-brand-secondary">
                             <svg class="w-8 h-8 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">

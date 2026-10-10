@@ -267,7 +267,7 @@
             <div class="relative">
                 <div class="relative h-40 bg-[#f1f5f9] overflow-hidden w-full">
                     <img
-                        src="{{ $facility->image ? asset('storage/' . $facility->image) : 'https://placehold.co/600x400/f1f5f9/94a3b8?text=' . urlencode($facility->name) }}"
+                        src="{{ $facility->image ? (\Illuminate\Support\Str::startsWith($facility->image, 'http') ? $facility->image : asset('storage/' . $facility->image)) : 'https://placehold.co/600x400/f1f5f9/94a3b8?text=' . urlencode($facility->name) }}"
                         alt="{{ $facility->name }}"
                         class="absolute inset-0 w-full h-full object-cover">
                 </div>

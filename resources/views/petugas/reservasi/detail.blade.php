@@ -444,7 +444,7 @@ $conflictDescription = $conflictingReservation
 
                     <img
                         src="{{ $facility?->image
-                                ? asset('storage/' . $facility->image)
+                                ? (\Illuminate\Support\Str::startsWith($facility->image, 'http') ? $facility->image : asset('storage/' . $facility->image))
                                 : 'https://placehold.co/400x300' }}"
                         alt="Foto {{ $facility?->name ?? 'Fasilitas' }}"
                         class="w-full h-full object-cover rounded-xl border border-gray-200">

@@ -63,6 +63,11 @@
 </head>
 
 <body class="bg-brand-neutral font-sans text-brand-primary h-screen flex relative overflow-hidden antialiased">
+    <!-- LAPISAN GELAP (hanya HP) -->
+    <div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false"
+        x-transition.opacity
+
+        class="fixed inset-0 z-40 bg-black/40 md:hidden"></div>
     <!-- SIDEBAR KIRI -->
     <aside
         x-show="sidebarOpen"
@@ -94,7 +99,7 @@
             </div>
 
             <!-- Navigasi Menu -->
-            <nav class="space-y-1.5">
+            <nav class="space-y-1.5" @click="if ($event.target.closest('a') && window.innerWidth < 768) sidebarOpen = false">
                 @guest
                 <a href="{{ route('home') }}"
                     class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition
@@ -202,12 +207,12 @@
             <div class="flex items-center gap-2 sm:gap-3 min-w-0">
                 <button @click="sidebarOpen = !sidebarOpen" class="bg-brand-neutral hover:bg-gray-200 text-brand-primary px-3 py-1.5 rounded-lg border border-gray-200 text-sm flex items-center gap-2 transition font-medium">
                     <span>☰</span>
-                    <span class="hidden sm:inline">Menu</span>
+                    <span class="hidden sm:inline">Menu</span> xzvddsvsbdvbsvbss
                 </button>
                 <h1 class="text-sm sm:text-base font-bold text-brand-primary tracking-tight truncate">
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
                 @guest
                 <a href="{{ route('login') }}" class="bg-brand-primary hover:opacity-95 text-white px-3.5 py-2 sm:px-5 rounded-xl text-xs sm:text-sm font-semibold transition shadow-sm whitespace-nowrap">
                     Sign In

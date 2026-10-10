@@ -54,6 +54,12 @@
                 margin-left: 0;
             }
         }
+
+        @media (max-width: 1023px) {
+            #mainContent {
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
 
@@ -62,6 +68,8 @@
     @include('components.petugas.sidebar')
 
     <div id="sidebarBackdrop" class="fixed inset-0 z-40 bg-black/40 hidden lg:hidden"></div>
+
+    <div id="sidebarBackdrop" class="fixed inset-0 z-[45] bg-black/40 hidden lg:hidden"></div>
 
     <div id="mainContent">
         @include('components.petugas.header')
@@ -74,23 +82,22 @@
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
         const toggle = document.getElementById('sidebarToggle');
-        const isMobile = () => window.matchMedia('(max-width: 1023px)').matches;
-
-        // Di HP, sidebar tertutup saat halaman dibuka
-        if (isMobile()) {
-            sidebar.classList.add('collapsed');
-            mainContent.classList.add('collapsed');
-        }
-
         const backdrop = document.getElementById('sidebarBackdrop');
+        const isMobile = () => window.matchMedia('(max-width: 1023px)').matches;
 
         function syncBackdrop() {
             const open = !sidebar.classList.contains('collapsed');
             backdrop.classList.toggle('hidden', !(open && isMobile()));
         }
 
-        toggle.addEventListener('click', function(e) {
-            e.stopPropagation();
+        // Di HP, sidebar tertutup saat halaman dibuka
+        if (isMobile()) {
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('collapsed');
+        }
+        syncBackdrop();
+
+        toggle.addEventListener('click', function() {
             sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('collapsed');
             syncBackdrop();
@@ -100,16 +107,6 @@
             sidebar.classList.add('collapsed');
             mainContent.classList.add('collapsed');
             syncBackdrop();
-        });
-
-        syncBackdrop();
-
-        // Di HP, ketuk area di luar sidebar untuk menutupnya
-        mainContent.addEventListener('click', function() {
-            if (isMobile() && !sidebar.classList.contains('collapsed')) {
-                sidebar.classList.add('collapsed');
-                mainContent.classList.add('collapsed');
-            }
         });
     </script>
 

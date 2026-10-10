@@ -27,6 +27,7 @@
             SIDEBAR
         ========================================================== --}}
 
+        <div id="adminBackdrop" class="fixed inset-0 z-[45] bg-black/40 hidden lg:hidden"></div>
         <aside
             id="adminSidebar"
             class="fixed inset-y-0 left-0 z-50 w-[290px] -translate-x-full
@@ -167,18 +168,24 @@
             const btn = document.getElementById('menuButton');
             const sidebar = document.getElementById('adminSidebar');
             const main = document.getElementById('adminMain');
-            if (!btn || !sidebar || !main) return;
+            const backdrop = document.getElementById('adminBackdrop');
+            if (!btn || !sidebar || !main || !backdrop) return;
 
-            // Terbuka otomatis di desktop, tertutup di HP
-            let open = window.matchMedia('(min-width: 1024px)').matches;
+            const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
+            let open = isDesktop();
 
             function apply() {
                 sidebar.classList.toggle('-translate-x-full', !open);
                 main.classList.toggle('lg:ml-[290px]', open);
+                backdrop.classList.toggle('hidden', !(open && !isDesktop()));
             }
 
             btn.addEventListener('click', () => {
                 open = !open;
+                apply();
+            });
+            backdrop.addEventListener('click', () => {
+                open = false;
                 apply();
             });
             apply();

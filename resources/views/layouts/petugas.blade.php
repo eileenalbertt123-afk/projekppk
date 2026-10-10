@@ -60,6 +60,10 @@
                 margin-left: 0;
             }
         }
+
+        #sidebar {
+            height: 100dvh;
+        }
     </style>
 </head>
 

@@ -1,4 +1,4 @@
-<div class="w-[290px] h-full min-h-screen shrink-0 bg-white flex flex-col justify-between">
+<div class="w-[290px] h-full overflow-y-auto shrink-0 bg-white flex flex-col justify-between">
     <div>
 
         <!-- BRAND -->
@@ -7,14 +7,14 @@
             <div class="size-10 rounded-xl bg-[#19183b] flex items-center justify-center">
 
                 <svg class="size-5 text-white"
-                     fill="none"
-                     viewBox="0 0 24 24"
-                     stroke="currentColor"
-                     stroke-width="2">
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2">
 
                     <path stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M6.75 3v2.25M17.25 3v2.25M3 8.25h18M5.25 5.25h13.5A2.25 2.25 0 0121 7.5v11.25A2.25 2.25 0 0118.75 21H5.25A2.25 2.25 0 013 18.75V7.5a2.25 2.25 0 012.25-2.25z" />
+                        stroke-linejoin="round"
+                        d="M6.75 3v2.25M17.25 3v2.25M3 8.25h18M5.25 5.25h13.5A2.25 2.25 0 0121 7.5v11.25A2.25 2.25 0 0118.75 21H5.25A2.25 2.25 0 013 18.75V7.5a2.25 2.25 0 012.25-2.25z" />
 
                 </svg>
 
@@ -53,20 +53,20 @@
 
             <!-- DASHBOARD -->
             <a href="{{ route('admin') }}"
-               class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
+                class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
                {{ request()->routeIs('admin')
                     ? 'bg-[#19183b] text-white'
                     : 'text-[#708993] hover:bg-[#f4f8f7]' }}">
 
                 <svg class="size-5"
-                     fill="none"
-                     viewBox="0 0 24 24"
-                     stroke="currentColor"
-                     stroke-width="2">
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2">
 
                     <path stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 8.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 018.25 20.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25A2.25 2.25 0 0113.5 8.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                        stroke-linejoin="round"
+                        d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 8.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 018.25 20.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25A2.25 2.25 0 0113.5 8.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
 
                 </svg>
 
@@ -79,20 +79,20 @@
 
             <!-- FASILITAS -->
             <a href="{{ route('admin.facilities.index') }}"
-               class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
+                class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
                {{ request()->routeIs('admin.facilities.*')
                     ? 'bg-[#19183b] text-white'
                     : 'text-[#708993] hover:bg-[#f4f8f7]' }}">
 
                 <svg class="size-5"
-                     fill="none"
-                     viewBox="0 0 24 24"
-                     stroke="currentColor"
-                     stroke-width="2">
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2">
 
                     <path stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M2.25 21h19.5M4.5 21V4.5A1.5 1.5 0 016 3h4.5a1.5 1.5 0 011.5 1.5V21m0-12h6a1.5 1.5 0 011.5 1.5V21M7.5 6h1.5m-1.5 3h1.5m-1.5 3h1.5m4.5-3h1.5m-1.5 3h1.5" />
+                        stroke-linejoin="round"
+                        d="M2.25 21h19.5M4.5 21V4.5A1.5 1.5 0 016 3h4.5a1.5 1.5 0 011.5 1.5V21m0-12h6a1.5 1.5 0 011.5 1.5V21M7.5 6h1.5m-1.5 3h1.5m-1.5 3h1.5m4.5-3h1.5m-1.5 3h1.5" />
 
                 </svg>
 
@@ -105,24 +105,24 @@
 
             <!-- PENGGUNA -->
             <a href="{{ route('admin.pengguna.index') }}"
-               class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
+                class="flex items-center gap-3 px-4 py-3 rounded-xl mb-1
                {{ request()->routeIs('admin.pengguna.*')
                     ? 'bg-[#19183b] text-white'
                     : 'text-[#708993] hover:bg-[#f4f8f7]' }}">
 
                 <svg class="size-5"
-                     fill="none"
-                     viewBox="0 0 24 24"
-                     stroke="currentColor"
-                     stroke-width="2">
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2">
 
                     <path stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M15.75 6.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                        stroke-linejoin="round"
+                        d="M15.75 6.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
 
                     <path stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M4.5 20.25a7.5 7.5 0 0115 0" />
+                        stroke-linejoin="round"
+                        d="M4.5 20.25a7.5 7.5 0 0115 0" />
 
                 </svg>
 
@@ -135,20 +135,20 @@
 
             <!-- LAPORAN -->
             <a href="{{ route('admin.rekap') }}"
-               class="flex items-center gap-3 px-4 py-3 rounded-xl
+                class="flex items-center gap-3 px-4 py-3 rounded-xl
                {{ request()->routeIs('admin.rekap')
                     ? 'bg-[#19183b] text-white'
                     : 'text-[#708993] hover:bg-[#f4f8f7]' }}">
 
                 <svg class="size-5"
-                     fill="none"
-                     viewBox="0 0 24 24"
-                     stroke="currentColor"
-                     stroke-width="2">
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2">
 
                     <path stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M3 3v18h18M7 16v-5m5 5V7m5 9v-8" />
+                        stroke-linejoin="round"
+                        d="M3 3v18h18M7 16v-5m5 5V7m5 9v-8" />
 
                 </svg>
 
@@ -164,7 +164,17 @@
 
 
     <!-- SYSTEM STATUS -->
-    <div class="p-4">
+    <div class="p-4 space-y-3">
+
+        <div class="flex items-center gap-3 px-1">
+            <div class="size-9 rounded-full bg-[#19183b] text-white flex items-center justify-center font-bold text-sm shrink-0">
+                {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
+            </div>
+            <div class="min-w-0">
+                <p class="text-sm font-bold text-[#19183b] truncate">{{ auth()->user()->name }}</p>
+                <p class="text-[11px] text-[#708993] truncate">{{ auth()->user()->email }}</p>
+            </div>
+        </div>
 
         <div class="bg-[#eef4f3] border border-[#e2ebe9] rounded-2xl p-4 flex items-center gap-3">
 

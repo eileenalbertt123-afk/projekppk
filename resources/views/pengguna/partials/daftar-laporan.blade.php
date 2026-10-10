@@ -39,8 +39,8 @@ $statusStyle = [
             Dibuat: {{ $report->created_at?->translatedFormat('d M Y, H:i') ?? '-' }}
         </p>
 
-        <a href="{{ route('reports.show', $report) }}" class="text-xs font-bold text-brand-primary hover:underline whitespace-nowrap">
-            Detail selengkapnya &rarr;
+        <a href="{{ route('reports.show', $report) }}" class="text-sm font-semibold text-brand-primary hover:text-brand-secondary whitespace-nowrap">
+            Detail selengkapnya →
         </a>
     </div>
 

@@ -61,6 +61,8 @@
 
     @include('components.petugas.sidebar')
 
+    <div id="sidebarBackdrop" class="fixed inset-0 z-40 bg-black/40 hidden lg:hidden"></div>
+
     <div id="mainContent">
         @include('components.petugas.header')
         <main class="flex-1 p-4 sm:p-6">
@@ -80,11 +82,27 @@
             mainContent.classList.add('collapsed');
         }
 
+        const backdrop = document.getElementById('sidebarBackdrop');
+
+        function syncBackdrop() {
+            const open = !sidebar.classList.contains('collapsed');
+            backdrop.classList.toggle('hidden', !(open && isMobile()));
+        }
+
         toggle.addEventListener('click', function(e) {
             e.stopPropagation();
             sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('collapsed');
+            syncBackdrop();
         });
+
+        backdrop.addEventListener('click', function() {
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('collapsed');
+            syncBackdrop();
+        });
+
+        syncBackdrop();
 
         // Di HP, ketuk area di luar sidebar untuk menutupnya
         mainContent.addEventListener('click', function() {

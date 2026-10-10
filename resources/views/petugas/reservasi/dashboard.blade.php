@@ -3,12 +3,12 @@
 @section('content')
 
     {{-- Dashboard Body --}}
-        <main class="px-8 py-8">
+        <main class="sm:px-8 sm:py-8">
 
             {{-- Section title & subtitle --}}
-            <div class="flex items-center justify-between mb-[56px]">
+            <div class="flex flex-wrap items-start sm:items-center justify-between gap-3 mb-6 sm:mb-[56px]">
                 <div>
-                    <h1 class="font-extrabold text-[30px] tracking-[-0.75px] text-[#19183b] leading-9">
+                    <h1 class="font-extrabold text-2xl sm:text-[30px] tracking-[-0.75px] text-[#19183b] leading-8 sm:leading-9">
                         {{ $pageTitle ?? 'Reservasi' }}
                     </h1>
                     <p class="text-sm font-normal text-[#708993] leading-5">
@@ -24,10 +24,10 @@
             </div>
 
             {{-- KPI Cards --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5 mb-6 sm:mb-8">
 
                 {{-- KPI 1: Total Peminjam --}}
-                <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] p-[21px] min-w-0">
+                <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] p-4 sm:p-[21px] min-w-0">
                     <div class="flex items-center justify-between">
                         <p class="text-sm font-semibold text-[#708993] leading-5">
                             Total Peminjam
@@ -41,8 +41,8 @@
                         </div>
                     </div>
 
-                    <div class="mt-[26px] flex flex-wrap items-end gap-2">
-                        <p class="font-extrabold text-[30px] tracking-[-0.75px] text-[#19183b] leading-9">
+                    <div class="mt-4 sm:mt-[26px] flex flex-wrap items-end gap-2">
+                        <p class="font-extrabold text-2xl sm:text-[30px] tracking-[-0.75px] text-[#19183b] leading-8 sm:leading-9">
                             {{ $totalPeminjam }}
                         </p>
 
@@ -60,7 +60,7 @@
 
 
                 {{-- KPI 2: Rata-rata Waktu Reservasi --}}
-                <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] p-[21px] min-w-0">
+                <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] p-4 sm:p-[21px] min-w-0">
 
                     {{-- Header KPI --}}
                     <div class="flex items-center justify-between">
@@ -84,10 +84,10 @@
 
 
                     {{-- Nilai + perbandingan --}}
-                    <div class="mt-[26px] flex items-center gap-2 flex-nowrap">
+                    <div class="mt-4 sm:mt-[26px] flex flex-wrap items-center gap-2">
 
                         <p class="flex items-end tracking-[-0.75px] shrink-0">
-                            <span class="font-extrabold text-[30px] text-[#19183b] leading-9">
+                            <span class="font-extrabold text-2xl sm:text-[30px] text-[#19183b] leading-8 sm:leading-9">
                                 {{ number_format($rataRataWaktuReservasi, 1, ',', '.') }}
                             </span>
 
@@ -129,7 +129,7 @@
 
 
                 {{-- KPI 3: Total Reservasi --}}
-                <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] p-[21px] min-w-0">
+                <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] p-4 sm:p-[21px] min-w-0">
                     <div class="flex items-center justify-between">
                         <p class="text-sm font-semibold text-[#708993] leading-5">
                             Total Reservasi
@@ -143,8 +143,8 @@
                         </div>
                     </div>
 
-                    <div class="mt-[26px] flex flex-wrap items-end gap-2">
-                        <p class="font-extrabold text-[30px] tracking-[-0.75px] text-[#19183b] leading-9">
+                    <div class="mt-4 sm:mt-[26px] flex flex-wrap items-end gap-2">
+                        <p class="font-extrabold text-2xl sm:text-[30px] tracking-[-0.75px] text-[#19183b] leading-8 sm:leading-9">
                             {{ $totalReservasi }}
                         </p>
 
@@ -163,15 +163,15 @@
             </div>
 
             {{-- Content grid: 2 columns --}}
-            <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-5 sm:gap-8 items-start">
 
                 {{-- Left column (span 2) --}}
-                <div class="xl:col-span-2 flex flex-col gap-6">
+                <div class="xl:col-span-2 flex flex-col gap-4 sm:gap-6">
 
                     {{-- Incoming Reservations --}}
                     <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] overflow-hidden">
-                        <div class="border-b border-[#e2ebe9] flex items-center justify-between px-6 py-4">
-                            <div class="flex items-center gap-2.5">
+                        <div class="border-b border-[#e2ebe9] flex flex-wrap items-center justify-between gap-2 px-4 sm:px-6 py-4">
+                            <div class="flex flex-wrap items-center gap-2.5">
                                 <span class="bg-[#d97706] rounded-full size-2.5"></span>
                                 <h2 class="font-bold text-base text-[#19183b] leading-6">Incoming Reservations</h2>
                                 <span class="bg-[#eef4f3] rounded-full px-2 py-0.5 text-xs font-semibold text-[#708993] leading-4 whitespace-nowrap">
@@ -273,7 +273,7 @@
                         ];
                     @endphp
 
-                    <div class="bg-white border border-[#e2ebe9] rounded-2xl drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] p-[25px]">
+                    <div class="bg-white border border-[#e2ebe9] rounded-2xl drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] p-4 sm:p-[25px]">
                         <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
                             <div class="bg-[#eef4f3] rounded-lg p-2 flex items-center justify-center">
                                 <svg class="size-4 text-[#19183b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -286,7 +286,7 @@
                             </p>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
 
                             @foreach ($statusSummary as $status)
 
@@ -319,7 +319,7 @@
 
                                     </p>
 
-                                    <p class="font-extrabold text-[30px] leading-9 pt-2 {{ $style['value'] }}">
+                                    <p class="font-extrabold text-2xl sm:text-[30px] leading-9 pt-2 {{ $style['value'] }}">
                                         {{ $status['value'] }}
                                     </p>
 
@@ -336,10 +336,10 @@
                 </div>
 
                 {{-- Right column --}}
-                <div class="flex flex-col gap-6">
+                <div class="flex flex-col gap-4 sm:gap-6">
 
                     {{-- Monthly Mini Calendar --}}
-                    <div class="bg-white border border-[#e2ebe9] rounded-2xl drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] p-[21px]">
+                    <div class="bg-white border border-[#e2ebe9] rounded-2xl drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] p-4 sm:p-[21px]">
                         <div class="flex items-center justify-between mb-2">
                             <h3 class="font-bold text-base text-[#19183b] leading-6">
                                 {{ $calendarMonthLabel ?? 'April 2026' }}
@@ -417,7 +417,7 @@
                             @endforeach
                         </div>
 
-                        <div class="border-t border-[#e2ebe9] flex items-center justify-center gap-4 pt-[13px]">
+                        <div class="border-t border-[#e2ebe9] flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:gap-4 pt-[13px]">
                             <div class="flex items-center gap-1.5">
                                 <span class="bg-[#10b981] rounded-full size-2"></span>
                                 <span class="text-[10px] font-semibold text-[#708993]">Disetujui</span>
@@ -436,7 +436,7 @@
                     {{-- Daily Schedule --}}
                     <div class="flex flex-col gap-3">
                         <div class="bg-gradient-to-r from-[#19183b] to-[#2e2c58] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-2xl flex items-center justify-between pl-4 pr-4 py-4">
-                            <div class="flex items-center gap-2.5">
+                            <div class="flex flex-wrap items-center gap-2.5">
                                 <span class="bg-[#a1c2bd] rounded-full size-2.5"></span>
                                 <div>
                                     <h3 class="text-sm font-bold text-white leading-5">

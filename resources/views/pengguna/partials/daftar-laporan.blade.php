@@ -34,9 +34,15 @@ $statusStyle = [
         {{ $report->description }}
     </p>
 
-    <p class="text-xs text-brand-secondary mt-4">
-        Dibuat: {{ $report->created_at?->translatedFormat('d M Y, H:i') ?? '-' }}
-    </p>
+    <div class="flex items-center justify-between gap-4 mt-4">
+        <p class="text-xs text-brand-secondary">
+            Dibuat: {{ $report->created_at?->translatedFormat('d M Y, H:i') ?? '-' }}
+        </p>
+
+        <a href="{{ route('reports.show', $report) }}" class="text-xs font-bold text-brand-primary hover:underline whitespace-nowrap">
+            Detail &rarr;
+        </a>
+    </div>
 
     @if($report->resolution_note)
     <div class="mt-4 p-4 rounded-xl bg-gray-50 border border-gray-200">

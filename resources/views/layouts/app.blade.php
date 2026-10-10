@@ -207,7 +207,7 @@
             <div class="flex items-center gap-2 sm:gap-3 min-w-0">
                 <button @click="sidebarOpen = !sidebarOpen" class="bg-brand-neutral hover:bg-gray-200 text-brand-primary px-3 py-1.5 rounded-lg border border-gray-200 text-sm flex items-center gap-2 transition font-medium">
                     <span>☰</span>
-                    <span class="hidden sm:inline">Menu</span> xzvddsvsbdvbsvbss
+                    <span class="hidden sm:inline">Menu</span> 
                 </button>
                 <h1 class="text-sm sm:text-base font-bold text-brand-primary tracking-tight truncate">
             </div>

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Facility;
@@ -119,7 +120,12 @@ class ReportController extends Controller
         $reports = $query->paginate(10)->withQueryString();
 
         return view('petugas.laporan.daftar-laporan', compact(
-            'reports', 'totalLaporan', 'baruCount', 'diprosesCount', 'selesaiCount', 'ditolakCount'
+            'reports',
+            'totalLaporan',
+            'baruCount',
+            'diprosesCount',
+            'selesaiCount',
+            'ditolakCount'
         ));
     }
 
@@ -151,16 +157,15 @@ class ReportController extends Controller
         $imagePath = null;
 
         if ($request->hasFile('image')) {
-            \Cloudinary::config([
-                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                'api_key'    => env('CLOUDINARY_API_KEY'),
-                'api_secret' => env('CLOUDINARY_API_SECRET'),
-            ]);
-            $result = \Cloudinary\Uploader::upload(
-                $request->file('image')->getRealPath(),
-                ['folder' => 'reports']
-            );
-            $imagePath = $result['secure_url'];
+            $file = $request->file('image');
+            $response = \Illuminate\Support\Facades\Http::withBasicAuth(
+                env('CLOUDINARY_API_KEY'),
+                env('CLOUDINARY_API_SECRET')
+            )->attach('file', file_get_contents($file->getRealPath()), $file->getClientOriginalName())
+                ->post('https://api.cloudinary.com/v1_1/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload', [
+                    'folder' => 'reports',
+                ]);
+            $imagePath = $response->json()['secure_url'];
         }
 
         Report::create([
@@ -240,7 +245,11 @@ class ReportController extends Controller
         $isRepairReady = $report->status === 'diproses';
 
         return view('petugas.laporan.detail', compact(
-            'report', 'rejectedHistory', 'completedHistory', 'isRepairReady', 'affectedReservations'
+            'report',
+            'rejectedHistory',
+            'completedHistory',
+            'isRepairReady',
+            'affectedReservations'
         ));
     }
 

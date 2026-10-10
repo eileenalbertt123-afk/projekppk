@@ -1,7 +1,6 @@
 <?php
-
 namespace App\Http\Controllers;
-
+use Cloudinary\Cloudinary;
 use Rap2hpoutre\FastExcel\FastExcel;
 use App\Models\Facility;
 use App\Models\Report;
@@ -114,10 +113,10 @@ class AdminController extends Controller
                     'facility_id' => $reportPertama->facility_id,
 
                     'nama_fasilitas' =>
-                        $reportPertama->facility?->name ?? '-',
+                    $reportPertama->facility?->name ?? '-',
 
                     'lokasi' =>
-                        $reportPertama->facility?->location ?? '-',
+                    $reportPertama->facility?->location ?? '-',
 
                     'jumlah_kerusakan' => $reports->count(),
 
@@ -140,68 +139,68 @@ class AdminController extends Controller
     }
 
     public function exportRekapExcel(Request $request)
-{
-    $tanggalMulai = $request->tanggal_mulai;
-    $tanggalAkhir = $request->tanggal_akhir;
+    {
+        $tanggalMulai = $request->tanggal_mulai;
+        $tanggalAkhir = $request->tanggal_akhir;
 
-    $rekap = Facility::withCount([
-        'reservationDetails as jumlah_penggunaan' => function ($query) use (
-            $tanggalMulai,
-            $tanggalAkhir
-        ) {
-            $query->whereHas('reservation', function ($q) use (
+        $rekap = Facility::withCount([
+            'reservationDetails as jumlah_penggunaan' => function ($query) use (
                 $tanggalMulai,
                 $tanggalAkhir
             ) {
-                $q->where('status', 'disetujui');
+                $query->whereHas('reservation', function ($q) use (
+                    $tanggalMulai,
+                    $tanggalAkhir
+                ) {
+                    $q->where('status', 'disetujui');
 
-                if ($tanggalMulai) {
-                    $q->whereDate('start_time', '>=', $tanggalMulai);
-                }
+                    if ($tanggalMulai) {
+                        $q->whereDate('start_time', '>=', $tanggalMulai);
+                    }
 
-                if ($tanggalAkhir) {
-                    $q->whereDate('start_time', '<=', $tanggalAkhir);
-                }
-            });
-        }
-    ])->get();
+                    if ($tanggalAkhir) {
+                        $q->whereDate('start_time', '<=', $tanggalAkhir);
+                    }
+                });
+            }
+        ])->get();
 
-    $rekapKerusakan = Report::with('facility')
-        ->when($tanggalMulai, function ($query) use ($tanggalMulai) {
-            $query->whereDate('created_at', '>=', $tanggalMulai);
-        })
-        ->when($tanggalAkhir, function ($query) use ($tanggalAkhir) {
-            $query->whereDate('created_at', '<=', $tanggalAkhir);
-        })
-        ->get()
-        ->groupBy('facility_id')
-        ->map(function ($reports) {
-            $reportPertama = $reports->first();
+        $rekapKerusakan = Report::with('facility')
+            ->when($tanggalMulai, function ($query) use ($tanggalMulai) {
+                $query->whereDate('created_at', '>=', $tanggalMulai);
+            })
+            ->when($tanggalAkhir, function ($query) use ($tanggalAkhir) {
+                $query->whereDate('created_at', '<=', $tanggalAkhir);
+            })
+            ->get()
+            ->groupBy('facility_id')
+            ->map(function ($reports) {
+                $reportPertama = $reports->first();
 
-            return [
-                'Nama Fasilitas' => $reportPertama->facility?->name ?? '-',
-                'Lokasi' => $reportPertama->facility?->location ?? '-',
-                'Frekuensi Kerusakan' => $reports->count(),
+                return [
+                    'Nama Fasilitas' => $reportPertama->facility?->name ?? '-',
+                    'Lokasi' => $reportPertama->facility?->location ?? '-',
+                    'Frekuensi Kerusakan' => $reports->count(),
+                ];
+            })
+            ->values();
+
+        $data = [];
+
+        foreach ($rekap as $fasilitas) {
+            $data[] = [
+                'Nama Fasilitas' => $fasilitas->name,
+                'Tipe' => $fasilitas->type,
+                'Lokasi' => $fasilitas->location,
+                'Kapasitas' => $fasilitas->capacity,
+                'Status' => $fasilitas->status,
+                'Jumlah Penggunaan' => $fasilitas->jumlah_penggunaan,
             ];
-        })
-        ->values();
+        }
 
-    $data = [];
-
-    foreach ($rekap as $fasilitas) {
-        $data[] = [
-            'Nama Fasilitas' => $fasilitas->name,
-            'Tipe' => $fasilitas->type,
-            'Lokasi' => $fasilitas->location,
-            'Kapasitas' => $fasilitas->capacity,
-            'Status' => $fasilitas->status,
-            'Jumlah Penggunaan' => $fasilitas->jumlah_penggunaan,
-        ];
+        return (new FastExcel(collect($data)))
+            ->download('rekap-fasilitas.xlsx');
     }
-
-    return (new FastExcel(collect($data)))
-        ->download('rekap-fasilitas.xlsx');
-}
 
     public function exportRekapCsv(Request $request)
     {
@@ -270,10 +269,10 @@ class AdminController extends Controller
 
                 return [
                     'nama_fasilitas' =>
-                        $reportPertama->facility?->name ?? '-',
+                    $reportPertama->facility?->name ?? '-',
 
                     'lokasi' =>
-                        $reportPertama->facility?->location ?? '-',
+                    $reportPertama->facility?->location ?? '-',
 
                     'jumlah_kerusakan' => $reports->count(),
                 ];
@@ -430,10 +429,10 @@ class AdminController extends Controller
                     'facility_id' => $reportPertama->facility_id,
 
                     'nama_fasilitas' =>
-                        $reportPertama->facility?->name ?? '-',
+                    $reportPertama->facility?->name ?? '-',
 
                     'lokasi' =>
-                        $reportPertama->facility?->location ?? '-',
+                    $reportPertama->facility?->location ?? '-',
 
                     'jumlah_kerusakan' => $reports->count(),
 
@@ -489,9 +488,18 @@ class AdminController extends Controller
         $namaFoto = null;
 
         if ($request->hasFile('image')) {
-            $namaFoto = $request
-                ->file('image')
-                ->store('facilities', 'public');
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                    'api_key'    => env('CLOUDINARY_API_KEY'),
+                    'api_secret' => env('CLOUDINARY_API_SECRET'),
+                ]
+            ]);
+            $result = $cloudinary->uploadApi()->upload(
+                $request->file('image')->getRealPath(),
+                ['folder' => 'facilities']
+            );
+            $namaFoto = $result['secure_url'];
         }
 
         Facility::create([
@@ -548,9 +556,18 @@ class AdminController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request
-                ->file('image')
-                ->store('facilities', 'public');
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                    'api_key'    => env('CLOUDINARY_API_KEY'),
+                    'api_secret' => env('CLOUDINARY_API_SECRET'),
+                ]
+            ]);
+            $result = $cloudinary->uploadApi()->upload(
+                $request->file('image')->getRealPath(),
+                ['folder' => 'facilities']
+            );
+            $data['image'] = $result['secure_url'];
         }
 
         $fasilitas->update($data);

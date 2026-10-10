@@ -117,7 +117,7 @@
 
         {{-- ==================== MAIN TABLE CARD ==================== --}}
         <div
-            class="bg-white border border-[#f1f5f9] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-2xl overflow-hidden">
+            id="reservation-ajax-area" class="bg-white border border-[#f1f5f9] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-2xl overflow-hidden">
 
             {{-- Table Toolbar --}}
             <div class="border-b border-[#f1f5f9] px-5 pt-5 pb-[21px]">
@@ -439,5 +439,62 @@
             </div>
         </div>
     </div>
+
+
+{{-- AJAX hanya untuk live search. Submit Enter, filter, sort, pagination tetap memakai link/form Laravel asli. --}}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const areaId = 'reservation-ajax-area';
+    let timer;
+    let controller;
+    let version = 0;
+
+    document.addEventListener('input', (event) => {
+        if (!event.target.matches('#' + areaId + ' input[name="search"]')) return;
+        const form = event.target.form;
+        if (!form) return;
+        clearTimeout(timer);
+        controller?.abort();
+        const currentVersion = ++version;
+        timer = setTimeout(async () => {
+            const url = new URL(form.action, location.href);
+            const params = new URLSearchParams(location.search);
+            const value = form.querySelector('input[name="search"]').value;
+            if (value.trim()) params.set('search', value.trim());
+            else params.delete('search');
+            params.delete('page');
+            url.search = params.toString();
+            controller = new AbortController();
+            try {
+                const response = await fetch(url.toString(), {
+                    headers: { 'Accept': 'text/html' },
+                    signal: controller.signal
+                });
+                if (!response.ok || response.redirected) throw new Error('Respons AJAX gagal');
+                const html = await response.text();
+                if (currentVersion !== version) return;
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const updated = doc.getElementById(areaId);
+                if (!updated) throw new Error('Kontainer hasil pencarian tidak ditemukan');
+                const old = document.getElementById(areaId);
+                const oldInput = old.querySelector('input[name="search"]');
+                const cursor = oldInput.selectionStart;
+                old.replaceWith(updated);
+                history.replaceState({}, '', url.toString());
+                const input = updated.querySelector('input[name="search"]');
+                input.focus({ preventScroll: true });
+                if (cursor !== null) input.setSelectionRange(cursor, cursor);
+            } catch (error) {
+                if (error.name === 'AbortError' || currentVersion !== version) return;
+                console.error('Live search reservasi gagal:', error);
+                // Jika AJAX gagal, fungsi Laravel biasa tetap tersedia lewat Enter.
+            }
+        }, 350);
+    });
+
+    // Jangan intercept submit / klik link: fallback native Laravel tetap berfungsi.
+    document.addEventListener('submit', () => { clearTimeout(timer); controller?.abort(); });
+});
+</script>
 
 @endsection

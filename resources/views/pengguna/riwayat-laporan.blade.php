@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="mb-8">
-    <h2 class="text-brand-primary text-3xl font-extrabold tracking-tight">
+<div class="mb-5 sm:mb-8">
+    <h2 class="text-brand-primary text-2xl sm:text-3xl font-extrabold tracking-tight">
         Riwayat Laporan
     </h2>
     <p class="text-sm text-brand-secondary mt-1">
@@ -10,37 +10,37 @@
     </p>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
-    <div class="bg-white rounded-2xl border border-gray-200 shadow-panel p-5">
+<div class="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-5 sm:mb-8">
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-panel p-4 sm:p-5">
         <p class="text-sm font-semibold text-brand-secondary">Laporan Baru</p>
-        <p class="text-3xl font-extrabold text-amber-600 mt-2">
+        <p class="text-2xl sm:text-3xl font-extrabold text-amber-600 mt-2">
             {{ $laporanBaru }}
         </p>
     </div>
 
-    <div class="bg-white rounded-2xl border border-gray-200 shadow-panel p-5">
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-panel p-4 sm:p-5">
         <p class="text-sm font-semibold text-brand-secondary">Diproses</p>
-        <p class="text-3xl font-extrabold text-indigo-600 mt-2">
+        <p class="text-2xl sm:text-3xl font-extrabold text-indigo-600 mt-2">
             {{ $laporanDiproses }}
         </p>
     </div>
 
-    <div class="bg-white rounded-2xl border border-gray-200 shadow-panel p-5">
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-panel p-4 sm:p-5">
         <p class="text-sm font-semibold text-brand-secondary">Ditolak</p>
-        <p class="text-3xl font-extrabold text-rose-600 mt-2">
+        <p class="text-2xl sm:text-3xl font-extrabold text-rose-600 mt-2">
             {{ $laporanDitolak }}
         </p>
     </div>
 
-    <div class="bg-white rounded-2xl border border-gray-200 shadow-panel p-5">
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-panel p-4 sm:p-5">
         <p class="text-sm font-semibold text-brand-secondary">Selesai</p>
-        <p class="text-3xl font-extrabold text-emerald-600 mt-2">
+        <p class="text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-2">
             {{ $laporanSelesai }}
         </p>
     </div>
 </div>
 
-<div class="bg-white rounded-3xl border border-gray-200 shadow-panel p-5 sm:p-8">
+<div class="bg-white rounded-3xl border border-gray-200 shadow-panel p-4 sm:p-8">
     @php
     $statusAktif = request('status', 'semua');
 
@@ -88,7 +88,7 @@
                         'urutan' => request('urutan', 'terbaru')
                     ]) }}"
                 data-status="{{ $nilai }}"
-                class="inline-flex items-center px-4 py-2 rounded-full border text-sm font-semibold transition
+                class="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border text-xs sm:text-sm font-semibold transition
                     {{ $statusAktif === $nilai
                         ? 'bg-brand-primary text-white border-brand-primary'
                         : 'bg-white text-brand-secondary border-gray-200 hover:bg-gray-100' }}">
@@ -97,7 +97,7 @@
                 <span class="ml-1 font-bold">
                     {{ $item['jumlah'] }}
                 </span>
-             
+
 
             </a>
             @endforeach

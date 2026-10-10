@@ -1,7 +1,7 @@
 @extends('layouts.petugas')
 
 @section('content')
-    <div class="px-8 py-8">
+    <div id="schedule-ajax-area" class="px-8 py-8">
 
         {{-- ==================== TOP BAR: HEADER & CONTROLS ==================== --}}
         <div class="flex items-start justify-between gap-6 flex-wrap mb-6">
@@ -147,7 +147,7 @@
 
                     <select
                         name="type"
-                        onchange="this.form.submit()"
+                        
                         class="bg-white border border-[#e2e8f0]
                             rounded-xl px-4 py-2.5
                             text-xs font-semibold text-[#334155]
@@ -193,7 +193,7 @@
 
                     <select
                         name="facility"
-                        onchange="this.form.submit()"
+                        
                         class="bg-white border border-[#e2e8f0]
                             rounded-xl px-4 py-2.5
                             text-xs font-semibold text-[#334155]
@@ -595,4 +595,105 @@
                 </div>
 
         </div>
+
+
+{{-- AJAX jadwal: hanya konten jadwal diperbarui, layout petugas tidak reload. --}}
+<script>
+(() => {
+    // Hindari listener ganda bila script termuat kembali.
+    if (window.__bookFixScheduleAjaxReady) return;
+    window.__bookFixScheduleAjaxReady = true;
+
+    const areaId = 'schedule-ajax-area';
+    const schedulePath = @json(parse_url(route('petugas.reservasi.jadwal'), PHP_URL_PATH));
+    let pending = null;
+    let requestId = 0;
+
+    async function updateSchedule(targetUrl, pushHistory = true) {
+        const url = new URL(targetUrl, window.location.href);
+        if (url.origin !== location.origin || url.pathname !== schedulePath) {
+            window.location.assign(url.href);
+            return;
+        }
+        const previous = document.getElementById(areaId);
+        if (!previous) {
+            window.location.assign(url.href);
+            return;
+        }
+
+        if (pending) pending.abort();
+        const current = new AbortController();
+        pending = current;
+        const id = ++requestId;
+        previous.setAttribute('aria-busy', 'true');
+
+        try {
+            const response = await fetch(url.href, {
+                method: 'GET',
+                credentials: 'same-origin',
+                headers: { 'Accept': 'text/html', 'X-Requested-With': 'XMLHttpRequest' },
+                signal: current.signal
+            });
+            if (!response.ok || response.redirected) throw new Error('Gagal memuat jadwal');
+
+            const html = await response.text();
+            if (id !== requestId) return;
+            const fresh = new DOMParser().parseFromString(html, 'text/html')
+                .getElementById(areaId);
+            if (!fresh) throw new Error('Konten kalender tidak ditemukan');
+
+            previous.replaceWith(fresh);
+            if (pushHistory && url.href !== location.href) {
+                history.pushState({ scheduleAjax: true }, '', url.href);
+            }
+        } catch (error) {
+            if (error.name !== 'AbortError' && id === requestId) {
+                // Fallback: URL Laravel tetap bisa digunakan tanpa AJAX.
+                window.location.assign(url.href);
+            }
+        } finally {
+            if (id === requestId) {
+                document.getElementById(areaId)?.removeAttribute('aria-busy');
+                pending = null;
+            }
+        }
+    }
+
+    document.addEventListener('click', (event) => {
+        const link = event.target.closest('#' + areaId + ' a[href]');
+        if (!link || event.defaultPrevented || event.button !== 0 ||
+            event.ctrlKey || event.metaKey || event.shiftKey || event.altKey ||
+            link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+
+        const url = new URL(link.href, window.location.href);
+        if (url.origin !== location.origin || url.pathname !== schedulePath) return;
+        event.preventDefault();
+        updateSchedule(url.href);
+    });
+
+    document.addEventListener('change', (event) => {
+        const select = event.target.closest('#' + areaId + ' form select');
+        if (!select) return;
+        const form = select.form;
+        const url = new URL(form.action, window.location.href);
+        url.search = new URLSearchParams(new FormData(form)).toString();
+        updateSchedule(url.href);
+    });
+
+    // Jika form disubmit dengan keyboard, tetap gunakan AJAX.
+    document.addEventListener('submit', (event) => {
+        const form = event.target.closest('#' + areaId + ' form');
+        if (!form || form.method.toLowerCase() !== 'get') return;
+        event.preventDefault();
+        const url = new URL(form.action, window.location.href);
+        url.search = new URLSearchParams(new FormData(form)).toString();
+        updateSchedule(url.href);
+    });
+
+    window.addEventListener('popstate', () => {
+        if (location.pathname === schedulePath) updateSchedule(location.href, false);
+    });
+})();
+</script>
+
 @endsection

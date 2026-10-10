@@ -177,7 +177,7 @@ class ReportController extends Controller
             'status'      => 'baru',
         ]);
 
-        return redirect()->route('reports.index')->with('success', 'Laporan kerusakan berhasil dikirim!');
+        return redirect()->route('riwayat.laporan')->with('success', 'Laporan kerusakan berhasil dikirim!');
     }
 
     public function userShow(Report $report)

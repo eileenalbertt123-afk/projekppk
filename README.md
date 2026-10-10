@@ -342,3 +342,5 @@ Setelah perbaikan selesai dan laporan dinyatakan selesai, fasilitas dapat dikemb
 Status `nonaktif` digunakan ketika fasilitas dinonaktifkan oleh admin.
 
 Fasilitas dengan status ini tidak tersedia untuk proses reservasi sampai diaktifkan atau diperbarui kembali sesuai kebijakan pengelola.
+   
+ 

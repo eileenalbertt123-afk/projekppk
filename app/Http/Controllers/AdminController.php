@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -55,7 +56,7 @@ class AdminController extends Controller
                     'facility_id'     => $reportPertama->facility_id,
                     'nama_fasilitas'  => $reportPertama->facility?->name ?? '-',
                     'lokasi'          => $reportPertama->facility?->location ?? '-',
-                    'jumlah_kerusakan'=> $reports->count(),
+                    'jumlah_kerusakan' => $reports->count(),
                     'laporan'         => $reports->values(),
                 ];
             })
@@ -207,16 +208,15 @@ class AdminController extends Controller
         $namaFoto = null;
 
         if ($request->hasFile('image')) {
-            \Cloudinary::config([
-                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                'api_key'    => env('CLOUDINARY_API_KEY'),
-                'api_secret' => env('CLOUDINARY_API_SECRET'),
-            ]);
-            $result = \Cloudinary\Uploader::upload(
-                $request->file('image')->getRealPath(),
-                ['folder' => 'facilities']
-            );
-            $namaFoto = $result['secure_url'];
+            $file = $request->file('image');
+            $response = \Illuminate\Support\Facades\Http::withBasicAuth(
+                env('CLOUDINARY_API_KEY'),
+                env('CLOUDINARY_API_SECRET')
+            )->attach('file', file_get_contents($file->getRealPath()), $file->getClientOriginalName())
+                ->post('https://api.cloudinary.com/v1_1/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload', [
+                    'folder' => 'facilities',
+                ]);
+            $namaFoto = $response->json()['secure_url'];
         }
 
         Facility::create([
@@ -262,16 +262,15 @@ class AdminController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            \Cloudinary::config([
-                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                'api_key'    => env('CLOUDINARY_API_KEY'),
-                'api_secret' => env('CLOUDINARY_API_SECRET'),
-            ]);
-            $result = \Cloudinary\Uploader::upload(
-                $request->file('image')->getRealPath(),
-                ['folder' => 'facilities']
-            );
-            $data['image'] = $result['secure_url'];
+            $file = $request->file('image');
+            $response = \Illuminate\Support\Facades\Http::withBasicAuth(
+                env('CLOUDINARY_API_KEY'),
+                env('CLOUDINARY_API_SECRET')
+            )->attach('file', file_get_contents($file->getRealPath()), $file->getClientOriginalName())
+                ->post('https://api.cloudinary.com/v1_1/' . env('CLOUDINARY_CLOUD_NAME') . '/image/upload', [
+                    'folder' => 'facilities',
+                ]);
+            $data['image'] = $response->json()['secure_url'];
         }
 
         $fasilitas->update($data);

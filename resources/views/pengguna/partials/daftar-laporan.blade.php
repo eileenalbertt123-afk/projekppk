@@ -40,7 +40,7 @@ $statusStyle = [
         </p>
 
         <a href="{{ route('reports.show', $report) }}" class="text-xs font-bold text-brand-primary hover:underline whitespace-nowrap">
-            Detail &rarr;
+            Detail selengkapnya &rarr;
         </a>
     </div>
 

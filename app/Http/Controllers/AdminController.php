@@ -10,6 +10,11 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class AdminController extends Controller
 {
@@ -80,19 +85,116 @@ class AdminController extends Controller
             }
         ])->get();
 
-        $data = [];
-        foreach ($rekap as $fasilitas) {
-            $data[] = [
-                'Nama Fasilitas'  => $fasilitas->name,
-                'Tipe'            => $fasilitas->type,
-                'Lokasi'          => $fasilitas->location,
-                'Kapasitas'       => $fasilitas->capacity,
-                'Status'          => $fasilitas->status,
-                'Jumlah Penggunaan' => $fasilitas->jumlah_penggunaan,
-            ];
+        $rekapKerusakan = Report::with(['facility'])
+            ->when($tanggalMulai, fn($q) => $q->whereDate('created_at', '>=', $tanggalMulai))
+            ->when($tanggalAkhir, fn($q) => $q->whereDate('created_at', '<=', $tanggalAkhir))
+            ->get()
+            ->groupBy('facility_id')
+            ->map(function ($reports) {
+                $reportPertama = $reports->first();
+                return [
+                    'nama_fasilitas'   => $reportPertama->facility?->name ?? '-',
+                    'lokasi'           => $reportPertama->facility?->location ?? '-',
+                    'jumlah_kerusakan' => $reports->count(),
+                ];
+            })
+            ->values();
+
+        if ($tanggalMulai || $tanggalAkhir) {
+            $awal  = $tanggalMulai ? Carbon::parse($tanggalMulai)->locale('id')->translatedFormat('d M Y') : 'Awal';
+            $akhir = $tanggalAkhir ? Carbon::parse($tanggalAkhir)->locale('id')->translatedFormat('d M Y') : 'Sekarang';
+            $periode = "Periode: {$awal} - {$akhir}";
+        } else {
+            $periode = 'Periode: Semua periode';
         }
 
-        return (new FastExcel(collect($data)))->download('rekap-fasilitas.xlsx');
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Rekap Fasilitas');
+
+        $headerStyle = [
+            'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '1E1B4B']],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical'   => Alignment::VERTICAL_CENTER,
+            ],
+        ];
+
+        // Judul
+        $sheet->mergeCells('A1:F1');
+        $sheet->setCellValue('A1', 'REKAP PENGGUNAAN DAN KERUSAKAN FASILITAS');
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
+
+        $sheet->mergeCells('A2:F2');
+        $sheet->setCellValue('A2', 'Book&Fix - Campus Facility Management');
+        $sheet->getStyle('A2')->getFont()->setItalic(true);
+
+        $sheet->mergeCells('A3:F3');
+        $sheet->setCellValue('A3', $periode);
+
+        $sheet->getStyle('A1:A3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        // Tabel 1: rekap penggunaan
+        $sheet->fromArray(
+            ['Nama Fasilitas', 'Tipe', 'Lokasi', 'Kapasitas', 'Status', 'Jumlah Penggunaan'],
+            null,
+            'A5'
+        );
+        $sheet->getStyle('A5:F5')->applyFromArray($headerStyle);
+        $sheet->getRowDimension(5)->setRowHeight(24);
+
+        $row = 6;
+        foreach ($rekap as $fasilitas) {
+            $sheet->fromArray([
+                $fasilitas->name,
+                $fasilitas->type,
+                $fasilitas->location,
+                $fasilitas->capacity,
+                $fasilitas->status,
+                $fasilitas->jumlah_penggunaan,
+            ], null, "A{$row}");
+            $row++;
+        }
+
+        $lastDataRow = max($row - 1, 6);
+        $sheet->getStyle("D6:D{$lastDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("F6:F{$lastDataRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setAutoFilter("A5:F{$lastDataRow}");
+
+        // Tabel 2: frekuensi kerusakan
+        $titleRow = $row + 1;
+        $sheet->setCellValue("A{$titleRow}", 'REKAP FREKUENSI KERUSAKAN FASILITAS');
+        $sheet->getStyle("A{$titleRow}")->getFont()->setBold(true);
+
+        $headRow = $titleRow + 1;
+        $sheet->fromArray(['Nama Fasilitas', 'Lokasi', 'Frekuensi Kerusakan'], null, "A{$headRow}");
+        $sheet->getStyle("A{$headRow}:C{$headRow}")->applyFromArray($headerStyle);
+
+        $r = $headRow + 1;
+        if ($rekapKerusakan->isEmpty()) {
+            $sheet->setCellValue("A{$r}", 'Tidak ada data kerusakan pada periode ini.');
+        } else {
+            foreach ($rekapKerusakan as $kerusakan) {
+                $sheet->fromArray([
+                    $kerusakan['nama_fasilitas'],
+                    $kerusakan['lokasi'],
+                    $kerusakan['jumlah_kerusakan'],
+                ], null, "A{$r}");
+                $sheet->getStyle("C{$r}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $r++;
+            }
+        }
+
+        foreach (['A' => 30, 'B' => 20, 'C' => 34, 'D' => 12, 'E' => 18, 'F' => 22] as $kolom => $lebar) {
+            $sheet->getColumnDimension($kolom)->setWidth($lebar);
+        }
+
+        return response()->streamDownload(function () use ($spreadsheet) {
+            (new Xlsx($spreadsheet))->save('php://output');
+        }, 'rekap-fasilitas.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
     public function exportRekapCsv(Request $request)

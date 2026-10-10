@@ -2,8 +2,8 @@
 
 @section('content')
 
-<div class="mb-8">
-    <h2 class="text-brand-primary text-3xl font-extrabold tracking-tight">
+<div class="mb-5 sm:mb-8">
+    <h2 class="text-brand-primary text-2xl sm:text-3xl font-extrabold tracking-tight">
         Riwayat Reservasi
     </h2>
     <p class="text-sm text-brand-secondary mt-1">
@@ -73,10 +73,10 @@
     $jumlahDibatalkan = $reservations->where('status', 'dibatalkan')->count();
     @endphp
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-5 sm:mb-8">
 
         {{-- Reservasi Aktif --}}
-        <div class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
+        <div class="animate-fade-up bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
             <div>
                 <span class="text-[10px] text-brand-secondary uppercase tracking-wider block">
                     Reservasi Aktif
@@ -85,8 +85,8 @@
                     {{ $activeReservations ?? 0 }}
                 </span>
             </div>
-            <div class="w-10 h-10 rounded-xl bg-brand-neutral flex items-center justify-center shrink-0">
-                <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-brand-neutral flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
@@ -94,7 +94,7 @@
         </div>
 
         {{-- Menunggu Validasi --}}
-        <div class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
+        <div class="animate-fade-up bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
             <div>
                 <span class="text-[10px] text-brand-secondary uppercase tracking-wider block">
                     Menunggu Validasi
@@ -103,8 +103,8 @@
                     {{ $pendingReservations ?? 0 }}
                 </span>
             </div>
-            <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
-                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -112,7 +112,7 @@
         </div>
 
         {{-- Disetujui --}}
-        <div class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
+        <div class="animate-fade-up bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
             <div>
                 <span class="text-[10px] text-brand-secondary uppercase tracking-wider block">
                     Disetujui
@@ -121,8 +121,8 @@
                     {{ $jumlahDisetujui }}
                 </span>
             </div>
-            <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
-                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M5 13l4 4L19 7" />
                 </svg>
@@ -130,7 +130,7 @@
         </div>
 
         {{-- Selesai --}}
-        <div class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
+        <div class="animate-fade-up bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
             <div>
                 <span class="text-[10px] text-brand-secondary uppercase tracking-wider block">
                     Selesai
@@ -139,8 +139,8 @@
                     {{ $jumlahSelesai }}
                 </span>
             </div>
-            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m5 2a8 8 0 11-16 0 8 8 0 0116 0z" />
                 </svg>
@@ -148,7 +148,7 @@
         </div>
 
         {{-- Ditolak --}}
-        <div class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
+        <div class="animate-fade-up bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
             <div>
                 <span class="text-[10px] text-brand-secondary uppercase tracking-wider block">
                     Ditolak
@@ -157,8 +157,8 @@
                     {{ $jumlahDitolak }}
                 </span>
             </div>
-            <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center shrink-0">
-                <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-rose-50 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M6 6l12 12M18 6L6 18" />
                 </svg>
@@ -166,7 +166,7 @@
         </div>
 
         {{-- Dibatalkan --}}
-        <div class="animate-fade-up bg-white p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
+        <div class="animate-fade-up bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-card flex items-center justify-between">
             <div>
                 <span class="text-[10px] text-brand-secondary uppercase tracking-wider block">
                     Dibatalkan
@@ -175,8 +175,8 @@
                     {{ $jumlahDibatalkan }}
                 </span>
             </div>
-            <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center shrink-0">
-                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gray-100 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M6 6l12 12M18 6L6 18" />
                 </svg>
@@ -200,7 +200,7 @@
     @endphp
 
     {{-- Kotak Daftar Reservasi --}}
-    <div class="bg-white rounded-3xl border border-gray-200 shadow-panel p-5 sm:p-8">
+    <div class="bg-white rounded-3xl border border-gray-200 shadow-panel p-4 sm:p-8">
 
         <div class="flex flex-col gap-5 mb-6">
             {{-- Judul dan Urutan --}}
@@ -236,7 +236,7 @@
                     :class="status === '{{ $key }}'
                 ? 'bg-brand-primary text-white border-brand-primary'
                 : 'bg-white text-brand-secondary border-gray-200 hover:bg-gray-100'"
-                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-semibold transition">
+                    class="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border text-xs sm:text-sm font-semibold transition">
 
                     {{ $label }}
 
@@ -280,9 +280,9 @@
 
             <div
                 x-show="status === 'semua' || status === '{{ $reservation->status }}'"
-                class="bg-white p-5 rounded-2xl border border-gray-200 shadow-card mb-4">
+                class="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-card mb-3 sm:mb-4">
 
-                <div class="flex items-start justify-between gap-4">
+                <div class="flex items-start justify-between gap-3 sm:gap-4">
                     <div>
                         <p class="text-[10px] font-bold text-brand-secondary uppercase tracking-wider">
                             {{ $reservation->reservation_code }}
@@ -311,7 +311,7 @@
                         </p>
                     </div>
 
-                    <span class="text-xs font-bold px-3 py-1.5 rounded-full border whitespace-nowrap {{ $statusColor }}">
+                    <span class="text-[10px] sm:text-xs font-bold px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full border whitespace-nowrap shrink-0 {{ $statusColor }}">
                         {{ strtoupper($reservation->status) }}
                     </span>
                 </div>

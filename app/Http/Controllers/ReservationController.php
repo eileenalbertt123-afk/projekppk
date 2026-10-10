@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Cloudinary\Cloudinary;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -18,306 +16,112 @@ class ReservationController extends Controller
     public function dashboard(Request $request)
     {
         $now = Carbon::now();
-
         $startOfMonth = $now->copy()->startOfMonth();
         $endOfMonth = $now->copy()->endOfMonth();
-
         $startOfLastMonth = $now->copy()->subMonth()->startOfMonth();
         $endOfLastMonth = $now->copy()->subMonth()->endOfMonth();
-        $reservationsThisMonth = Reservation::with([
-            'user',
-            'details.facility',
-        ])
-            ->whereBetween('start_time', [
-                $startOfMonth,
-                $endOfMonth,
-            ])
+
+        $reservationsThisMonth = Reservation::with(['user', 'details.facility'])
+            ->whereBetween('start_time', [$startOfMonth, $endOfMonth])
             ->orderBy('start_time')
             ->get();
-        $reservationsLastMonth = Reservation::whereBetween(
-            'start_time',
-            [
-                $startOfLastMonth,
-                $endOfLastMonth,
-            ]
-        )->get();
 
-        $incomingReservations = Reservation::with([
-            'user',
-            'details.facility',
-        ])
+        $reservationsLastMonth = Reservation::whereBetween('start_time', [$startOfLastMonth, $endOfLastMonth])->get();
+
+        $incomingReservations = Reservation::with(['user', 'details.facility'])
             ->where('status', 'menunggu')
             ->orderBy('created_at', 'asc')
             ->limit(3)
             ->get();
 
-        $totalIncomingReservations = Reservation::where(
-            'status',
-            'menunggu'
-        )->count();
-
-        $totalPeminjam = $reservationsThisMonth
-            ->pluck('user_id')
-            ->unique()
-            ->count();
-
-        $totalPeminjamLastMonth = $reservationsLastMonth
-            ->pluck('user_id')
-            ->unique()
-            ->count();
-
-        $persenPeminjam = $totalPeminjamLastMonth > 0
-            ? round(
-                (($totalPeminjam - $totalPeminjamLastMonth)
-                    / $totalPeminjamLastMonth) * 100
-            )
-            : null;
-
+        $totalIncomingReservations = Reservation::where('status', 'menunggu')->count();
+        $totalPeminjam = $reservationsThisMonth->pluck('user_id')->unique()->count();
+        $totalPeminjamLastMonth = $reservationsLastMonth->pluck('user_id')->unique()->count();
+        $persenPeminjam = $totalPeminjamLastMonth > 0 ? round((($totalPeminjam - $totalPeminjamLastMonth) / $totalPeminjamLastMonth) * 100) : null;
         $totalReservasi = $reservationsThisMonth->count();
-
         $totalReservasiLastMonth = $reservationsLastMonth->count();
+        $persenReservasi = $totalReservasiLastMonth > 0 ? round((($totalReservasi - $totalReservasiLastMonth) / $totalReservasiLastMonth) * 100) : null;
 
-        $persenReservasi = $totalReservasiLastMonth > 0
-            ? round(
-                (($totalReservasi - $totalReservasiLastMonth)
-                    / $totalReservasiLastMonth) * 100
-            )
-            : null;
-
-        $rataRataMenitBulanIni = $reservationsThisMonth
-            ->avg(function ($reservation) {
-
-                return $reservation->start_time
-                    ->diffInMinutes($reservation->end_time);
-            }) ?? 0;
-
+        $rataRataMenitBulanIni = $reservationsThisMonth->avg(fn($r) => $r->start_time->diffInMinutes($r->end_time)) ?? 0;
         $adaDataBulanLalu = $reservationsLastMonth->isNotEmpty();
 
         if ($adaDataBulanLalu) {
-
-            $rataRataMenitBulanLalu = $reservationsLastMonth
-                ->avg(function ($reservation) {
-
-                    return $reservation->start_time
-                        ->diffInMinutes($reservation->end_time);
-                }) ?? 0;
-
-            $selisihWaktuReservasi = round(
-                $rataRataMenitBulanIni
-                    - $rataRataMenitBulanLalu
-            );
+            $rataRataMenitBulanLalu = $reservationsLastMonth->avg(fn($r) => $r->start_time->diffInMinutes($r->end_time)) ?? 0;
+            $selisihWaktuReservasi = round($rataRataMenitBulanIni - $rataRataMenitBulanLalu);
         } else {
-
             $selisihWaktuReservasi = null;
         }
-        $rataRataWaktuReservasi = round(
-            $rataRataMenitBulanIni / 60,
-            1
-        );
 
-        $menungguBulanIni = $reservationsThisMonth
-            ->where('status', 'menunggu')
-            ->count();
-
-        $disetujuiBulanIni = $reservationsThisMonth
-            ->where('status', 'disetujui')
-            ->count();
-
-        $ditolakBulanIni = $reservationsThisMonth
-            ->where('status', 'ditolak')
-            ->count();
-
-        $dibatalkanBulanIni = $reservationsThisMonth
-            ->where('status', 'dibatalkan')
-            ->count();
-
-        $selesaiBulanIni = $reservationsThisMonth
-            ->where('status', 'selesai')
-            ->count();
-
-        $ditolakDibatalkanBulanIni =
-            $ditolakBulanIni + $dibatalkanBulanIni;
-
+        $rataRataWaktuReservasi = round($rataRataMenitBulanIni / 60, 1);
+        $menungguBulanIni = $reservationsThisMonth->where('status', 'menunggu')->count();
+        $disetujuiBulanIni = $reservationsThisMonth->where('status', 'disetujui')->count();
+        $ditolakBulanIni = $reservationsThisMonth->where('status', 'ditolak')->count();
+        $dibatalkanBulanIni = $reservationsThisMonth->where('status', 'dibatalkan')->count();
+        $selesaiBulanIni = $reservationsThisMonth->where('status', 'selesai')->count();
+        $ditolakDibatalkanBulanIni = $ditolakBulanIni + $dibatalkanBulanIni;
 
         $statusSummary = [
-            [
-                'key' => 'menunggu',
-                'label' => 'Menunggu',
-                'value' => $menungguBulanIni,
-                'desc' => 'Perlu review',
-            ],
-
-            [
-                'key' => 'disetujui',
-                'label' => 'Disetujui',
-                'value' => $disetujuiBulanIni,
-                'desc' => 'Terkonfirmasi',
-            ],
-
-            [
-                'key' => 'dibatalkan_ditolak',
-                'label' => 'Dibatalkan/Ditolak',
-                'value' => $ditolakDibatalkanBulanIni,
-                'desc' => 'Tidak aktif',
-            ],
-
-            [
-                'key' => 'selesai',
-                'label' => 'Selesai',
-                'value' => $selesaiBulanIni,
-                'desc' => 'Reservasi selesai',
-            ],
+            ['key' => 'menunggu',           'label' => 'Menunggu',           'value' => $menungguBulanIni,          'desc' => 'Perlu review'],
+            ['key' => 'disetujui',          'label' => 'Disetujui',          'value' => $disetujuiBulanIni,         'desc' => 'Terkonfirmasi'],
+            ['key' => 'dibatalkan_ditolak', 'label' => 'Dibatalkan/Ditolak', 'value' => $ditolakDibatalkanBulanIni, 'desc' => 'Tidak aktif'],
+            ['key' => 'selesai',            'label' => 'Selesai',            'value' => $selesaiBulanIni,           'desc' => 'Reservasi selesai'],
         ];
 
         $todaySchedule = $reservationsThisMonth
-            ->filter(function ($reservation) {
-
-                return $reservation->status === 'disetujui'
-                    && $reservation->start_time->isToday();
-            })
+            ->filter(fn($r) => $r->status === 'disetujui' && $r->start_time->isToday())
             ->sortBy('start_time')
             ->values();
 
-
-        $scheduleDateLabel = Carbon::today()
-            ->locale('id')
-            ->translatedFormat('l, d F Y');
-
+        $scheduleDateLabel = Carbon::today()->locale('id')->translatedFormat('l, d F Y');
         $selectedMonth = $request->query('month');
+        $calendarDate = $selectedMonth ? Carbon::createFromFormat('Y-m', $selectedMonth)->startOfMonth() : $now->copy()->startOfMonth();
+        $calendarMonthLabel = $calendarDate->locale('id')->translatedFormat('F Y');
+        $previousMonth = $calendarDate->copy()->subMonth()->format('Y-m');
+        $nextMonth = $calendarDate->copy()->addMonth()->format('Y-m');
 
-        if ($selectedMonth) {
-
-            $calendarDate = Carbon::createFromFormat(
-                'Y-m',
-                $selectedMonth
-            )->startOfMonth();
-        } else {
-
-            $calendarDate = $now->copy()->startOfMonth();
-        }
-        $calendarMonthLabel = $calendarDate
-            ->locale('id')
-            ->translatedFormat('F Y');
-        $previousMonth = $calendarDate
-            ->copy()
-            ->subMonth()
-            ->format('Y-m');
-        $nextMonth = $calendarDate
-            ->copy()
-            ->addMonth()
-            ->format('Y-m');
         if ($calendarDate->isSameMonth($now)) {
-
             $calendarReservations = $reservationsThisMonth;
         } else {
-            $calendarReservations = Reservation::whereBetween(
-                'start_time',
-                [
-                    $calendarDate->copy()->startOfMonth(),
-                    $calendarDate->copy()->endOfMonth(),
-                ]
-            )
-                ->whereIn('status', [
-                    'menunggu',
-                    'disetujui',
-                    'ditolak',
-                    'dibatalkan',
-                ])
-                ->get();
+            $calendarReservations = Reservation::whereBetween('start_time', [
+                $calendarDate->copy()->startOfMonth(),
+                $calendarDate->copy()->endOfMonth(),
+            ])->whereIn('status', ['menunggu', 'disetujui', 'ditolak', 'dibatalkan'])->get();
         }
 
-        $reservationsByDate = $calendarReservations
-            ->groupBy(function ($reservation) {
-
-                return $reservation->start_time
-                    ->format('Y-m-d');
-            });
-        $calendarStart = $calendarDate
-            ->copy()
-            ->startOfMonth()
-            ->startOfWeek(Carbon::SUNDAY);
-
-        $calendarEnd = $calendarDate
-            ->copy()
-            ->endOfMonth()
-            ->endOfWeek(Carbon::SATURDAY);
+        $reservationsByDate = $calendarReservations->groupBy(fn($r) => $r->start_time->format('Y-m-d'));
+        $calendarStart = $calendarDate->copy()->startOfMonth()->startOfWeek(Carbon::SUNDAY);
+        $calendarEnd = $calendarDate->copy()->endOfMonth()->endOfWeek(Carbon::SATURDAY);
         $calendarWeeks = [];
         $currentDate = $calendarStart->copy();
+
         while ($currentDate <= $calendarEnd) {
             $week = [];
             for ($i = 0; $i < 7; $i++) {
                 $dateKey = $currentDate->format('Y-m-d');
-                $statuses = collect(
-                    $reservationsByDate->get($dateKey, [])
-                )
+                $statuses = collect($reservationsByDate->get($dateKey, []))
                     ->pluck('status')
-                    ->map(function ($status) {
-
-                        if (
-                            in_array(
-                                $status,
-                                ['ditolak', 'dibatalkan']
-                            )
-                        ) {
-                            return 'ditolak';
-                        }
-
-                        return $status;
-                    })
-                    ->unique()
-                    ->values()
-                    ->toArray();
-
+                    ->map(fn($s) => in_array($s, ['ditolak', 'dibatalkan']) ? 'ditolak' : $s)
+                    ->unique()->values()->toArray();
 
                 $week[] = [
-                    'n' => $currentDate->day,
-
-                    'muted' =>
-                    $currentDate->month !==
-                        $calendarDate->month,
-
-                    'active' =>
-                    $currentDate->isToday(),
-
-                    'dots' => $statuses,
+                    'n'     => $currentDate->day,
+                    'muted' => $currentDate->month !== $calendarDate->month,
+                    'active'=> $currentDate->isToday(),
+                    'dots'  => $statuses,
                 ];
-
-
                 $currentDate->addDay();
             }
-
             $calendarWeeks[] = $week;
         }
 
-        return view(
-            'petugas.reservasi.dashboard',
-            compact(
-                'incomingReservations',
-                'totalIncomingReservations',
-
-                'totalPeminjam',
-                'persenPeminjam',
-
-                'totalReservasi',
-                'persenReservasi',
-
-                'rataRataWaktuReservasi',
-                'selisihWaktuReservasi',
-                'adaDataBulanLalu',
-
-                'statusSummary',
-
-                'todaySchedule',
-                'scheduleDateLabel',
-
-                'calendarWeeks',
-                'calendarMonthLabel',
-                'previousMonth',
-                'nextMonth'
-            )
-
-
-        );
+        return view('petugas.reservasi.dashboard', compact(
+            'incomingReservations', 'totalIncomingReservations',
+            'totalPeminjam', 'persenPeminjam',
+            'totalReservasi', 'persenReservasi',
+            'rataRataWaktuReservasi', 'selisihWaktuReservasi', 'adaDataBulanLalu',
+            'statusSummary', 'todaySchedule', 'scheduleDateLabel',
+            'calendarWeeks', 'calendarMonthLabel', 'previousMonth', 'nextMonth'
+        ));
     }
 
     public function index(Request $request)
@@ -335,240 +139,116 @@ class ReservationController extends Controller
         $disetujuiCount = (int) $statusCounts->disetujui;
         $ditolakCount = (int) $statusCounts->ditolak;
         $dibatalkanCount = (int) $statusCounts->dibatalkan;
-
         $dibatalkanDitolakCount = $ditolakCount + $dibatalkanCount;
 
-        // QUERY DAFTAR RESERVASI
+        $query = Reservation::query()->with([
+            'user:id,name',
+            'details:id,reservation_id,facility_id',
+            'details.facility:id,name,type,location',
+        ]);
 
-
-        $query = Reservation::query()
-            ->with([
-                'user:id,name',
-                'details:id,reservation_id,facility_id',
-                'details.facility:id,name,type,location',
-            ]);
-
-
-        // SEARCH
         if ($request->filled('search')) {
-
             $search = trim($request->search);
-
             $query->where(function ($q) use ($search) {
-
-                $q->where(
-                    'reservation_code',
-                    'like',
-                    "%{$search}%"
-                )
-
-                    ->orWhereHas('user', function ($userQuery) use ($search) {
-
-                        $userQuery->where(
-                            'name',
-                            'like',
-                            "%{$search}%"
-                        );
-                    })
-
-                    ->orWhereHas('details.facility', function ($facilityQuery) use ($search) {
-
-                        $facilityQuery->where(
-                            'name',
-                            'like',
-                            "%{$search}%"
-                        );
-                    });
+                $q->where('reservation_code', 'like', "%{$search}%")
+                    ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$search}%"))
+                    ->orWhereHas('details.facility', fn($f) => $f->where('name', 'like', "%{$search}%"));
             });
         }
 
-        // FILTER STATUS
-        if (
-            $request->filled('status') &&
-            $request->status !== 'semua'
-        ) {
-            $query->where(
-                'status',
-                $request->status
-            );
+        if ($request->filled('status') && $request->status !== 'semua') {
+            $query->where('status', $request->status);
         }
 
-
-        // SORTING
-        $query->orderBy(
-            'created_at',
-            $request->sort === 'terlama'
-                ? 'asc'
-                : 'desc'
-        );
-
-        $reservations = $query
-            ->paginate(10)
-            ->withQueryString();
-
-
-        // Tabel Reservasi
-        // =========================
-
+        $query->orderBy('created_at', $request->sort === 'terlama' ? 'asc' : 'desc');
+        $reservations = $query->paginate(10)->withQueryString();
 
         return view('petugas.reservasi.daftar-reservasi', compact(
-            'totalReservasi',
-            'menungguCount',
-            'disetujuiCount',
-            'dibatalkanDitolakCount',
-            'reservations'
+            'totalReservasi', 'menungguCount', 'disetujuiCount', 'dibatalkanDitolakCount', 'reservations'
         ));
     }
 
-
     public function show(Reservation $reservation)
     {
-        $reservation->load([
-            'user.userType',
-            'details.facility',
-            'statusHistories.changedBy'
-        ]);
+        $reservation->load(['user.userType', 'details.facility', 'statusHistories.changedBy']);
+        $facilityIds = $reservation->details->pluck('facility_id');
 
-        $facilityIds = $reservation->details
-            ->pluck('facility_id');
-
-        $conflictingReservation = Reservation::with([
-            'user',
-            'details.facility',
-        ])
+        $conflictingReservation = Reservation::with(['user', 'details.facility'])
             ->where('id', '!=', $reservation->id)
             ->where('status', 'disetujui')
-            ->whereHas('details', function ($query) use ($facilityIds) {
-                $query->whereIn('facility_id', $facilityIds);
-            })
+            ->whereHas('details', fn($q) => $q->whereIn('facility_id', $facilityIds))
             ->where('start_time', '<', $reservation->end_time)
             ->where('end_time', '>', $reservation->start_time)
             ->orderBy('start_time')
             ->first();
 
         $hasConflict = $conflictingReservation !== null;
+        $rejectionHistory = $reservation->statusHistories->where('status', 'ditolak')->sortByDesc('created_at')->first();
 
-        $rejectionHistory = $reservation->statusHistories
-            ->where('status', 'ditolak')
-            ->sortByDesc('created_at')
-            ->first();
-
-        return view('petugas.reservasi.detail', compact(
-            'reservation',
-            'hasConflict',
-            'conflictingReservation',
-            'rejectionHistory'
-        ));
+        return view('petugas.reservasi.detail', compact('reservation', 'hasConflict', 'conflictingReservation', 'rejectionHistory'));
     }
 
     public function updateStatus(Request $request, Reservation $reservation)
     {
         $validated = $request->validate([
-            'status' => 'required|in:disetujui,ditolak,dibatalkan,selesai',
+            'status'          => 'required|in:disetujui,ditolak,dibatalkan,selesai',
             'reason_category' => 'nullable|string|max:100',
-            'reason' => 'nullable|string|max:1000',
-            'verification' => 'nullable|array',
+            'reason'          => 'nullable|string|max:1000',
+            'verification'    => 'nullable|array',
         ]);
 
         $oldStatus = $reservation->status;
         $newStatus = $validated['status'];
         $reservation->load('details');
 
-        // Validasi approve
-        if ($newStatus === 'disetujui') {
-
-            $verification = $validated['verification'] ?? [];
-
-            if (count($verification) < 3) {
-                return back()
-                    ->withErrors([
-                        'verification' => 'Wajib memenuhi 3 kondisi.'
-                    ])
-                    ->withInput();
-            }
+        if ($newStatus === 'disetujui' && count($validated['verification'] ?? []) < 3) {
+            return back()->withErrors(['verification' => 'Wajib memenuhi 3 kondisi.'])->withInput();
         }
 
-        // Validasi transisi status
         $allowedTransitions = [
-            'menunggu' => ['disetujui', 'ditolak'],
-            'disetujui' => ['dibatalkan', 'selesai'],
-            'ditolak' => [],
+            'menunggu'   => ['disetujui', 'ditolak'],
+            'disetujui'  => ['dibatalkan', 'selesai'],
+            'ditolak'    => [],
             'dibatalkan' => [],
-            'selesai' => [],
+            'selesai'    => [],
         ];
 
         if (!in_array($newStatus, $allowedTransitions[$oldStatus] ?? [])) {
             return back()->with('error', 'Perubahan status tidak diizinkan.');
         }
 
-        // Reason wajib untuk ditolak / dibatalkan
-        if (
-            in_array($newStatus, ['ditolak', 'dibatalkan']) &&
-            empty($validated['reason'])
-        ) {
-            return back()
-                ->withErrors([
-                    'reason' => 'Alasan wajib diisi untuk status ini.'
-                ])
-                ->withInput();
+        if (in_array($newStatus, ['ditolak', 'dibatalkan']) && empty($validated['reason'])) {
+            return back()->withErrors(['reason' => 'Alasan wajib diisi untuk status ini.'])->withInput();
         }
 
-        DB::transaction(function () use (
-            $reservation,
-            $newStatus,
-            $validated
-        ) {
-
-            // Jika reservasi disetujui, tolak reservasi lain yang masih menunggu dan bentrok
-            // Jika reservasi disetujui, tolak reservasi lain yang masih menunggu dan bentrok
+        DB::transaction(function () use ($reservation, $newStatus, $validated) {
             if ($newStatus === 'disetujui') {
-
-                // Ambil fasilitas yang sedang disetujui
-                $facilityIds = $reservation->details()
-                    ->pluck('facility_id')
-                    ->toArray();
-
-                // Cari reservasi lain yang masih menunggu dan bentrok
+                $facilityIds = $reservation->details()->pluck('facility_id')->toArray();
                 $conflictReservations = Reservation::where('id', '!=', $reservation->id)
                     ->where('status', 'menunggu')
-                    ->whereHas('details', function ($q) use ($facilityIds) {
-                        $q->whereIn('facility_id', $facilityIds);
-                    })
-                    ->where(function ($q) use ($reservation) {
-                        $q->where('start_time', '<', $reservation->end_time)
-                            ->where('end_time', '>', $reservation->start_time);
-                    })
+                    ->whereHas('details', fn($q) => $q->whereIn('facility_id', $facilityIds))
+                    ->where(fn($q) => $q->where('start_time', '<', $reservation->end_time)->where('end_time', '>', $reservation->start_time))
                     ->get();
 
                 foreach ($conflictReservations as $conflict) {
-
-                    // Update status menjadi ditolak
-                    $conflict->update([
-                        'status' => 'ditolak',
-                    ]);
-
-                    // Simpan history auto reject
+                    $conflict->update(['status' => 'ditolak']);
                     ReservationStatusHistory::create([
-                        'reservation_id' => $conflict->id,
-                        'status' => 'ditolak',
+                        'reservation_id'  => $conflict->id,
+                        'status'          => 'ditolak',
                         'reason_category' => 'Jadwal Tidak Memungkinkan',
-                        'reason' => 'Reservasi otomatis ditolak karena jadwal fasilitas sudah disetujui untuk reservasi lain.',
-                        'changed_by' => null,
+                        'reason'          => 'Reservasi otomatis ditolak karena jadwal fasilitas sudah disetujui untuk reservasi lain.',
+                        'changed_by'      => null,
                     ]);
                 }
             }
-            // Update status reservasi utama
-            $reservation->update([
-                'status' => $newStatus,
-            ]);
 
-            // Simpan riwayat perubahan status
+            $reservation->update(['status' => $newStatus]);
             ReservationStatusHistory::create([
-                'reservation_id' => $reservation->id,
-                'status' => $newStatus,
+                'reservation_id'  => $reservation->id,
+                'status'          => $newStatus,
                 'reason_category' => $validated['reason_category'] ?? null,
-                'reason' => $validated['reason'] ?? null,
-                'changed_by' => Auth::id(),
+                'reason'          => $validated['reason'] ?? null,
+                'changed_by'      => Auth::id(),
             ]);
         });
 
@@ -577,211 +257,72 @@ class ReservationController extends Controller
 
     public function schedule(Request $request)
     {
-        $selectedDate = $request->filled('week')
-            ? Carbon::parse($request->week)
-            : Carbon::today();
-
-        $weekStart = $selectedDate
-            ->copy()
-            ->startOfWeek(Carbon::MONDAY);
-
-        $weekEnd = $selectedDate
-            ->copy()
-            ->endOfWeek(Carbon::SUNDAY);
-
-        $previousWeek = $weekStart
-            ->copy()
-            ->subWeek()
-            ->format('Y-m-d');
-
-        $nextWeek = $weekStart
-            ->copy()
-            ->addWeek()
-            ->format('Y-m-d');
+        $selectedDate = $request->filled('week') ? Carbon::parse($request->week) : Carbon::today();
+        $weekStart = $selectedDate->copy()->startOfWeek(Carbon::MONDAY);
+        $weekEnd = $selectedDate->copy()->endOfWeek(Carbon::SUNDAY);
+        $previousWeek = $weekStart->copy()->subWeek()->format('Y-m-d');
+        $nextWeek = $weekStart->copy()->addWeek()->format('Y-m-d');
         $selectedType = $request->query('type');
         $selectedFacility = $request->query('facility');
 
-        $allFacilities = Facility::query()
-            ->select([
-                'id',
-                'name',
-                'type',
-                'location',
-            ])
-            ->orderBy('name')
-            ->get();
+        $allFacilities = Facility::select(['id', 'name', 'type', 'location'])->orderBy('name')->get();
+        $facilityTypes = $allFacilities->pluck('type')->filter()->unique()->sort()->values();
+        $facilities = $selectedType ? $allFacilities->where('type', $selectedType)->values() : $allFacilities;
 
-        $facilityTypes = $allFacilities
-            ->pluck('type')
-            ->filter()
-            ->unique()
-            ->sort()
-            ->values();
-
-        $facilities = $selectedType
-            ? $allFacilities
-            ->where('type', $selectedType)
-            ->values()
-            : $allFacilities;
-
-        $reservations = Reservation::query()
-            ->select([
-                'id',
-                'reservation_code',
-                'user_id',
-                'purpose',
-                'status',
-                'start_time',
-                'end_time',
-            ])
-            ->with([
-                'user:id,name',
-
-                'facilities:id,name,type,location',
-            ])
-            ->whereIn('status', [
-                'menunggu',
-                'disetujui',
-            ])
-            ->where(
-                'start_time',
-                '<=',
-                $weekEnd->copy()->endOfDay()
-            )
-            ->where(
-                'end_time',
-                '>=',
-                $weekStart->copy()->startOfDay()
-            )
-            ->when(
-                $selectedType,
-                function ($query) use ($selectedType) {
-
-                    $query->whereHas(
-                        'facilities',
-                        function ($facilityQuery) use ($selectedType) {
-
-                            $facilityQuery->where(
-                                'facilities.type',
-                                $selectedType
-                            );
-                        }
-                    );
-                }
-            )
-            ->when(
-                $selectedFacility,
-                function ($query) use ($selectedFacility) {
-
-                    $query->whereHas(
-                        'facilities',
-                        function ($facilityQuery) use ($selectedFacility) {
-
-                            $facilityQuery->where(
-                                'facilities.id',
-                                $selectedFacility
-                            );
-                        }
-                    );
-                }
-            )
-
+        $reservations = Reservation::select(['id', 'reservation_code', 'user_id', 'purpose', 'status', 'start_time', 'end_time'])
+            ->with(['user:id,name', 'facilities:id,name,type,location'])
+            ->whereIn('status', ['menunggu', 'disetujui'])
+            ->where('start_time', '<=', $weekEnd->copy()->endOfDay())
+            ->where('end_time', '>=', $weekStart->copy()->startOfDay())
+            ->when($selectedType, fn($q) => $q->whereHas('facilities', fn($f) => $f->where('facilities.type', $selectedType)))
+            ->when($selectedFacility, fn($q) => $q->whereHas('facilities', fn($f) => $f->where('facilities.id', $selectedFacility)))
             ->orderBy('start_time')
-
             ->get();
 
-        $weekDays = collect(range(0, 6))
-            ->map(function ($index) use ($weekStart) {
-
-                $date = $weekStart->copy()->addDays($index);
-
-                return [
-                    'index' => $index,
-
-                    'date' => $date->format('Y-m-d'),
-
-                    'name' => $date
-                        ->locale('id')
-                        ->translatedFormat('l'),
-
-                    'date_label' => $date
-                        ->locale('id')
-                        ->translatedFormat('j M'),
-
-                    'is_today' => $date->isToday(),
-                ];
-            })
-            ->toArray();
+        $weekDays = collect(range(0, 6))->map(function ($index) use ($weekStart) {
+            $date = $weekStart->copy()->addDays($index);
+            return [
+                'index'      => $index,
+                'date'       => $date->format('Y-m-d'),
+                'name'       => $date->locale('id')->translatedFormat('l'),
+                'date_label' => $date->locale('id')->translatedFormat('j M'),
+                'is_today'   => $date->isToday(),
+            ];
+        })->toArray();
 
         $scheduleByDay = [];
-
         foreach ($reservations as $reservation) {
-
-            // 0 = Senin, 6 = Minggu
             $dayIndex = $reservation->start_time->dayOfWeekIso - 1;
-
             foreach ($reservation->facilities as $facility) {
-
                 $scheduleByDay[$dayIndex][] = [
-                    'reservation_id' => $reservation->id,
-
-                    'reservation_code' =>
-                    $reservation->reservation_code,
-
-                    'facility' =>
-                    $facility->name,
-
-                    'type' =>
-                    $facility->type,
-
-                    'start' =>
-                    $reservation->start_time->format('H.i'),
-
-                    'end' =>
-                    $reservation->end_time->format('H.i'),
-
-                    'borrower' =>
-                    \Illuminate\Support\Str::title(
-                        $reservation->user?->name ?? '-'
-                    ),
-
-                    'status' =>
-                    $reservation->status,
+                    'reservation_id'   => $reservation->id,
+                    'reservation_code' => $reservation->reservation_code,
+                    'facility'         => $facility->name,
+                    'type'             => $facility->type,
+                    'start'            => $reservation->start_time->format('H.i'),
+                    'end'              => $reservation->end_time->format('H.i'),
+                    'borrower'         => \Illuminate\Support\Str::title($reservation->user?->name ?? '-'),
+                    'status'           => $reservation->status,
                 ];
             }
         }
-        return view(
-            'petugas.reservasi.jadwal-reservasi',
-            compact(
-                'weekStart',
-                'weekEnd',
-                'previousWeek',
-                'nextWeek',
 
-                'facilityTypes',
-                'facilities',
-
-                'selectedType',
-                'selectedFacility',
-
-                'reservations',
-                'weekDays',
-                'scheduleByDay',
-            )
-        );
+        return view('petugas.reservasi.jadwal-reservasi', compact(
+            'weekStart', 'weekEnd', 'previousWeek', 'nextWeek',
+            'facilityTypes', 'facilities', 'selectedType', 'selectedFacility',
+            'reservations', 'weekDays', 'scheduleByDay'
+        ));
     }
+
     public function create(Request $request)
     {
         $facility = Facility::findOrFail($request->query('facility_id'));
-        $date = $request->query('date');
+        $date  = $request->query('date');
         $start = $request->query('start');
-        $end = $request->query('end');
-
-        return view(
-            'reservations.create',
-            compact('facility', 'date', 'start', 'end')
-        );
+        $end   = $request->query('end');
+        return view('reservations.create', compact('facility', 'date', 'start', 'end'));
     }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -792,124 +333,68 @@ class ReservationController extends Controller
             'purpose'              => 'required|string|max:255',
             'activity_description' => 'nullable|string',
             'participant_count'    => 'required|integer|min:1',
-            'document'              => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:2048',
+            'document'             => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:2048',
         ]);
 
-        // Validasi jumlah peserta terhadap kapasitas fasilitas
         $facility = Facility::findOrFail($request->facility_id);
-
         if ($request->participant_count > $facility->capacity) {
-            return back()
-                ->withInput()
-                ->withErrors([
-                    'participant_count' => 'Jumlah peserta melebihi kapasitas fasilitas (' . $facility->capacity . ' orang).',
-                ]);
+            return back()->withInput()->withErrors([
+                'participant_count' => 'Jumlah peserta melebihi kapasitas fasilitas (' . $facility->capacity . ' orang).',
+            ]);
         }
 
-        $start = Carbon::parse(
-            $request->date . ' ' . $request->start_time
-        );
-
-        $end = Carbon::parse(
-            $request->date . ' ' . $request->end_time
-        );
-
-        $opStart = Carbon::parse(
-            $request->date . ' 07:00'
-        );
-
-        $opEnd = Carbon::parse(
-            $request->date . ' 20:00'
-        );
-
+        $start  = Carbon::parse($request->date . ' ' . $request->start_time);
+        $end    = Carbon::parse($request->date . ' ' . $request->end_time);
+        $opStart = Carbon::parse($request->date . ' 07:00');
+        $opEnd   = Carbon::parse($request->date . ' 20:00');
 
         if ($start < $opStart || $end > $opEnd) {
-            return back()->withInput()->withErrors([
-                'time' => 'Waktu reservasi harus berada dalam jam operasional (07.00 - 20.00 WIB).'
-            ]);
+            return back()->withInput()->withErrors(['time' => 'Waktu reservasi harus berada dalam jam operasional (07.00 - 20.00 WIB).']);
         }
 
         if ($start->minute % 30 !== 0 || $end->minute % 30 !== 0) {
-            return back()->withInput()->withErrors([
-                'time' => 'Waktu mulai dan selesai harus berupa kelipatan slot 30 menit (mis. 07.00, 07.30).'
-            ]);
+            return back()->withInput()->withErrors(['time' => 'Waktu mulai dan selesai harus berupa kelipatan slot 30 menit (mis. 07.00, 07.30).']);
         }
 
-        // Cegah pengguna mengajukan reservasi pada fasilitas dan rentang waktu yang sudah dia ajukan atau miliki. 
         $duplicate = Reservation::where('user_id', Auth::id())
             ->whereIn('status', ['menunggu', 'disetujui'])
             ->where('start_time', '<', $end)->where('end_time', '>', $start)
-            ->whereHas('details', function ($q) use ($request) {
-                $q->where('facility_id', $request->facility_id);
-            })
+            ->whereHas('details', fn($q) => $q->where('facility_id', $request->facility_id))
             ->exists();
 
         if ($duplicate) {
-            return back()->withInput()->withErrors(['conflict' => 'Kamu sudah memiliki pengajuan reservasi untuk fasilitas ini pada rentang waktu tersebut.',]);
+            return back()->withInput()->withErrors(['conflict' => 'Kamu sudah memiliki pengajuan reservasi untuk fasilitas ini pada rentang waktu tersebut.']);
         }
-        $conflict = Reservation::whereIn(
-            'status',
-            ['disetujui']
-        )
-            ->whereHas('details', function ($q) use ($request) {
-                $q->where(
-                    'facility_id',
-                    $request->facility_id
-                );
-            })
-            ->where(function ($q) use ($start, $end) {
-                $q->where('start_time', '<', $end)
-                    ->where('end_time', '>', $start);
-            })
+
+        $conflict = Reservation::whereIn('status', ['disetujui'])
+            ->whereHas('details', fn($q) => $q->where('facility_id', $request->facility_id))
+            ->where(fn($q) => $q->where('start_time', '<', $end)->where('end_time', '>', $start))
             ->exists();
 
         if ($conflict) {
-            return back()->withInput()->withErrors([
-                'conflict' => 'Slot waktu pada rentang tersebut sudah dipesan oleh pengguna lain.'
-            ]);
+            return back()->withInput()->withErrors(['conflict' => 'Slot waktu pada rentang tersebut sudah dipesan oleh pengguna lain.']);
         }
 
         $documentPath = null;
-
         if ($request->hasFile('document')) {
-            $cloudinary = new Cloudinary([
-                'cloud' => [
-                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                    'api_key'    => env('CLOUDINARY_API_KEY'),
-                    'api_secret' => env('CLOUDINARY_API_SECRET'),
-                ]
+            \Cloudinary::config([
+                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                'api_key'    => env('CLOUDINARY_API_KEY'),
+                'api_secret' => env('CLOUDINARY_API_SECRET'),
             ]);
-            $result = $cloudinary->uploadApi()->upload(
+            $result = \Cloudinary\Uploader::upload(
                 $request->file('document')->getRealPath(),
-                [
-                    'folder' => 'documents',
-                    'resource_type' => 'auto'
-                ]
+                ['folder' => 'documents', 'resource_type' => 'auto']
             );
             $documentPath = $result['secure_url'];
         }
 
-        $lastCode = Reservation::orderBy(
-            'id',
-            'desc'
-        )->value('reservation_code');
-
+        $lastCode   = Reservation::orderBy('id', 'desc')->value('reservation_code');
         $nextNumber = 1;
-
-        if (
-            $lastCode &&
-            preg_match('/RV-(\d+)/', $lastCode, $matches)
-        ) {
+        if ($lastCode && preg_match('/RV-(\d+)/', $lastCode, $matches)) {
             $nextNumber = (int) $matches[1] + 1;
         }
-
-        $reservationCode = 'RV-' .
-            str_pad(
-                $nextNumber,
-                3,
-                '0',
-                STR_PAD_LEFT
-            );
+        $reservationCode = 'RV-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
         $reservation = Reservation::create([
             'reservation_code'     => $reservationCode,
@@ -923,75 +408,41 @@ class ReservationController extends Controller
             'status'               => 'menunggu',
         ]);
 
-        $reservation->details()->create([
-            'facility_id' => $request->facility_id,
-        ]);
+        $reservation->details()->create(['facility_id' => $request->facility_id]);
 
-        return redirect()
-            ->route('riwayat')
-            ->with(
-                'success',
-                'Pengajuan reservasi berhasil dikirim!'
-            );
+        return redirect()->route('riwayat')->with('success', 'Pengajuan reservasi berhasil dikirim!');
     }
 
     public function cancel(Reservation $reservation)
     {
-        if ($reservation->user_id !== Auth::id()) {
-            abort(403);
+        if ($reservation->user_id !== Auth::id()) abort(403);
+
+        if (!in_array($reservation->status, ['menunggu', 'disetujui'])) {
+            return back()->withErrors(['cancel' => 'Reservasi ini sudah tidak bisa dibatalkan.']);
         }
 
-        if (!in_array(
-            $reservation->status,
-            ['menunggu', 'disetujui']
-        )) {
-            return back()->withErrors([
-                'cancel' => 'Reservasi ini sudah tidak bisa dibatalkan.'
-            ]);
+        if (now()->addHours(24)->greaterThan($reservation->start_time)) {
+            return back()->withErrors(['cancel' => 'Reservasi hanya bisa dibatalkan paling lambat 24 jam sebelum waktu mulai.']);
         }
 
-        if (
-            now()->addHours(24)
-            ->greaterThan($reservation->start_time)
-        ) {
-            return back()->withErrors([
-                'cancel' => 'Reservasi hanya bisa dibatalkan paling lambat 24 jam sebelum waktu mulai.'
-            ]);
-        }
-
-        $reservation->update([
-            'status' => 'dibatalkan'
-        ]);
-
-        return back()->with(
-            'success',
-            'Reservasi berhasil dibatalkan.'
-        );
+        $reservation->update(['status' => 'dibatalkan']);
+        return back()->with('success', 'Reservasi berhasil dibatalkan.');
     }
 
     public function detail(Reservation $reservation)
     {
-        if ($reservation->user_id !== Auth::id()) {
-            abort(403);
-        }
-
+        if ($reservation->user_id !== Auth::id()) abort(403);
         $reservation->load(['user.userType', 'details.facility']);
-
         $facility = $reservation->details->first()?->facility;
-
         return view('reservations.detail', compact('reservation', 'facility'));
     }
 
     public function document(Reservation $reservation)
     {
         $user = Auth::user();
-
         if ($user->role === 'pengguna' && $reservation->user_id !== $user->id) abort(403);
-
         abort_unless(in_array($user->role, ['pengguna', 'petugas', 'admin']), 403);
-
         abort_if(empty($reservation->document), 404, 'Dokumen tidak tersedia.');
-
         return redirect($reservation->document);
     }
 }

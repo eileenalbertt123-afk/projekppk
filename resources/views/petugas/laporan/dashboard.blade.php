@@ -2,16 +2,16 @@
 
 @section('content')
 
-<main class="px-8 py-8">
+<main class="sm:px-8 sm:py-8">
 
     {{-- ===========================
         TITLE SECTION
     ============================ --}}
 
-    <div class="flex items-center justify-between mb-[56px]">
+    <div class="flex flex-wrap items-start sm:items-center justify-between gap-3 mb-6 sm:mb-[56px]">
 
         <div>
-            <h1 class="font-extrabold text-[30px] tracking-[-0.75px] text-[#19183b] leading-9">
+            <h1 class="font-extrabold text-2xl sm:text-[30px] tracking-[-0.75px] text-[#19183b] leading-8 sm:leading-9">
                 {{ $pageTitle ?? 'Laporan' }}
             </h1>
 
@@ -34,7 +34,7 @@
     </div>
 
     @if ($laporanTerlambatCount > 0)
-    <div class="mb-8 flex items-center justify-between gap-4
+    <div class="mb-5 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4
                     rounded-2xl border border-[#fcd34d]
                     bg-[#fffbeb] px-5 py-4">
 
@@ -74,7 +74,7 @@
 
         <a
             href="{{ route('petugas.laporan.index', ['status' => 'baru', 'terlambat' => 1]) }}"
-            class="inline-flex shrink-0 items-center gap-1.5 rounded-lg
+            class="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg
                        bg-[#d97706] px-4 py-2.5 text-xs font-bold text-white
                        transition hover:bg-[#b45309]">
 
@@ -110,11 +110,11 @@
         KPI CARDS
     ============================ --}}
 
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5 mb-6 sm:mb-8">
 
 
         {{-- TOTAL LAPORAN --}}
-        <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-sm p-[21px]">
+        <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-sm p-4 sm:p-[21px]">
 
             <div class="flex justify-between items-center">
 
@@ -141,9 +141,9 @@
             </div>
 
 
-            <div class="mt-[26px] flex items-center gap-2">
+            <div class="mt-4 sm:mt-[26px] flex flex-wrap items-center gap-2">
 
-                <p class="font-extrabold text-[30px] text-[#19183b]">
+                <p class="font-extrabold text-2xl sm:text-[30px] text-[#19183b]">
                     {{ $totalLaporan ?? 0 }}
                 </p>
 
@@ -170,7 +170,7 @@
 
 
         {{-- RATA RATA PERBAIKAN --}}
-        <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-sm p-[21px]">
+        <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-sm p-4 sm:p-[21px]">
 
 
             <div class="flex justify-between items-center">
@@ -203,9 +203,9 @@
             </div>
 
 
-            <div class="mt-[26px] flex items-end gap-2">
+            <div class="mt-4 sm:mt-[26px] flex flex-wrap items-end gap-2">
 
-                <span class="font-extrabold text-[30px] text-[#19183b]">
+                <span class="font-extrabold text-2xl sm:text-[30px] text-[#19183b]">
                     {{ number_format($rataRataPerbaikan ?? 0,1,',','.') }}
                 </span>
 
@@ -219,7 +219,7 @@
         </div>
 
         {{-- MENUNGGU VERIFIKASI --}}
-        <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-sm p-[21px]">
+        <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-sm p-4 sm:p-[21px]">
 
 
             <div class="flex justify-between items-center">
@@ -229,7 +229,7 @@
                 </p>
 
 
-                <div class="bg-[#eff6ff] rounded-xl size-12 flex items-center justify-center">
+                <div class="bg-[#eff6ff] rounded-xl size-9 flex items-center justify-center">
 
                     <svg
                         class="size-5 text-[#2563eb]"
@@ -254,9 +254,9 @@
             </div>
 
 
-            <div class="mt-[26px] flex items-center gap-2">
+            <div class="mt-4 sm:mt-[26px] flex flex-wrap items-center gap-2">
 
-                <span class="font-extrabold text-[30px] text-[#19183b]">
+                <span class="font-extrabold text-2xl sm:text-[30px] text-[#19183b]">
                     {{ $laporanBaruCount ?? 0 }}
                 </span>
 
@@ -280,14 +280,14 @@
         CONTENT GRID
     ============================ --}}
 
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-5 sm:gap-8 items-start">
 
 
         {{-- ===========================
             LEFT COLUMN
         ============================ --}}
 
-        <div class="xl:col-span-2 flex flex-col gap-6">
+        <div class="xl:col-span-2 flex flex-col gap-4 sm:gap-6">
 
 
 
@@ -302,10 +302,10 @@
                 {{-- Header --}}
                 <div class="border-b border-[#e2ebe9]
                             flex items-center justify-between
-                            px-6 py-4">
+                            px-4 sm:px-6 py-4">
 
 
-                    <div class="flex items-center gap-2.5">
+                    <div class="flex flex-wrap items-center gap-2.5">
 
                         <span class="bg-[#f97316] rounded-full size-2.5"></span>
 
@@ -341,128 +341,129 @@
 
 
                 {{-- Table --}}
-                <table class="w-full table-fixed">
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-[800px] table-fixed">
 
 
-                    <thead class="bg-[#f8fafc] border-b border-[#e2ebe9]">
+                        <thead class="bg-[#f8fafc] border-b border-[#e2ebe9]">
 
-                        <tr>
+                            <tr>
 
 
-                            <th class="w-[15%]
-                                    px-6 py-3
+                                <th class="w-[15%]
+                                    px-3 sm:px-6 py-3
                                     text-left text-[11px]
                                     uppercase tracking-wide
                                     text-[#708993]">
 
-                                ID
+                                    ID
 
-                            </th>
+                                </th>
 
 
 
-                            <th class="w-[25%]
-                                    px-6 py-3
+                                <th class="w-[25%]
+                                    px-3 sm:px-6 py-3
                                     text-left text-[11px]
                                     uppercase tracking-wide
                                     text-[#708993]">
 
-                                Pelapor
+                                    Pelapor
 
-                            </th>
+                                </th>
 
 
 
-                            <th class="w-[28%]
-                                    px-6 py-3
+                                <th class="w-[28%]
+                                    px-3 sm:px-6 py-3
                                     text-left text-[11px]
                                     uppercase tracking-wide
                                     text-[#708993]">
 
-                                Fasilitas
+                                    Fasilitas
 
-                            </th>
+                                </th>
 
 
 
-                            <th class="w-[20%]
-                                    px-6 py-3
+                                <th class="w-[20%]
+                                    px-3 sm:px-6 py-3
                                     text-left text-[11px]
                                     uppercase tracking-wide
                                     text-[#708993]">
 
-                                Kategori
+                                    Kategori
 
-                            </th>
+                                </th>
 
 
 
-                            <th class="w-[17%]
-                                    px-6 py-3
+                                <th class="w-[17%]
+                                    px-3 sm:px-6 py-3
                                     text-left text-[11px]
                                     uppercase tracking-wide
                                     text-[#708993]">
 
-                                Status
+                                    Status
 
-                            </th>
+                                </th>
 
-                            <th class="w-[15%] px-4 py-3 text-left text-[11px] uppercase tracking-wide text-[#708993]">
-                                Aksi
-                            </th>
-
-
-                        </tr>
-
-                    </thead>
+                                <th class="w-[15%] px-4 py-3 text-left text-[11px] uppercase tracking-wide text-[#708993]">
+                                    Aksi
+                                </th>
 
 
+                            </tr>
 
-                    <tbody class="divide-y divide-[#e2ebe9]">
-
-
-                        @forelse($incomingReports as $report)
-
-
-                        @php
-
-                        $categoryMap = [
-
-                        'elektronik_av'
-                        => 'Elektronik & AV',
-
-                        'struktur_bangunan'
-                        => 'Struktur & Bangunan',
-
-                        'mekanikal_utilitas'
-                        => 'Mekanikal & Utilitas',
-
-                        'furnitur'
-                        => 'Furnitur',
-
-                        'jaringan_it'
-                        => 'Jaringan/IT',
-
-                        'kebersihan'
-                        => 'Kebersihan',
-
-                        'lainnya'
-                        => 'Lainnya',
-
-                        ];
-
-                        @endphp
+                        </thead>
 
 
 
-                        <tr>
+                        <tbody class="divide-y divide-[#e2ebe9]">
 
 
-                            {{-- ID --}}
-                            <td class="px-6 py-5">
+                            @forelse($incomingReports as $report)
 
-                                <span class="text-sm font-bold text-[#19183b]">
-                                    {{ $report->report_code 
+
+                            @php
+
+                            $categoryMap = [
+
+                            'elektronik_av'
+                            => 'Elektronik & AV',
+
+                            'struktur_bangunan'
+                            => 'Struktur & Bangunan',
+
+                            'mekanikal_utilitas'
+                            => 'Mekanikal & Utilitas',
+
+                            'furnitur'
+                            => 'Furnitur',
+
+                            'jaringan_it'
+                            => 'Jaringan/IT',
+
+                            'kebersihan'
+                            => 'Kebersihan',
+
+                            'lainnya'
+                            => 'Lainnya',
+
+                            ];
+
+                            @endphp
+
+
+
+                            <tr>
+
+
+                                {{-- ID --}}
+                                <td class="px-3 sm:px-6 py-4 sm:py-5">
+
+                                    <span class="text-sm font-bold text-[#19183b]">
+                                        {{ $report->report_code 
                                         ?? 'LP-' . str_pad(
                                             $report->id,
                                             3,
@@ -470,27 +471,27 @@
                                             STR_PAD_LEFT
                                         )
                                     }}
-                                </span>
+                                    </span>
 
-                            </td>
-
-
-
-                            {{-- PELAPOR --}}
-                            <td class="px-6 py-5">
+                                </td>
 
 
-                                <div class="flex items-center gap-3">
+
+                                {{-- PELAPOR --}}
+                                <td class="px-3 sm:px-6 py-4 sm:py-5">
 
 
-                                    <div
-                                        class="size-9 rounded-full
+                                    <div class="flex items-center gap-3">
+
+
+                                        <div
+                                            class="size-9 rounded-full
                                             bg-[#eef4f3]
                                             flex items-center justify-center
                                             text-xs font-bold
                                             text-[#19183b]">
 
-                                        {{ strtoupper(
+                                            {{ strtoupper(
                                             substr(
                                                 $report->user->name ?? '-',
                                                 0,
@@ -498,48 +499,48 @@
                                             )
                                         ) }}
 
+                                        </div>
+
+
+                                        <span class="text-sm font-semibold text-[#19183b]">
+
+                                            {{ \Illuminate\Support\Str::title(
+                                            $report->user->name ?? '-'
+                                        ) }}
+
+                                        </span>
+
+
                                     </div>
 
 
-                                    <span class="text-sm font-semibold text-[#19183b]">
+                                </td>
 
-                                        {{ \Illuminate\Support\Str::title(
-                                            $report->user->name ?? '-'
-                                        ) }}
+
+
+
+                                {{-- FASILITAS --}}
+                                <td class="px-3 sm:px-6 py-4 sm:py-5">
+
+
+                                    <span class="text-sm text-[#708993]">
+
+                                        {{ $report->facility->name ?? '-' }}
 
                                     </span>
 
 
-                                </div>
-
-
-                            </td>
+                                </td>
 
 
 
 
-                            {{-- FASILITAS --}}
-                            <td class="px-6 py-5">
+                                {{-- KATEGORI --}}
+                                <td class="px-3 sm:px-6 py-4 sm:py-5">
 
 
-                                <span class="text-sm text-[#708993]">
-
-                                    {{ $report->facility->name ?? '-' }}
-
-                                </span>
-
-
-                            </td>
-
-
-
-
-                            {{-- KATEGORI --}}
-                            <td class="px-6 py-5">
-
-
-                                <span
-                                    class="inline-flex
+                                    <span
+                                        class="inline-flex
                                         bg-[#f1f5f9]
                                         border border-[#e2e8f0]
                                         rounded-lg
@@ -548,57 +549,58 @@
                                         font-medium
                                         text-[#475569]">
 
-                                    {{ $categoryMap[$report->category] ?? '-' }}
+                                        {{ $categoryMap[$report->category] ?? '-' }}
 
-                                </span>
-
-
-                            </td>
+                                    </span>
 
 
-
-
-                            {{-- STATUS --}}
-                            <td class="px-4 py-5">
-                                <x-petugas.status-laporan-badge
-                                    :status="$report->status" />
-                            </td>
-
-                            {{-- AKSI --}}
-                            <td class="px-4 py-5">
-                                <a href="{{ route('petugas.laporan.detail', $report->id) }}"
-                                    class="inline-flex items-center justify-center rounded-xl border border-[#dce5f0] px-4 py-2 text-sm font-medium text-[#19183b] whitespace-nowrap hover:bg-gray-50 transition">
-                                    Detail
-                                </a>
-                            </td>
+                                </td>
 
 
 
-                        </tr>
+
+                                {{-- STATUS --}}
+                                <td class="px-4 py-5">
+                                    <x-petugas.status-laporan-badge
+                                        :status="$report->status" />
+                                </td>
+
+                                {{-- AKSI --}}
+                                <td class="px-4 py-5">
+                                    <a href="{{ route('petugas.laporan.detail', $report->id) }}"
+                                        class="inline-flex items-center justify-center rounded-xl border border-[#dce5f0] px-4 py-2 text-sm font-medium text-[#19183b] whitespace-nowrap hover:bg-gray-50 transition">
+                                        Detail
+                                    </a>
+                                </td>
 
 
-                        @empty
+
+                            </tr>
 
 
-                        <tr>
-
-                            <td colspan="6"
-                                class="px-6 py-8 text-center text-sm text-[#708993]">
-
-                                Belum ada laporan masuk.
-
-                            </td>
-
-                        </tr>
+                            @empty
 
 
-                        @endforelse
+                            <tr>
+
+                                <td colspan="6"
+                                    class="px-6 py-8 text-center text-sm text-[#708993]">
+
+                                    Belum ada laporan masuk.
+
+                                </td>
+
+                            </tr>
 
 
-                    </tbody>
+                            @endforelse
 
 
-                </table>
+                        </tbody>
+
+
+                    </table>
+                </div>
 
 
             </div>
@@ -611,7 +613,7 @@
             ============================ --}}
 
             <div class="bg-white border border-[#e2ebe9]
-                        rounded-2xl shadow-sm p-6">
+                        rounded-2xl shadow-sm p-4 sm:p-6">
 
 
                 <div class="flex items-center gap-3 mb-5">
@@ -705,7 +707,7 @@
                         </p>
 
 
-                        <p class="text-3xl font-extrabold
+                        <p class="text-2xl sm:text-3xl font-extrabold
                                       {{ $style['text'] }} mt-2">
 
                             {{ $status['value'] }}
@@ -728,16 +730,16 @@
             </div>
         </div>
 
-        <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-4 sm:gap-6">
 
             {{-- ============================= CARD 1 — DALAM PERBAIKAN ============================= --}}
-            <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-sm p-6">
+            <div class="bg-white border border-[#e2ebe9] rounded-2xl shadow-sm p-4 sm:p-6">
                 <div class="flex items-center justify-between gap-2 mb-1">
                     <div class="flex items-center gap-3">
 
                         <span
                             class="flex items-center justify-center
-                                    w-14 h-12
+                                    w-11 h-10 sm:w-14 sm:h-12
                                     rounded-xl
                                     bg-[#fee2e2]">
 
@@ -959,4 +961,6 @@
             </div>
 
         </div>
-        @endsection
+    </div>
+</main>
+@endsection

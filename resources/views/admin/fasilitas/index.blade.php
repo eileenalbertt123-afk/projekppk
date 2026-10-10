@@ -8,11 +8,11 @@
         HEADER HALAMAN
     ========================================================== --}}
 
-<div class="flex items-center justify-between mb-8">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 sm:mb-8">
 
     <div>
 
-        <h1 class="font-extrabold text-[30px] tracking-[-0.75px] text-[#19183b]">
+        <h1 class="font-extrabold text-2xl sm:text-[30px] tracking-[-0.75px] text-[#19183b]">
             Kelola Fasilitas
         </h1>
 
@@ -27,7 +27,7 @@
 
     <a
         href="{{ route('admin.facilities.create') }}"
-        class="inline-flex items-center gap-2
+        class="inline-flex items-center justify-center gap-2
                    bg-[#19183b] text-white
                    px-4 py-2.5 rounded-xl
                    text-[13px] font-semibold
@@ -60,14 +60,14 @@
             SEARCH + FILTER
         ====================================================== --}}
 
-    <div class="px-6 py-5 border-b border-[#eef1f1]">
+    <div class="px-3 py-4 sm:px-6 sm:py-5 border-b border-[#eef1f1]">
 
         <div class="flex flex-wrap items-center gap-2">
 
 
             {{-- SEARCH --}}
 
-            <div class="relative flex-1 min-w-[280px]">
+            <div class="relative flex-1 min-w-full sm:min-w-[280px]">
 
                 <svg
                     class="absolute left-3.5 top-1/2
@@ -107,7 +107,7 @@
             <button
                 type="button"
                 data-filter="semua"
-                class="filter-status h-11 px-5 rounded-xl
+                class="filter-status h-9 sm:h-11 px-4 sm:px-5 rounded-xl
                            bg-[#19183b] text-white
                            text-[13px] font-semibold
                            transition">
@@ -122,7 +122,7 @@
             <button
                 type="button"
                 data-filter="tersedia"
-                class="filter-status h-11 px-5 rounded-xl
+                class="filter-status h-9 sm:h-11 px-4 sm:px-5 rounded-xl
                            bg-[#eef4f3] text-[#39735d]
                            text-[13px] font-medium
                            hover:bg-[#dff0ea]
@@ -138,7 +138,7 @@
             <button
                 type="button"
                 data-filter="dalam_perbaikan"
-                class="filter-status h-11 px-5 rounded-xl
+                class="filter-status h-9 sm:h-11 px-4 sm:px-5 rounded-xl
                            bg-[#fff7e5] text-[#a56a00]
                            text-[13px] font-medium
                            hover:bg-[#ffefc9]
@@ -154,7 +154,7 @@
             <button
                 type="button"
                 data-filter="nonaktif"
-                class="filter-status h-11 px-5 rounded-xl
+                class="filter-status h-9 sm:h-11 px-4 sm:px-5 rounded-xl
                            bg-[#f5f5f6] text-[#6b7280]
                            text-[13px] font-medium
                            hover:bg-[#e9e9eb]
@@ -175,41 +175,41 @@
 
     <div class="overflow-x-auto">
 
-        <table class="w-full text-[14px]">
+        <table class="w-full min-w-[720px] text-[14px]">
 
             <thead class="bg-[#fafbfb] border-b border-[#eef1f1]">
 
                 <tr class="text-left">
 
-                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
+                    <th class="px-3 py-3 sm:px-6 sm:py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
                         ID Fasilitas
                     </th>
 
-                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
+                    <th class="px-3 py-3 sm:px-6 sm:py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
                         Foto
                     </th>
 
-                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
+                    <th class="px-3 py-3 sm:px-6 sm:py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
                         Fasilitas
                     </th>
 
-                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
+                    <th class="px-3 py-3 sm:px-6 sm:py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
                         Jenis
                     </th>
 
-                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
+                    <th class="px-3 py-3 sm:px-6 sm:py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
                         Lokasi
                     </th>
 
-                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
+                    <th class="px-3 py-3 sm:px-6 sm:py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
                         Kapasitas
                     </th>
 
-                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
+                    <th class="px-3 py-3 sm:px-6 sm:py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0]">
                         Status
                     </th>
 
-                    <th class="px-6 py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0] text-center">
+                    <th class="px-3 py-3 sm:px-6 sm:py-4 text-[12px] font-bold uppercase tracking-wide text-[#8b9aa0] text-center">
                         Aksi
                     </th>
 
@@ -234,7 +234,7 @@
 
                     {{-- ID --}}
 
-                    <td class="px-6 py-5">
+                    <td class="px-3 py-4 sm:px-6 sm:py-5">
 
                         <span class="font-semibold text-[14px] text-[#19183b]">
 
@@ -247,7 +247,7 @@
 
                     {{-- FOTO --}}
 
-                    <td class="px-6 py-5">
+                    <td class="px-3 py-4 sm:px-6 sm:py-5">
 
                         @if($item->image)
 
@@ -295,7 +295,7 @@
 
                     {{-- FASILITAS --}}
 
-                    <td class="px-6 py-5">
+                    <td class="px-3 py-4 sm:px-6 sm:py-5">
 
                         <div>
 
@@ -322,7 +322,7 @@
 
                     {{-- JENIS --}}
 
-                    <td class="px-6 py-5 text-[14px] text-[#52636a] capitalize">
+                    <td class="px-3 py-4 sm:px-6 sm:py-5 text-[14px] text-[#52636a] capitalize">
 
                         {{ str_replace('_', ' ', $item->type) }}
 
@@ -331,7 +331,7 @@
 
                     {{-- LOKASI --}}
 
-                    <td class="px-6 py-5 text-[14px] text-[#52636a]">
+                    <td class="px-3 py-4 sm:px-6 sm:py-5 text-[14px] text-[#52636a]">
 
                         {{ $item->location }}
 
@@ -340,7 +340,7 @@
 
                     {{-- KAPASITAS --}}
 
-                    <td class="px-6 py-5 text-[14px] text-[#52636a]">
+                    <td class="px-3 py-4 sm:px-6 sm:py-5 text-[14px] text-[#52636a]">
 
                         {{ $item->capacity }} orang
 
@@ -349,7 +349,7 @@
 
                     {{-- STATUS --}}
 
-                    <td class="px-6 py-5">
+                    <td class="px-3 py-4 sm:px-6 sm:py-5">
 
                         @if($item->status === 'tersedia')
 
@@ -409,7 +409,7 @@
 
                     {{-- AKSI --}}
 
-                    <td class="px-6 py-5 text-center">
+                    <td class="px-3 py-4 sm:px-6 sm:py-5 text-center">
 
                         <a
                             href="{{ route('admin.facilities.edit', $item->id) }}"
@@ -438,7 +438,7 @@
 
                     <td
                         colspan="8"
-                        class="px-6 py-14 text-center">
+                        class="px-4 py-10 sm:px-6 sm:py-14 text-center">
 
                         <p class="text-[15px] font-semibold text-[#19183b]">
                             Belum ada data fasilitas.
@@ -461,7 +461,7 @@
 
                     <td
                         colspan="8"
-                        class="px-6 py-14 text-center">
+                        class="px-4 py-10 sm:px-6 sm:py-14 text-center">
 
                         <p class="text-[15px] font-semibold text-[#19183b]">
                             Fasilitas tidak ditemukan.
@@ -487,7 +487,7 @@
         ====================================================== --}}
 
     <div
-        class="px-6 py-5
+        class="px-3 py-4 sm:px-6 sm:py-5
                    border-t border-[#eef1f1]
                    flex items-center justify-between">
 

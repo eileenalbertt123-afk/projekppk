@@ -106,7 +106,7 @@ class ReservationController extends Controller
                 $week[] = [
                     'n'     => $currentDate->day,
                     'muted' => $currentDate->month !== $calendarDate->month,
-                    'active'=> $currentDate->isToday(),
+                    'active' => $currentDate->isToday(),
                     'dots'  => $statuses,
                 ];
                 $currentDate->addDay();
@@ -115,12 +115,22 @@ class ReservationController extends Controller
         }
 
         return view('petugas.reservasi.dashboard', compact(
-            'incomingReservations', 'totalIncomingReservations',
-            'totalPeminjam', 'persenPeminjam',
-            'totalReservasi', 'persenReservasi',
-            'rataRataWaktuReservasi', 'selisihWaktuReservasi', 'adaDataBulanLalu',
-            'statusSummary', 'todaySchedule', 'scheduleDateLabel',
-            'calendarWeeks', 'calendarMonthLabel', 'previousMonth', 'nextMonth'
+            'incomingReservations',
+            'totalIncomingReservations',
+            'totalPeminjam',
+            'persenPeminjam',
+            'totalReservasi',
+            'persenReservasi',
+            'rataRataWaktuReservasi',
+            'selisihWaktuReservasi',
+            'adaDataBulanLalu',
+            'statusSummary',
+            'todaySchedule',
+            'scheduleDateLabel',
+            'calendarWeeks',
+            'calendarMonthLabel',
+            'previousMonth',
+            'nextMonth'
         ));
     }
 
@@ -164,7 +174,11 @@ class ReservationController extends Controller
         $reservations = $query->paginate(10)->withQueryString();
 
         return view('petugas.reservasi.daftar-reservasi', compact(
-            'totalReservasi', 'menungguCount', 'disetujuiCount', 'dibatalkanDitolakCount', 'reservations'
+            'totalReservasi',
+            'menungguCount',
+            'disetujuiCount',
+            'dibatalkanDitolakCount',
+            'reservations'
         ));
     }
 
@@ -308,9 +322,17 @@ class ReservationController extends Controller
         }
 
         return view('petugas.reservasi.jadwal-reservasi', compact(
-            'weekStart', 'weekEnd', 'previousWeek', 'nextWeek',
-            'facilityTypes', 'facilities', 'selectedType', 'selectedFacility',
-            'reservations', 'weekDays', 'scheduleByDay'
+            'weekStart',
+            'weekEnd',
+            'previousWeek',
+            'nextWeek',
+            'facilityTypes',
+            'facilities',
+            'selectedType',
+            'selectedFacility',
+            'reservations',
+            'weekDays',
+            'scheduleByDay'
         ));
     }
 
@@ -377,16 +399,15 @@ class ReservationController extends Controller
 
         $documentPath = null;
         if ($request->hasFile('document')) {
-            \Cloudinary::config([
-                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                'api_key'    => env('CLOUDINARY_API_KEY'),
-                'api_secret' => env('CLOUDINARY_API_SECRET'),
-            ]);
-            $result = \Cloudinary\Uploader::upload(
-                $request->file('document')->getRealPath(),
-                ['folder' => 'documents', 'resource_type' => 'auto']
-            );
-            $documentPath = $result['secure_url'];
+            $file = $request->file('document');
+            $response = \Illuminate\Support\Facades\Http::withBasicAuth(
+                env('CLOUDINARY_API_KEY'),
+                env('CLOUDINARY_API_SECRET')
+            )->attach('file', file_get_contents($file->getRealPath()), $file->getClientOriginalName())
+                ->post('https://api.cloudinary.com/v1_1/' . env('CLOUDINARY_CLOUD_NAME') . '/auto/upload', [
+                    'folder' => 'documents',
+                ]);
+            $documentPath = $response->json()['secure_url'];
         }
 
         $lastCode   = Reservation::orderBy('id', 'desc')->value('reservation_code');

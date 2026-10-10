@@ -3,15 +3,15 @@
 @section('content')
 
 <!-- HEADER UTAMA -->
-<div class="mb-8">
+<div class="mb-5 sm:mb-8">
     <div class="flex items-center gap-3 mb-3">
-        <div class="bg-brand-primary rounded-xl size-12 flex items-center justify-center shrink-0 shadow-card">
+        <div class="bg-brand-primary rounded-xl size-10 sm:size-12 flex items-center justify-center shrink-0 shadow-card">
             <svg class="size-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 14.25l2.25 2.25 5.25-5.25" />
             </svg>
         </div>
-        <h1 class="text-3xl font-extrabold text-brand-primary tracking-tight">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-primary tracking-tight">
             Book<span class="text-brand-secondary">&amp;</span>Fix
         </h1>
     </div>
@@ -21,11 +21,11 @@
     </p>
 </div>
 
-<div class="bg-white/60 backdrop-blur-sm rounded-3xl border border-white/80 shadow-panel p-5 sm:p-8">
+<div class="bg-white/60 backdrop-blur-sm rounded-3xl border border-white/80 shadow-panel p-4 sm:p-8">
     <!-- HEADER RINGKASAN -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-            <h2 class="text-2xl font-extrabold text-brand-primary">Daftar Fasilitas</h2>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-brand-primary">Daftar Fasilitas</h2>
             <p class="text-sm text-brand-secondary mt-0.5">Temukan dan cek ketersediaan ruang fasilitas yang tersedia.</p>
         </div>
         <div class="flex items-center gap-3">
@@ -37,7 +37,7 @@
     </div>
 
     <!-- PANDUAN RESERVASI -->
-    <div class="animate-fade-up bg-brand-primary/5 border border-brand-primary/15 rounded-xl p-4 mb-6 shadow-md">
+    <div class="animate-fade-up bg-brand-primary/5 border border-brand-primary/15 rounded-xl p-3 sm:p-4 mb-5 sm:mb-6 shadow-md">
         <p class="text-sm font-semibold text-brand-primary mb-3">Cara meminjam fasilitas</p>
         <p class="text-xs text-brand-secondary mt-1 mb-3 flex items-center gap-1.5">
             <svg class="size-3.5 shrink-0 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -80,7 +80,7 @@
     </div>
 
     <!-- FILTER & PENCARIAN -->
-    <form method="GET" style="animation-delay: 150ms" class="animate-fade-up bg-white p-3 rounded-xl border border-gray-200 shadow-card mb-8 flex flex-wrap gap-2 items-center">
+    <form method="GET" style="animation-delay: 150ms" class="animate-fade-up bg-white p-3 rounded-xl border border-gray-200 shadow-card mb-5 sm:mb-8 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 items-center">
         <!-- Tipe -->
         <div class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none text-brand-secondary">
@@ -88,7 +88,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a1.994 1.994 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                 </svg>
             </span>
-            <select name="type" class="bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-2 py-1.5 text-xs text-brand-primary focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/30">
+            <select name="type" class="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-2 py-1.5 text-xs text-brand-primary focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/30">
                 <option value="">Semua Tipe</option>
                 @foreach ($types as $type)
                     <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>{{ ucfirst($type) }}</option>
@@ -104,7 +104,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
             </span>
-            <select name="location" class="bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-2 py-1.5 text-xs text-brand-primary focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/30">
+            <select name="location" class="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-2 py-1.5 text-xs text-brand-primary focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/30">
                 <option value="">Semua Lokasi</option>
                 @foreach ($locations as $location)
                     <option value="{{ $location }}" {{ request('location') == $location ? 'selected' : '' }}>{{ $location }}</option>
@@ -119,7 +119,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
             </span>
-            <input type="number" name="capacity" placeholder="Kapasitas min" value="{{ request('capacity') }}" class="bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-2 py-1.5 text-xs text-brand-primary placeholder-brand-secondary/70 focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/30 w-36">
+            <input type="number" name="capacity" placeholder="Kapasitas min" value="{{ request('capacity') }}" class="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-2 py-1.5 text-xs text-brand-primary placeholder-brand-secondary/70 focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/30 w-36">
         </div>
 
         <!-- Status -->
@@ -129,7 +129,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </span>
-            <select name="status" class="bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-2 py-1.5 text-xs text-brand-primary focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/30">
+            <select name="status" class="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-2 py-1.5 text-xs text-brand-primary focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/30">
                 <option value="">Semua Status</option>
                 <option value="tersedia" {{ request('status') == 'tersedia' ? 'selected' : '' }}>Tersedia</option>
                 <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Non Aktif</option>
@@ -138,7 +138,7 @@
         </div>
 
         <!-- Tombol Cari -->
-        <button type="submit" class="inline-flex items-center gap-1.5 bg-brand-primary hover:opacity-90 text-white font-semibold px-4 py-1.5 rounded-lg text-xs transition ml-auto shadow-sm">
+        <button type="submit" class="inline-flex items-center gap-1.5 bg-brand-primary hover:opacity-90 text-white font-semibold px-4 py-1.5 rounded-lg text-xs transition col-span-2 justify-center sm:col-span-1 sm:ml-auto shadow-sm">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -147,12 +147,12 @@
     </form>
 
     <!-- GRID KARTU FASILITAS -->
-    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div class="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
         @forelse ($facilities as $facility)
             <a href="{{ route('facilities.availability', $facility) }}"
                class="animate-fade-up group block cursor-pointer bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover hover:-translate-y-0.5 transition duration-200">
                 <!-- Gambar & Badge Status -->
-                <div class="relative h-48 bg-gradient-to-br from-brand-secondary/25 to-brand-tertiary/25 overflow-hidden">
+                <div class="relative h-40 sm:h-48 bg-gradient-to-br from-brand-secondary/25 to-brand-tertiary/25 overflow-hidden">
                     @if ($facility->image)
                         <img src="{{ (\Illuminate\Support\Str::startsWith($facility->image, 'http') ? $facility->image : asset('storage/' . $facility->image)) }}" alt="{{ $facility->name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                     @else
@@ -180,7 +180,7 @@
 
                 <!-- Detail Ruangan -->
                 <div class="p-4">
-                    <h3 class="font-bold text-lg text-brand-primary group-hover:opacity-80 transition">{{ $facility->name }}</h3>
+                    <h3 class="font-bold text-base sm:text-lg text-brand-primary group-hover:opacity-80 transition">{{ $facility->name }}</h3>
 
                     <ul class="mt-3 space-y-2">
                         <li class="flex items-center gap-2.5 text-xs text-brand-secondary">

@@ -103,6 +103,7 @@
                 <form
                     method="POST"
                     action="{{ $approveAction }}"
+                    data-reservation-ajax
                     class="flex flex-col gap-4"
                 >
                     @csrf
@@ -161,6 +162,7 @@
                         </button>
 
                         <a
+                            data-reservation-link
                             href="{{ route('petugas.reservasi.detail', $reservationId) }}?action=reject"
                             class="flex-1 inline-flex items-center justify-center gap-[6px]
                                 bg-white border border-[#f43f5e]
@@ -213,6 +215,7 @@
                     </button>
 
                     <a
+                        data-reservation-link
                         href="{{ route('petugas.reservasi.detail', $reservationId) }}?action=reject"
                         class="flex-1 inline-flex items-center justify-center gap-[6px]
                             bg-white border border-[#f43f5e]
@@ -260,6 +263,7 @@
 
 
                 <a
+                    data-reservation-link
                     href="{{ route('petugas.reservasi.detail', $reservationId) }}?action=cancel"
                     class="w-full inline-flex items-center justify-center gap-[6px]
                         bg-[#e11d48] hover:bg-[#be123c]
@@ -281,6 +285,7 @@
                 <form
                     method="POST"
                     action="{{ $cancelAction }}"
+                    data-reservation-ajax
                     class="flex flex-col gap-3 bg-[#f8fafc]/70 border border-[#e2e8f0] rounded-xl p-[17px]"
                 >
                     @csrf
@@ -369,6 +374,7 @@
                         </button>
 
                         <a
+                            data-reservation-link
                             href="{{ route('petugas.reservasi.detail', $reservationId) }}"
                             class="flex-1 inline-flex items-center justify-center
                                 bg-white border border-[#cbd5e1]
@@ -437,6 +443,7 @@
                 <form
                     method="POST"
                     action="{{ $rejectAction }}"
+                    data-reservation-ajax
                     class="flex flex-col gap-3 bg-[#f8fafc]/70 border border-[#e2e8f0] rounded-xl p-[17px]"
                 >
                     @csrf
@@ -509,6 +516,7 @@
                         </button>
 
                         <a
+                            data-reservation-link
                             href="{{ route('petugas.reservasi.detail', $reservationId) }}"
                             class="flex-1 inline-flex items-center justify-center
                                 bg-white border border-[#cbd5e1]

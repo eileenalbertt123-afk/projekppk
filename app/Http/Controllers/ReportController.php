@@ -269,7 +269,16 @@ class ReportController extends Controller
             ]);
         });
 
-        return redirect()->route('petugas.laporan.detail', $report)->with('success', 'Laporan mulai diproses.');
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Laporan mulai diproses.'
+            ]);
+        }
+
+        return redirect()
+            ->route('petugas.laporan.detail', $report)
+            ->with('success', 'Laporan mulai diproses.');
     }
 
     public function startRepair(Report $report)
@@ -280,7 +289,16 @@ class ReportController extends Controller
             $report->facility?->update(['status' => 'dalam_perbaikan']);
         });
 
-        return redirect()->route('petugas.laporan.detail', $report)->with('success', 'Fasilitas telah ditandai dalam perbaikan.');
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Fasilitas telah ditandai dalam perbaikan.'
+            ]);
+        }
+
+        return redirect()
+            ->route('petugas.laporan.detail', $report)
+            ->with('success', 'Fasilitas telah ditandai dalam perbaikan.');
     }
 
     public function reject(Request $request, Report $report)
@@ -302,6 +320,13 @@ class ReportController extends Controller
                 'reason'          => $validated['rejection_reason'],
             ]);
         });
+        
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Laporan berhasil ditolak.'
+            ]);
+        }
 
         return redirect()->route('petugas.laporan.detail', $report)->with('success', 'Laporan berhasil ditolak.');
     }
@@ -315,8 +340,15 @@ class ReportController extends Controller
         ]);
 
         DB::transaction(function () use ($report, $validated) {
-            $report->update(['status' => 'selesai']);
-            $report->facility?->update(['status' => 'Tersedia']);
+
+            $report->update([
+                'status' => 'selesai',
+            ]);
+
+            $report->facility?->update([
+                'status' => 'tersedia',
+            ]);
+
             ReportStatusHistory::create([
                 'report_id'  => $report->id,
                 'status'     => 'selesai',
@@ -325,7 +357,16 @@ class ReportController extends Controller
             ]);
         });
 
-        return redirect()->route('petugas.laporan.detail', $report)->with('success', 'Laporan berhasil diselesaikan.');
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Laporan berhasil diselesaikan.'
+            ]);
+        }
+
+        return redirect()
+            ->route('petugas.laporan.detail', $report)
+            ->with('success', 'Laporan berhasil diselesaikan.');
     }
 
     public function image(Report $report)

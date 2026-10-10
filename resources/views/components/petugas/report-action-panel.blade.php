@@ -1,94 +1,94 @@
 @props([
-'state' => 'waiting',
-'reportId' => null,
+    'state' => 'waiting',
+    'reportId' => null,
 
-'completionNote' => null,
-'rejectionReason' => null,
+    'completionNote' => null,
+    'rejectionReason' => null,
 
-'affectedReservations' => [],
+    'affectedReservations' => [],
 
-'action' => null,
-'method' => 'POST',
+    'action' => null,
+    'method' => 'POST',
 
-'petugasName' => 'Petugas',
+    'petugasName' => 'Petugas',
 
-'cancelUrl' => null,
-'rejectUrl' => null,
-'completeUrl' => null,
+    'cancelUrl' => null,
+    'rejectUrl' => null,
+    'completeUrl' => null,
 ])
 
 @php
-/*
-|--------------------------------------------------------------------------
-| BADGE CONFIG
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | BADGE CONFIG
+    |--------------------------------------------------------------------------
+    */
 
-$badge = match ($state) {
+    $badge = match ($state) {
 
-'waiting', 'ready' => [
-'dot' => 'bg-[#f59e0b]',
-'bg' => 'bg-[#fffbeb]',
-'border' => 'border-[#fde68a]',
-'label' => 'Baru',
-'labelColor' => 'text-[#92400e]',
-'sub' => 'Menunggu verifikasi petugas',
-'subColor' => 'text-[#b45309]',
-],
+        'waiting', 'ready' => [
+            'dot' => 'bg-[#f59e0b]',
+            'bg' => 'bg-[#fffbeb]',
+            'border' => 'border-[#fde68a]',
+            'label' => 'Baru',
+            'labelColor' => 'text-[#92400e]',
+            'sub' => 'Menunggu verifikasi petugas',
+            'subColor' => 'text-[#b45309]',
+        ],
 
-'repair-pending',
-'repair-ready',
-'facility-conflict' => [
-'dot' => 'bg-[#7c3aed]',
-'bg' => 'bg-[#ede9fe]',
-'border' => 'border-[#ddd6fe]',
-'label' => 'Diproses',
-'labelColor' => 'text-[#4b21b6]',
-'sub' => 'Sedang diproses oleh petugas',
-'subColor' => 'text-[#7c3aed]',
-],
+        'repair-pending',
+        'repair-ready',
+        'facility-conflict' => [
+            'dot' => 'bg-[#7c3aed]',
+            'bg' => 'bg-[#ede9fe]',
+            'border' => 'border-[#ddd6fe]',
+            'label' => 'Diproses',
+            'labelColor' => 'text-[#4b21b6]',
+            'sub' => 'Sedang diproses oleh petugas',
+            'subColor' => 'text-[#7c3aed]',
+        ],
 
-'completed' => [
-'dot' => 'bg-[#0ea5e9]',
-'bg' => 'bg-[#e0f2fe]',
-'border' => 'border-[#bae6fd]',
-'label' => 'Selesai',
-'labelColor' => 'text-[#0369a1]',
-'sub' => 'Laporan kerusakan telah selesai dan telah diperbaiki',
-'subColor' => 'text-[#0284c7]',
-],
+        'completed' => [
+            'dot' => 'bg-[#0ea5e9]',
+            'bg' => 'bg-[#e0f2fe]',
+            'border' => 'border-[#bae6fd]',
+            'label' => 'Selesai',
+            'labelColor' => 'text-[#0369a1]',
+            'sub' => 'Laporan kerusakan telah selesai dan telah diperbaiki',
+            'subColor' => 'text-[#0284c7]',
+        ],
 
-'rejected' => [
-'dot' => 'bg-[#f43f5e]',
-'bg' => 'bg-[#fff1f2]',
-'border' => 'border-[#fecdd3]',
-'label' => 'Ditolak',
-'labelColor' => 'text-[#9f1239]',
-'sub' => 'Ditolak oleh petugas',
-'subColor' => 'text-[#be123c]',
-],
+        'rejected' => [
+            'dot' => 'bg-[#f43f5e]',
+            'bg' => 'bg-[#fff1f2]',
+            'border' => 'border-[#fecdd3]',
+            'label' => 'Ditolak',
+            'labelColor' => 'text-[#9f1239]',
+            'sub' => 'Ditolak oleh petugas',
+            'subColor' => 'text-[#be123c]',
+        ],
 
-default => [
-'dot' => 'bg-slate-400',
-'bg' => 'bg-slate-50',
-'border' => 'border-slate-200',
-'label' => ucfirst($state),
-'labelColor' => 'text-slate-700',
-'sub' => '',
-'subColor' => 'text-slate-500',
-],
-};
+        default => [
+            'dot' => 'bg-slate-400',
+            'bg' => 'bg-slate-50',
+            'border' => 'border-slate-200',
+            'label' => ucfirst($state),
+            'labelColor' => 'text-slate-700',
+            'sub' => '',
+            'subColor' => 'text-slate-500',
+        ],
+    };
 
-$hideBadge = in_array($state, [
-'completion-form',
-'rejection-form',
-]);
+    $hideBadge = in_array($state, [
+        'completion-form',
+        'rejection-form',
+    ]);
 
-$verificationPanelId =
-'report-verification-' . ($reportId ?? 'default');
+    $verificationPanelId =
+        'report-verification-' . ($reportId ?? 'default');
 
-$repairPanelId =
-'report-repair-' . ($reportId ?? 'default');
+    $repairPanelId =
+        'report-repair-' . ($reportId ?? 'default');
 @endphp
 
 
@@ -106,7 +106,8 @@ $repairPanelId =
         shadow-[0px_4px_6px_-1px_rgba(0,0,0,0.1),0px_2px_4px_-2px_rgba(0,0,0,0.1)]
         w-full
         overflow-hidden
-    ">
+    "
+>
 
     {{-- TOP ACCENT --}}
     <div
@@ -115,7 +116,8 @@ $repairPanelId =
             bg-[#19183b]
             h-[6px]
             left-0 right-0 top-0
-        "></div>
+        "
+    ></div>
 
 
     {{-- ========================================================
@@ -132,7 +134,8 @@ $repairPanelId =
                     rounded-[8px]
                     w-[32px] h-[32px]
                     shrink-0
-                ">
+                "
+            >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -142,10 +145,11 @@ $repairPanelId =
                     stroke="white"
                     stroke-width="2"
                     stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <rect x="2" y="3" width="20" height="14" rx="2" />
-                    <line x1="8" y1="21" x2="16" y2="21" />
-                    <line x1="12" y1="17" x2="12" y2="21" />
+                    stroke-linejoin="round"
+                >
+                    <rect x="2" y="3" width="20" height="14" rx="2"/>
+                    <line x1="8" y1="21" x2="16" y2="21"/>
+                    <line x1="12" y1="17" x2="12" y2="21"/>
                 </svg>
             </div>
 
@@ -157,7 +161,8 @@ $repairPanelId =
                         text-[16px]
                         leading-[24px]
                         m-0
-                    ">
+                    "
+                >
                     Panel Aksi Petugas
                 </p>
 
@@ -167,7 +172,8 @@ $repairPanelId =
                         text-[12px]
                         leading-[16px]
                         m-0
-                    ">
+                    "
+                >
                     Keputusan persetujuan &amp; verifikasi
                 </p>
             </div>
@@ -186,8 +192,8 @@ $repairPanelId =
         {{-- STATUS BADGE --}}
         @unless ($hideBadge)
 
-        <div
-            class="
+            <div
+                class="
                     {{ $badge['bg'] }}
                     border {{ $badge['border'] }}
                     flex items-center justify-between
@@ -195,45 +201,49 @@ $repairPanelId =
                     rounded-[12px]
                     w-full
                     gap-4
-                ">
+                "
+            >
 
-            <div class="flex items-center gap-[8px]">
+                <div class="flex items-center gap-[8px]">
 
-                <span
-                    class="
+                    <span
+                        class="
                             {{ $badge['dot'] }}
                             rounded-full
                             w-[8px] h-[8px]
                             shrink-0
-                        "></span>
+                        "
+                    ></span>
 
-                <span
-                    class="
+                    <span
+                        class="
                             font-bold
                             {{ $badge['labelColor'] }}
                             text-[12px]
                             leading-[16px]
-                        ">
-                    {{ $badge['label'] }}
-                </span>
+                        "
+                    >
+                        {{ $badge['label'] }}
+                    </span>
 
-            </div>
+                </div>
 
-            @if ($badge['sub'])
+                @if ($badge['sub'])
 
-            <span
-                class="
+                    <span
+                        class="
                             {{ $badge['subColor'] }}
                             text-[11px]
                             leading-[16px]
                             text-right
-                        ">
-                {{ $badge['sub'] }}
-            </span>
+                        "
+                    >
+                        {{ $badge['sub'] }}
+                    </span>
 
-            @endif
+                @endif
 
-        </div>
+            </div>
 
         @endunless
 
@@ -245,38 +255,40 @@ $repairPanelId =
         ===================================================== --}}
         @if (in_array($state, ['waiting', 'ready']))
 
-        @php
-        $verificationItems = [
-        'Informasi laporan sesuai dengan kondisi fasilitas',
-        'Bukti/foto kerusakan dapat diverifikasi',
-        'Laporan berkaitan dengan fasilitas yang dipilih',
-        ];
-        @endphp
+            @php
+                $verificationItems = [
+                    'Informasi laporan sesuai dengan kondisi fasilitas',
+                    'Bukti/foto kerusakan dapat diverifikasi',
+                    'Laporan berkaitan dengan fasilitas yang dipilih',
+                ];
+            @endphp
 
-        <div
-            id="{{ $verificationPanelId }}"
-            class="flex flex-col gap-[15px] w-full">
+            <div
+                id="{{ $verificationPanelId }}"
+                class="flex flex-col gap-[15px] w-full"
+            >
 
-            <div class="flex flex-col gap-[10px]">
+                <div class="flex flex-col gap-[10px]">
 
-                <p
-                    class="
+                    <p
+                        class="
                             font-bold
                             text-[#1e293b]
                             text-[12px]
                             tracking-[0.6px]
                             uppercase
                             m-0
-                        ">
-                    Checklist Verifikasi
-                </p>
+                        "
+                    >
+                        Checklist Verifikasi
+                    </p>
 
-                <div class="flex flex-col gap-[8px]">
+                    <div class="flex flex-col gap-[8px]">
 
-                    @foreach ($verificationItems as $item)
+                        @foreach ($verificationItems as $item)
 
-                    <label
-                        class="
+                            <label
+                                class="
                                     bg-[#f8fafc]
                                     border border-[#e2e8f0]
                                     flex items-center gap-[10px]
@@ -284,55 +296,59 @@ $repairPanelId =
                                     px-[10px]
                                     rounded-[8px]
                                     cursor-pointer
-                                ">
+                                "
+                            >
 
-                        <input
-                            type="checkbox"
-                            class="
+                                <input
+                                    type="checkbox"
+                                    class="
                                         report-verification-checkbox
                                         w-[16px] h-[16px]
                                         accent-[#7c3aed]
                                         cursor-pointer
                                         shrink-0
                                     "
-                            @checked($state==='ready' )>
+                                    @checked($state === 'ready')
+                                >
 
-                        <span
-                            class="
+                                <span
+                                    class="
                                         text-[#181c1c]
                                         text-[12px]
                                         leading-[17px]
-                                    ">
-                            {{ $item }}
-                        </span>
+                                    "
+                                >
+                                    {{ $item }}
+                                </span>
 
-                    </label>
+                            </label>
 
-                    @endforeach
+                        @endforeach
+
+                    </div>
 
                 </div>
 
-            </div>
 
+                {{-- ACTION BUTTONS --}}
+                <div class="flex gap-[12px] w-full">
 
-            {{-- ACTION BUTTONS --}}
-            <div class="flex gap-[12px] w-full">
+                    {{-- PROSES LAPORAN --}}
+                    @if ($action)
 
-                {{-- PROSES LAPORAN --}}
-                @if ($action)
+                        <form
+                            method="POST"
+                            action="{{ $action }}"
+                            class="w-[48%]"
+                            data-process-form
+                        >
+                            @csrf
 
-                <form
-                    method="POST"
-                    action="{{ $action }}"
-                    class="w-[48%]"
-                    data-process-form>
-                    @csrf
-
-                    <button
-                        type="submit"
-                        data-process-button
-                        disabled
-                        class="
+                            <button
+                                type="submit"
+                                data-process-button
+                                disabled
+                                class="
                                     w-full
                                     min-h-[62px]
                                     flex items-center justify-center
@@ -351,18 +367,19 @@ $repairPanelId =
                                     enabled:text-white
                                     enabled:cursor-pointer
                                     enabled:shadow-[0px_4px_7px_rgba(124,58,237,0.35)]
-                                ">
-                        Proses Laporan
-                    </button>
-                </form>
+                                "
+                            >
+                                Proses Laporan
+                            </button>
+                        </form>
 
-                @else
+                    @else
 
-                <button
-                    type="button"
-                    data-process-button
-                    disabled
-                    class="
+                        <button
+                            type="button"
+                            data-process-button
+                            disabled
+                            class="
                                 w-[48%]
                                 min-h-[62px]
                                 flex items-center justify-center
@@ -374,18 +391,19 @@ $repairPanelId =
                                 text-[#78767f]
                                 opacity-60
                                 cursor-not-allowed
-                            ">
-                    Proses Laporan
-                </button>
+                            "
+                        >
+                            Proses Laporan
+                        </button>
 
-                @endif
+                    @endif
 
-                {{-- TOLAK --}}
-                @if ($rejectUrl)
+                    {{-- TOLAK --}}
+                    @if ($rejectUrl)
 
-                <a
-                    href="{{ $rejectUrl }}"
-                    class="
+                        <a
+                            href="{{ $rejectUrl }}"
+                            class="
                                 bg-white
                                 border border-[#f43f5e]
                                 text-[#be123c]
@@ -399,16 +417,17 @@ $repairPanelId =
                                 hover:bg-[#fff1f2]
                                 transition-all
                                 cursor-pointer
-                            ">
-                    Tolak
-                </a>
+                            "
+                        >
+                            Tolak
+                        </a>
 
-                @else
+                    @else
 
-                <button
-                    type="button"
-                    disabled
-                    class="
+                        <button
+                            type="button"
+                            disabled
+                            class="
                                 bg-white
                                 border border-[#f43f5e]
                                 text-[#be123c]
@@ -420,97 +439,101 @@ $repairPanelId =
                                 text-[14px]
                                 opacity-40
                                 cursor-not-allowed
-                            ">
-                    Tolak
-                </button>
+                            "
+                        >
+                            Tolak
+                        </button>
 
-                @endif
+                    @endif
 
-            </div>
+                </div>
 
-            <p
-                data-verification-hint
-                class="
+                <p
+                    data-verification-hint
+                    class="
                         italic
                         text-[#708993]
                         text-[11px]
                         leading-[18px]
                         m-0
-                    ">
-                Lengkapi seluruh checklist verifikasi fisik untuk membuka tindakan operasional ini.
-            </p>
+                    "
+                >
+                    Lengkapi seluruh checklist verifikasi fisik untuk membuka tindakan operasional ini.
+                </p>
 
-        </div>
+            </div>
 
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
 
-                const panelId = '{{ $repairPanelId }}';
-                const panel = document.getElementById(panelId);
+                    const panel = document.getElementById(
+                        @json($verificationPanelId)
+                    );
 
-                if (!panel) return;
+                    if (!panel) return;
 
-                const checkboxes = panel.querySelectorAll(
-                    '.report-verification-checkbox'
-                );
+                    const checkboxes = panel.querySelectorAll(
+                        '.report-verification-checkbox'
+                    );
 
-                const processButton = panel.querySelector(
-                    '[data-process-button]'
-                );
+                    const processButton = panel.querySelector(
+                        '[data-process-button]'
+                    );
 
-                const hint = panel.querySelector(
-                    '[data-verification-hint]'
-                );
+                    const hint = panel.querySelector(
+                        '[data-verification-hint]'
+                    );
 
-                function updateState() {
+                    function updateState() {
 
-                    const allChecked =
-                        checkboxes.length > 0 && [...checkboxes].every(
-                            checkbox => checkbox.checked
-                        );
-
-                    // HANYA PROSES LAPORAN YANG TERGANTUNG CHECKLIST
-                    if (processButton) {
-
-                        if (processButton.tagName === 'BUTTON') {
-
-                            processButton.disabled = !allChecked;
-
-                        } else {
-
-                            processButton.classList.toggle(
-                                'opacity-40',
-                                !allChecked
+                        const allChecked =
+                            checkboxes.length > 0 &&
+                            [...checkboxes].every(
+                                checkbox => checkbox.checked
                             );
 
-                            processButton.classList.toggle(
-                                'pointer-events-none',
-                                !allChecked
-                            );
+                        // HANYA PROSES LAPORAN YANG TERGANTUNG CHECKLIST
+                        if (processButton) {
+
+                            if (processButton.tagName === 'BUTTON') {
+
+                                processButton.disabled = !allChecked;
+
+                            } else {
+
+                                processButton.classList.toggle(
+                                    'opacity-40',
+                                    !allChecked
+                                );
+
+                                processButton.classList.toggle(
+                                    'pointer-events-none',
+                                    !allChecked
+                                );
+                            }
+                        }
+
+                        if (hint) {
+
+                            hint.textContent = allChecked
+                                ? 'Seluruh checklist verifikasi telah terpenuhi. Laporan siap diproses.'
+                                : 'Lengkapi seluruh checklist verifikasi untuk mengaktifkan Proses Laporan.';
                         }
                     }
 
-                    if (hint) {
+                    checkboxes.forEach(function (checkbox) {
 
-                        hint.textContent = allChecked ?
-                            'Seluruh checklist verifikasi telah terpenuhi. Laporan siap diproses.' :
-                            'Lengkapi seluruh checklist verifikasi untuk mengaktifkan Proses Laporan.';
-                    }
-                }
+                        checkbox.addEventListener(
+                            'change',
+                            updateState
+                        );
 
-                checkboxes.forEach(function(checkbox) {
+                    });
 
-                    checkbox.addEventListener(
-                        'change',
-                        updateState
-                    );
-
+                    updateState();
                 });
-
-                updateState();
-            });
-        </script>
+            </script>
 
 
 
@@ -519,76 +542,82 @@ $repairPanelId =
              REPAIR
         ===================================================== --}}
         @elseif (in_array(
-        $state,
-        [
-        'repair-pending',
-        'repair-ready',
-        'facility-conflict'
-        ]
+            $state,
+            [
+                'repair-pending',
+                'repair-ready',
+                'facility-conflict'
+            ]
         ))
 
-        {{-- FACILITY CONFLICT --}}
-        @if ($state === 'facility-conflict')
+            {{-- FACILITY CONFLICT --}}
+            @if ($state === 'facility-conflict')
 
-        <div
-            class="
+                <div
+                    class="
                         bg-[#fef7e6]
                         border border-[#f6d992]
                         flex flex-col gap-[8px]
                         p-[13px]
                         rounded-[12px]
                         w-full
-                    ">
+                    "
+                >
 
-            <p
-                class="
+                    <p
+                        class="
                             font-bold
                             text-[#8d5b06]
                             text-[12px]
                             m-0
-                        ">
-                Reservasi Mendatang Terdampak
-            </p>
+                        "
+                    >
+                        Reservasi Mendatang Terdampak
+                    </p>
 
-            <p
-                class="
+                    <p
+                        class="
                             text-[#708993]
                             text-[11px]
                             leading-[17px]
                             m-0
-                        ">
-                Fasilitas memiliki reservasi yang telah disetujui
-                dan berpotensi terdampak oleh proses perbaikan.
-            </p>
+                        "
+                    >
+                        Fasilitas memiliki reservasi yang telah disetujui
+                        dan berpotensi terdampak oleh proses perbaikan.
+                    </p>
 
 
-            @forelse ($affectedReservations as $reservation)
+                    @forelse ($affectedReservations as $reservation)
 
-            <div
-                class="
+                        <div
+                            class="
                                 bg-white
                                 border border-[#dfe8e6]
                                 rounded-[8px]
                                 p-[11px]
-                            ">
+                            "
+                        >
 
-                <div
-                    class="
+                            <div
+                                class="
                                     flex items-center justify-between
                                     gap-3
-                                ">
+                                "
+                            >
 
-                    <span
-                        class="
+                                <span
+                                    class="
                                         font-bold
                                         text-[#19183b]
                                         text-[12px]
-                                    ">
-                        {{ $reservation['id'] ?? '-' }}
-                    </span>
+                                    "
+                                >
+                                    {{ $reservation['id'] ?? '-' }}
+                                </span>
 
-                    <span
-                        class="
+                                <span
+                                    class="
                                         bg-[#e8f5ee]
                                         border border-[#a3d9be]
                                         text-[#1b6343]
@@ -597,87 +626,94 @@ $repairPanelId =
                                         px-[9px]
                                         py-[3px]
                                         rounded-full
-                                    ">
-                        {{ $reservation['status'] ?? 'Approved' }}
-                    </span>
+                                    "
+                                >
+                                    {{ $reservation['status'] ?? 'Approved' }}
+                                </span>
 
-                </div>
+                            </div>
 
-                <div
-                    class="
+                            <div
+                                class="
                                     flex justify-between
                                     gap-3
                                     mt-1
-                                ">
+                                "
+                            >
 
-                    <span
-                        class="
+                                <span
+                                    class="
                                         text-[#708993]
                                         text-[11px]
-                                    ">
-                        {{ $reservation['date'] ?? '' }}
-                    </span>
+                                    "
+                                >
+                                    {{ $reservation['date'] ?? '' }}
+                                </span>
 
-                    <span
-                        class="
+                                <span
+                                    class="
                                         font-semibold
                                         text-[#19183b]
                                         text-[11px]
-                                    ">
-                        {{ $reservation['time'] ?? '' }}
-                    </span>
+                                    "
+                                >
+                                    {{ $reservation['time'] ?? '' }}
+                                </span>
 
-                </div>
+                            </div>
 
-            </div>
+                        </div>
 
-            @empty
+                    @empty
 
-            <p
-                class="
+                        <p
+                            class="
                                 text-[#708993]
                                 text-[11px]
                                 italic
                                 m-0
-                            ">
-                Tidak ada reservasi terdampak.
-            </p>
+                            "
+                        >
+                            Tidak ada reservasi terdampak.
+                        </p>
 
-            @endforelse
+                    @endforelse
 
-        </div>
+                </div>
 
-        @endif
+            @endif
 
 
-        @php
-        $repairItems = [
-        'Kondisi fasilitas sudah diperbaiki',
-        'Fasilitas sudah dapat digunakan kembali',
-        ];
-        @endphp
+            @php
+                $repairItems = [
+                    'Kondisi fasilitas sudah diperbaiki',
+                    'Fasilitas sudah dapat digunakan kembali',
+                ];
+            @endphp
 
-        <div
-            id="{{ $repairPanelId }}"
-            class="flex flex-col gap-[10px] w-full">
-            <p
-                class="
+            <div
+                id="{{ $repairPanelId }}"
+                class="flex flex-col gap-[10px] w-full"
+            >
+                <p
+                    class="
                         font-bold
                         text-[#1e293b]
                         text-[12px]
                         tracking-[0.6px]
                         uppercase
                         m-0
-                    ">
-                Checklist Verifikasi
-            </p>
+                    "
+                >
+                    Checklist Verifikasi
+                </p>
 
-            <div class="flex flex-col gap-[8px] w-full">
+                <div class="flex flex-col gap-[8px] w-full">
 
-                @foreach ($repairItems as $item)
+                    @foreach ($repairItems as $item)
 
-                <label
-                    class="
+                        <label
+                            class="
                                 bg-[#f8fafc]
                                 border border-[#e2e8f0]
                                 flex items-center gap-[10px]
@@ -685,42 +721,45 @@ $repairPanelId =
                                 px-[10px]
                                 rounded-[8px]
                                 cursor-pointer
-                            ">
+                            "
+                        >
 
-                    <input
-                        type="checkbox"
-                        class="
+                            <input
+                                type="checkbox"
+                                class="
                                     repair-verification-checkbox
                                     w-[16px] h-[16px]
                                     accent-[#7c3aed]
                                     cursor-pointer
-                                ">
+                                "
+                            >
 
-                    <span
-                        class="
+                            <span
+                                class="
                                     font-medium
                                     text-[#181c1c]
                                     text-[12px]
                                     leading-[15px]
-                                ">
-                        {{ $item }}
-                    </span>
+                                "
+                            >
+                                {{ $item }}
+                            </span>
 
-                </label>
+                        </label>
 
-                @endforeach
+                    @endforeach
 
+                </div>
             </div>
-        </div>
 
 
-        {{-- SELESAIKAN LAPORAN --}}
-        @if ($completeUrl)
+            {{-- SELESAIKAN LAPORAN --}}
+            @if ($completeUrl)
 
-        <a
-            href="{{ $completeUrl }}"
-            data-complete-button
-            class="
+                <a
+                    href="{{ $completeUrl }}"
+                    data-complete-button
+                    class="
                         bg-[#dfe3e2]
                         border border-[#dfe8e6]
                         text-[#78767f]
@@ -736,17 +775,18 @@ $repairPanelId =
                         w-full
                         no-underline
                         transition-all
-                    ">
-            Selesaikan Laporan
-        </a>
+                    "
+                >
+                    Selesaikan Laporan
+                </a>
 
-        @else
+            @else
 
-        <button
-            type="button"
-            data-complete-button
-            disabled
-            class="
+                <button
+                    type="button"
+                    data-complete-button
+                    disabled
+                    class="
                         bg-[#dfe3e2]
                         border border-[#dfe8e6]
                         text-[#78767f]
@@ -758,126 +798,130 @@ $repairPanelId =
                         font-bold
                         text-[12px]
                         w-full
-                    ">
-            Selesaikan Laporan
-        </button>
+                    "
+                >
+                    Selesaikan Laporan
+                </button>
 
-        @endif
+            @endif
 
 
-        <p
-            data-repair-hint
-            class="
+            <p
+                data-repair-hint
+                class="
                     font-normal
                     italic
                     text-[#708993]
                     text-[11px]
                     leading-[18px]
                     m-0
-                ">
-            Laporan hanya dapat diselesaikan setelah fasilitas diverifikasi tuntas dan siap digunakan kembali.
-        </p>
+                "
+            >
+                Laporan hanya dapat diselesaikan setelah fasilitas diverifikasi tuntas dan siap digunakan kembali.
+            </p>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
 
-                const panelId = '{{ $repairPanelId }}';
-                const panel = document.getElementById(panelId);
+                    const panel = document.getElementById(
+                        @json($repairPanelId)
+                    );
 
-                if (!panel) return;
+                    if (!panel) return;
 
-                const checkboxes = panel.querySelectorAll(
-                    '.repair-verification-checkbox'
-                );
+                    const checkboxes = panel.querySelectorAll(
+                        '.repair-verification-checkbox'
+                    );
 
-                const completeButton = document.querySelector(
-                    '[data-complete-button]'
-                );
+                    const completeButton = document.querySelector(
+                        '[data-complete-button]'
+                    );
 
-                const hint = document.querySelector(
-                    '[data-repair-hint]'
-                );
-
-
-                function updateRepairState() {
-
-                    const allChecked =
-                        checkboxes.length > 0 && [...checkboxes].every(
-                            checkbox => checkbox.checked
-                        );
+                    const hint = document.querySelector(
+                        '[data-repair-hint]'
+                    );
 
 
-                    if (completeButton) {
+                    function updateRepairState() {
 
-                        if (completeButton.tagName === 'A') {
-
-                            completeButton.classList.toggle(
-                                'pointer-events-none',
-                                !allChecked
+                        const allChecked =
+                            checkboxes.length > 0 &&
+                            [...checkboxes].every(
+                                checkbox => checkbox.checked
                             );
 
-                            completeButton.classList.toggle(
-                                'cursor-not-allowed',
-                                !allChecked
-                            );
 
-                            completeButton.classList.toggle(
-                                'opacity-60',
-                                !allChecked
-                            );
+                        if (completeButton) {
 
-                            completeButton.classList.toggle(
-                                'bg-[#dfe3e2]',
-                                !allChecked
-                            );
+                            if (completeButton.tagName === 'A') {
 
-                            completeButton.classList.toggle(
-                                'text-[#78767f]',
-                                !allChecked
-                            );
+                                completeButton.classList.toggle(
+                                    'pointer-events-none',
+                                    !allChecked
+                                );
 
-                            completeButton.classList.toggle(
-                                'bg-[#0ea5e9]',
-                                allChecked
-                            );
+                                completeButton.classList.toggle(
+                                    'cursor-not-allowed',
+                                    !allChecked
+                                );
 
-                            completeButton.classList.toggle(
-                                'text-white',
-                                allChecked
-                            );
+                                completeButton.classList.toggle(
+                                    'opacity-60',
+                                    !allChecked
+                                );
 
-                            completeButton.classList.toggle(
-                                'cursor-pointer',
-                                allChecked
-                            );
+                                completeButton.classList.toggle(
+                                    'bg-[#dfe3e2]',
+                                    !allChecked
+                                );
 
-                        } else {
+                                completeButton.classList.toggle(
+                                    'text-[#78767f]',
+                                    !allChecked
+                                );
 
-                            completeButton.disabled = !allChecked;
+                                completeButton.classList.toggle(
+                                    'bg-[#0ea5e9]',
+                                    allChecked
+                                );
+
+                                completeButton.classList.toggle(
+                                    'text-white',
+                                    allChecked
+                                );
+
+                                completeButton.classList.toggle(
+                                    'cursor-pointer',
+                                    allChecked
+                                );
+
+                            } else {
+
+                                completeButton.disabled = !allChecked;
+                            }
+                        }
+
+
+                        if (hint) {
+                            hint.textContent = allChecked
+                                ? 'Seluruh verifikasi perbaikan telah terpenuhi. Lanjutkan untuk mencatat penyelesaian laporan.'
+                                : 'Laporan hanya dapat diselesaikan setelah fasilitas diverifikasi tuntas dan siap digunakan kembali.';
                         }
                     }
 
 
-                    if (hint) {
-                        hint.textContent = allChecked ?
-                            'Seluruh verifikasi perbaikan telah terpenuhi. Lanjutkan untuk mencatat penyelesaian laporan.' :
-                            'Laporan hanya dapat diselesaikan setelah fasilitas diverifikasi tuntas dan siap digunakan kembali.';
-                    }
-                }
+                    checkboxes.forEach(function (checkbox) {
+                        checkbox.addEventListener(
+                            'change',
+                            updateRepairState
+                        );
+                    });
 
 
-                checkboxes.forEach(function(checkbox) {
-                    checkbox.addEventListener(
-                        'change',
-                        updateRepairState
-                    );
+                    updateRepairState();
+
                 });
-
-
-                updateRepairState();
-
-            });
-        </script>
+            </script>
 
 
         {{-- ====================================================
@@ -886,30 +930,32 @@ $repairPanelId =
         ===================================================== --}}
         @elseif ($state === 'completion-form')
 
-        <p
-            class="
+            <p
+                class="
                     font-bold
                     text-[#19183b]
                     text-[12px]
                     tracking-[0.6px]
                     uppercase
                     m-0
-                ">
-            Formulir Penyelesaian
-        </p>
+                "
+            >
+                Formulir Penyelesaian
+            </p>
 
 
-        @if ($action)
+            @if ($action)
 
-        <form
-            method="POST"
-            action="{{ $action }}"
-            class="w-full">
-            @csrf
+                <form
+                    method="POST"
+                    action="{{ $action }}"
+                    class="w-full"
+                >
+                    @csrf
 
-            @if (strtoupper($method) !== 'POST')
-            @method($method)
-            @endif
+                    @if (strtoupper($method) !== 'POST')
+                        @method($method)
+                    @endif
 
             @endif
 
@@ -922,7 +968,8 @@ $repairPanelId =
                     p-[17px]
                     rounded-[12px]
                     w-full
-                ">
+                "
+            >
 
                 <div>
 
@@ -935,7 +982,8 @@ $repairPanelId =
                             text-[11px]
                             uppercase
                             mb-1
-                        ">
+                        "
+                    >
                         Catatan Penyelesaian
                     </label>
 
@@ -954,7 +1002,8 @@ $repairPanelId =
                             rounded-[8px]
                             resize-none
                             w-full
-                        ">{{ old('completion_note') }}</textarea>
+                        "
+                    >{{ old('completion_note') }}</textarea>
 
                 </div>
 
@@ -965,13 +1014,15 @@ $repairPanelId =
                         border border-[#fde68a]
                         p-[9px]
                         rounded-[6px]
-                    ">
+                    "
+                >
                     <p
                         class="
                             text-[#92400e]
                             text-[10px]
                             m-0
-                        ">
+                        "
+                    >
                         Tindakan dicatat atas nama
                         <strong>{{ $petugasName }}</strong>.
                     </p>
@@ -993,45 +1044,46 @@ $repairPanelId =
                         text-[14px]
                         w-full
                         transition-all
-                    ">
+                    "
+                >
                     Konfirmasi &amp; Selesaikan
                 </button>
 
             </div>
 
-            @if ($action)
-        </form>
+        @if ($action)
+            </form>
         @else
-        <p class="text-sm text-slate-500">
-            Formulir penyelesaian tidak tersedia.
-        </p>
+            <p class="text-sm text-slate-500">
+                Formulir penyelesaian tidak tersedia.
+            </p>
         @endif
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const note = document.querySelector('[data-completion-note]');
-                const button = document.querySelector('[data-completion-submit]');
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const note = document.querySelector('[data-completion-note]');
+                    const button = document.querySelector('[data-completion-submit]');
 
-                if (!note || !button) return;
+                    if (!note || !button) return;
 
-                function updateCompletionButton() {
-                    const valid = note.value.trim().length > 0;
+                    function updateCompletionButton() {
+                        const valid = note.value.trim().length > 0;
 
-                    button.disabled = !valid;
-                    button.classList.toggle('opacity-60', !valid);
-                    button.classList.toggle('cursor-not-allowed', !valid);
-                    button.classList.toggle('bg-[#dfe3e2]', !valid);
-                    button.classList.toggle('text-[#a1a1aa]', !valid);
+                        button.disabled = !valid;
+                        button.classList.toggle('opacity-60', !valid);
+                        button.classList.toggle('cursor-not-allowed', !valid);
+                        button.classList.toggle('bg-[#dfe3e2]', !valid);
+                        button.classList.toggle('text-[#a1a1aa]', !valid);
 
-                    button.classList.toggle('bg-[#0ea5e9]', valid);
-                    button.classList.toggle('text-white', valid);
-                    button.classList.toggle('shadow-[0px_1px_1px_rgba(0,0,0,0.05)]', valid);
-                }
+                        button.classList.toggle('bg-[#0ea5e9]', valid);
+                        button.classList.toggle('text-white', valid);
+                        button.classList.toggle('shadow-[0px_1px_1px_rgba(0,0,0,0.05)]', valid);
+                    }
 
-                note.addEventListener('input', updateCompletionButton);
-                updateCompletionButton();
-            });
-        </script>
+                    note.addEventListener('input', updateCompletionButton);
+                    updateCompletionButton();
+                });
+            </script>
 
 
         {{-- ====================================================
@@ -1040,64 +1092,46 @@ $repairPanelId =
         ===================================================== --}}
         @elseif ($state === 'completed')
 
-        <div class="flex flex-col gap-[6px]">
+            <div class="flex flex-col gap-[6px]">
 
-            <p
-                class="
+                <p
+                    class="
                         font-bold
                         text-[#19183b]
                         text-[11px]
                         uppercase
                         m-0
-                    ">
-                Catatan Penyelesaian
-            </p>
+                    "
+                >
+                    Catatan Penyelesaian
+                </p>
 
-            <div
-                class="
+                <div
+                    class="
                         bg-[#f4f8f7]
                         border border-[#dfe8e6]
                         p-[13px]
                         rounded-[8px]
-                    ">
-                <p
-                    class="
+                    "
+                >
+                    <p
+                        class="
                             text-[#19183b]
                             text-[13px]
                             leading-[21px]
                             whitespace-pre-line
                             m-0
-                        ">
-                    {{ $completionNote ?? '—' }}
-                </p>
+                        "
+                    >
+                        {{ $completionNote ?? '—' }}
+                    </p>
+                </div>
+
             </div>
 
-        </div>
-
-
-        @if ($cancelUrl)
-
-        <a href="{{ route('petugas.laporan.index') }}"
-            class="
-                    flex items-center justify-center
-                    min-h-[44px]
-                    rounded-[12px]
-                    border border-[#cbd5e1]
-                    bg-white
-                    text-[#334155]
-                    font-bold
-                    text-[12px]
-                    w-full
-                    no-underline
-                ">
-            Tutup
-        </a>
-
-        @endif
-
-        <p class="font-normal text-[#708993] text-[11px] leading-[17.88px] w-full m-0">
-            Laporan telah selesai dan diarsipkan secara permanen pada riwayat audit sistem sarpras.
-        </p>
+            <p class="font-normal text-[#708993] text-[11px] leading-[17.88px] w-full m-0">
+                Laporan telah selesai dan diarsipkan secara permanen pada riwayat audit sistem sarpras.
+            </p>
 
 
         {{-- ====================================================
@@ -1106,29 +1140,31 @@ $repairPanelId =
         ===================================================== --}}
         @elseif ($state === 'rejection-form')
 
-        <p
-            class="
+            <p
+                class="
                     font-bold
                     text-[#0f172a]
                     text-[12px]
                     uppercase
                     m-0
-                ">
-            Formulir Penolakan Petugas
-        </p>
+                "
+            >
+                Formulir Penolakan Petugas
+            </p>
 
 
-        @if ($action)
+            @if ($action)
 
-        <form
-            method="POST"
-            action="{{ $action }}"
-            class="w-full">
-            @csrf
+                <form
+                    method="POST"
+                    action="{{ $action }}"
+                    class="w-full"
+                >
+                    @csrf
 
-            @if (strtoupper($method) !== 'POST')
-            @method($method)
-            @endif
+                    @if (strtoupper($method) !== 'POST')
+                        @method($method)
+                    @endif
 
             @endif
 
@@ -1141,7 +1177,8 @@ $repairPanelId =
                     p-[17px]
                     rounded-[12px]
                     w-full
-                ">
+                "
+            >
 
                 <div>
 
@@ -1154,7 +1191,8 @@ $repairPanelId =
                             text-[11px]
                             uppercase
                             mb-1
-                        ">
+                        "
+                    >
                         Kategori Alasan Penolakan
                     </label>
 
@@ -1170,7 +1208,8 @@ $repairPanelId =
                             px-3 py-2
                             text-[12px]
                             bg-white
-                        ">
+                        "
+                    >
 
                         <option value="">
                             Pilih alasan penolakan
@@ -1220,7 +1259,8 @@ $repairPanelId =
                             text-[11px]
                             uppercase
                             mb-1
-                        ">
+                        "
+                    >
                         Alasan Terperinci
                     </label>
 
@@ -1239,7 +1279,8 @@ $repairPanelId =
                             rounded-[8px]
                             resize-none
                             w-full
-                        ">{{ old('rejection_reason') }}</textarea>
+                        "
+                    >{{ old('rejection_reason') }}</textarea>
 
                 </div>
 
@@ -1250,13 +1291,15 @@ $repairPanelId =
                         border border-[#fde68a]
                         p-[9px]
                         rounded-[6px]
-                    ">
+                    "
+                >
                     <p
                         class="
                             text-[#92400e]
                             text-[10px]
                             m-0
-                        ">
+                        "
+                    >
                         Tindakan dicatat atas nama
                         <strong>{{ $petugasName }}</strong>.
                     </p>
@@ -1280,16 +1323,17 @@ $repairPanelId =
                             font-bold
                             text-[12px]
                             transition-all
-                        ">
+                        "
+                    >
                         Konfirmasi Penolakan
                     </button>
 
 
                     @if ($cancelUrl)
 
-                    <a
-                        href="{{ $cancelUrl }}"
-                        class="
+                        <a
+                            href="{{ $cancelUrl }}"
+                            class="
                                 bg-white
                                 border border-[#cbd5e1]
                                 text-[#334155]
@@ -1300,9 +1344,10 @@ $repairPanelId =
                                 font-bold
                                 text-[12px]
                                 no-underline
-                            ">
-                        Batal
-                    </a>
+                            "
+                        >
+                            Batal
+                        </a>
 
                     @endif
 
@@ -1310,65 +1355,13 @@ $repairPanelId =
 
             </div>
 
-            @if ($action)
-        </form>
+        @if ($action)
+            </form>
         @else
-        <p class="text-sm text-slate-500">
-            Formulir penolakan tidak tersedia.
-        </p>
+            <p class="text-sm text-slate-500">
+                Formulir penolakan tidak tersedia.
+            </p>
         @endif
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const category = document.querySelector('[data-rejection-category]');
-                const reason = document.querySelector('[data-rejection-reason]');
-                const button = document.querySelector('[data-rejection-submit]');
-
-                if (!category || !reason || !button) return;
-
-                function updateRejectionButton() {
-                    const valid =
-                        category.value.trim() !== '' &&
-                        reason.value.trim() !== '';
-
-                    button.disabled = !valid;
-                    button.classList.toggle('opacity-60', !valid);
-                    button.classList.toggle('cursor-not-allowed', !valid);
-                    button.classList.toggle('bg-[#f1f5f9]', !valid);
-                    button.classList.toggle('text-[#94a3b8]', !valid);
-                    button.classList.toggle('bg-[#e11d48]', valid);
-                    button.classList.toggle('text-white', valid);
-                }
-
-                category.addEventListener('change', updateRejectionButton);
-                reason.addEventListener('input', updateRejectionButton);
-                updateRejectionButton();
-            });
-        </script>
-
-        if (!category || !reason || !button) return;
-
-        function updateRejectionButton() {
-        const valid =
-        category.value.trim() !== '' &&
-        reason.value.trim() !== '';
-
-        button.disabled = !valid;
-        button.classList.toggle('opacity-60', !valid);
-        button.classList.toggle('cursor-not-allowed', !valid);
-        button.classList.toggle('bg-[#f1f5f9]', !valid);
-        button.classList.toggle('text-[#94a3b8]', !valid);
-
-        button.classList.toggle('bg-[#e11d48]', valid);
-        button.classList.toggle('text-white', valid);
-        }
-
-        category.addEventListener('change', updateRejectionButton);
-        reason.addEventListener('input', updateRejectionButton);
-        updateRejectionButton();
-        });
-        </script>
-
 
         {{-- ====================================================
              STATE 10
@@ -1376,64 +1369,53 @@ $repairPanelId =
         ===================================================== --}}
         @elseif ($state === 'rejected')
 
-        <div
-            class="
+            <div
+                class="
                     bg-[#fff1f2]
                     border border-[#fecdd3]
                     flex flex-col gap-[8px]
                     p-[17px]
                     rounded-[12px]
                     w-full
-                ">
+                "
+            >
 
-            <p
-                class="
+                <p
+                    class="
                         font-bold
                         text-[#881337]
                         text-[12px]
                         uppercase
                         m-0
-                    ">
-                Alasan Penolakan:
-            </p>
+                    "
+                >
+                    Alasan Penolakan:
+                </p>
 
-            <p
-                class="
+                <p
+                    class="
                         text-[#881337]
                         text-[12px]
                         leading-[19px]
                         whitespace-pre-line
                         m-0
-                    ">
-                {{ $rejectionReason ?? '—' }}
-            </p>
+                    "
+                >
+                    {{ $rejectionReason ?? '—' }}
+                </p>
 
-        </div>
-        <a href="{{ route('petugas.laporan.index') }}"
-            class="
-                    flex items-center justify-center
-                    min-h-[44px]
-                    rounded-[12px]
-                    border border-[#cbd5e1]
-                    bg-white
-                    text-[#334155]
-                    font-bold
-                    text-[12px]
-                    w-full
-                    no-underline
-                ">
-            Tutup
-        </a>
-        <p
-            class="
+            </div>
+            <p
+                class="
                     italic
                     text-[#708993]
                     text-[12px]
                     leading-[19px]
                     m-0
-                ">
-            Laporan tidak dapat diproses dan memerlukan pengajuan baru apabila ingin melakukan pelaporan kembali.
-        </p>
+                "
+            >
+                Laporan tidak dapat diproses dan memerlukan pengajuan baru apabila ingin melakukan pelaporan kembali.
+            </p>
 
         @endif
 

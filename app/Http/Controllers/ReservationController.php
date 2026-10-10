@@ -266,6 +266,13 @@ class ReservationController extends Controller
             ]);
         });
 
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Status reservasi berhasil diperbarui.'
+            ]);
+        }
+
         return back()->with('success', 'Status reservasi berhasil diperbarui.');
     }
 

@@ -276,7 +276,8 @@ class ReportController extends Controller
         }
         
         $reports = $query
-            ->latest('created_at')
+            ->orderBy('created_at', $request->query('sort') === 'terlama' ? 'asc' : 'desc')
+            ->orderBy('id', $request->query('sort') === 'terlama' ? 'asc' : 'desc')
             ->paginate(10)
             ->withQueryString();
 
@@ -481,6 +482,12 @@ class ReportController extends Controller
             ]);
         });
 
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Laporan mulai diproses.'
+            ]);
+        }
 
         return redirect()
             ->route('petugas.laporan.detail', $report)
@@ -497,6 +504,13 @@ class ReportController extends Controller
                 'status' => 'dalam_perbaikan',
             ]);
         });
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Fasilitas telah ditandai dalam perbaikan.'
+            ]);
+        }
 
         return redirect()
             ->route('petugas.laporan.detail', $report)
@@ -533,6 +547,13 @@ class ReportController extends Controller
                 'reason' => $validated['rejection_reason'],
             ]);
         });
+        
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Laporan berhasil ditolak.'
+            ]);
+        }
 
         return redirect()
             ->route('petugas.laporan.detail', $report)
@@ -558,7 +579,7 @@ class ReportController extends Controller
             ]);
 
             $report->facility?->update([
-                'status' => 'Tersedia',
+                'status' => 'tersedia',
             ]);
 
             ReportStatusHistory::create([
@@ -568,6 +589,13 @@ class ReportController extends Controller
                 'reason' => $validated['completion_note'] ?? null,
             ]);
         });
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Laporan berhasil diselesaikan.'
+            ]);
+        }
 
         return redirect()
             ->route('petugas.laporan.detail', $report)

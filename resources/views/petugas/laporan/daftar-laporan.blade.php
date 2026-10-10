@@ -101,7 +101,8 @@
         </div>
 
         {{-- ==================== MAIN TABLE CARD ==================== --}}
-        <div class="bg-white border border-[#f1f5f9] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-2xl overflow-hidden">
+        <div id="laporan-ajax-area">
+        <div class="bg-white border border-[#f1f5f9] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-2xl overflow-visible">
 
             {{-- Table Toolbar --}}
             <div class="border-b border-[#f1f5f9] px-5 pt-5 pb-[21px]">
@@ -117,10 +118,6 @@
                             <input type="hidden" name="status" value="{{ request('status') }}">
                         @endif
 
-                        @if (request('sort'))
-                            <input type="hidden" name="sort" value="{{ request('sort') }}">
-                        @endif
-
                         <span class="absolute inset-y-0 left-0 pl-[14px] flex items-center pointer-events-none">
                             <svg class="size-4 text-[#94a3b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -132,7 +129,6 @@
                             name="search"
                             value="{{ request('search') }}"
                             placeholder="Cari ID, pelapor, atau fasilitas..."
-                            autocomplete="off"
                             class="w-full bg-white border border-[#e2e8f0] rounded-xl pl-[41px] pr-[17px] py-[11px] text-xs font-medium text-[#0f172a] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#0f172a]/10">
 
                     </form>
@@ -238,7 +234,7 @@
                                 Tanggal</th>
                             <th class="px-4 py-3.5 text-[11px] font-bold uppercase tracking-[0.55px] text-[#94a3b8]">
                                 Status</th>
-                            <th class="pl-4 pr-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.55px] text-[#94a3b8] text-center">
+                            <th class="pl-4 pr-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.55px] text-[#94a3b8] text-right">
                                 Aksi</th>
                         </tr>
                     </thead>
@@ -410,6 +406,101 @@
 
         </div>
 
+        </div> {{-- /laporan-ajax-area --}}
     </div>
+
+<script>
+(() => {
+    const rootId = 'laporan-ajax-area';
+    const searchSelector = 'form input[name="search"]';
+    let debounceTimer;
+    let activeRequest = null;
+    let requestVersion = 0;
+
+    async function updateArea(url, { isSearch = false, addHistory = true } = {}) {
+        const version = ++requestVersion;
+        if (activeRequest) activeRequest.abort();
+        const controller = new AbortController();
+        activeRequest = controller;
+        const oldArea = document.getElementById(rootId);
+        if (!oldArea) return;
+        oldArea.setAttribute('aria-busy', 'true');
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/html' },
+                signal: controller.signal,
+                credentials: 'same-origin'
+            });
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            const html = await response.text();
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const newArea = doc.getElementById(rootId);
+            if (!newArea) throw new Error('Konten AJAX tidak ditemukan pada respons.');
+            if (version !== requestVersion) return;
+
+            const previousSearch = oldArea.querySelector(searchSelector);
+            const focused = document.activeElement === previousSearch;
+            const cursorStart = focused ? previousSearch.selectionStart : null;
+            const cursorEnd = focused ? previousSearch.selectionEnd : null;
+            oldArea.replaceWith(newArea);
+            if (focused) {
+                const nextSearch = newArea.querySelector(searchSelector);
+                nextSearch?.focus({ preventScroll: true });
+                if (nextSearch && cursorStart !== null) {
+                    nextSearch.setSelectionRange(cursorStart, cursorEnd);
+                }
+            }
+            if (addHistory) window.history.pushState({}, '', url);
+        } catch (error) {
+            if (error.name !== 'AbortError' && version === requestVersion) {
+                console.error('AJAX gagal:', error);
+                // Klik filter/pagination tetap memiliki fallback navigasi Laravel biasa.
+                if (!isSearch) window.location.assign(url);
+            }
+        } finally {
+            if (version === requestVersion) {
+                document.getElementById(rootId)?.removeAttribute('aria-busy');
+                activeRequest = null;
+            }
+        }
+    }
+
+    document.addEventListener('input', (event) => {
+        const area = document.getElementById(rootId);
+        if (!area || !area.contains(event.target) || !event.target.matches(searchSelector)) return;
+        clearTimeout(debounceTimer);
+        // Batalkan respons pencarian lama segera saat input berubah.
+        if (activeRequest) activeRequest.abort();
+        const query = event.target.value;
+        const url = new URL(window.location.href);
+        if (query.trim()) url.searchParams.set('search', query);
+        else url.searchParams.delete('search');
+        url.searchParams.delete('page');
+        debounceTimer = setTimeout(() => updateArea(url.href, { isSearch: true }), 400);
+    });
+
+    document.addEventListener('click', (event) => {
+        const link = event.target.closest('a[href]');
+        const area = document.getElementById(rootId);
+        if (!link || !area?.contains(link) || event.defaultPrevented ||
+            event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey ||
+            link.target === '_blank') return;
+        const url = new URL(link.href, window.location.href);
+        const form = area.querySelector('form[action]');
+        if (!form || url.origin !== window.location.origin ||
+            url.pathname !== new URL(form.action).pathname) return;
+        event.preventDefault();
+        clearTimeout(debounceTimer);
+        updateArea(url.href);
+    });
+
+    // Biarkan Enter mengirim form GET standar sebagai jalur cadangan.
+    window.addEventListener('popstate', () => {
+        clearTimeout(debounceTimer);
+        updateArea(window.location.href, { addHistory: false });
+    });
+})();
+</script>
 
 @endsection

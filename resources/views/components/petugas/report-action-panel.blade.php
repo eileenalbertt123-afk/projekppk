@@ -1129,27 +1129,6 @@
 
             </div>
 
-
-            @if ($cancelUrl)
-
-                <a href="{{ route('petugas.laporan.index') }}"
-                class="
-                    flex items-center justify-center
-                    min-h-[44px]
-                    rounded-[12px]
-                    border border-[#cbd5e1]
-                    bg-white
-                    text-[#334155]
-                    font-bold
-                    text-[12px]
-                    w-full
-                    no-underline
-                ">
-                    Tutup
-                </a>
-
-            @endif
-
             <p class="font-normal text-[#708993] text-[11px] leading-[17.88px] w-full m-0">
                 Laporan telah selesai dan diarsipkan secara permanen pada riwayat audit sistem sarpras.
             </p>
@@ -1384,58 +1363,6 @@
             </p>
         @endif
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const category = document.querySelector('[data-rejection-category]');
-                const reason = document.querySelector('[data-rejection-reason]');
-                const button = document.querySelector('[data-rejection-submit]');
-
-                if (!category || !reason || !button) return;
-
-                function updateRejectionButton() {
-                    const valid =
-                        category.value.trim() !== '' &&
-                        reason.value.trim() !== '';
-
-                    button.disabled = !valid;
-                    button.classList.toggle('opacity-60', !valid);
-                    button.classList.toggle('cursor-not-allowed', !valid);
-                    button.classList.toggle('bg-[#f1f5f9]', !valid);
-                    button.classList.toggle('text-[#94a3b8]', !valid);
-                    button.classList.toggle('bg-[#e11d48]', valid);
-                    button.classList.toggle('text-white', valid);
-                }
-
-                category.addEventListener('change', updateRejectionButton);
-                reason.addEventListener('input', updateRejectionButton);
-                updateRejectionButton();
-            });
-        </script>
-
-                    if (!category || !reason || !button) return;
-
-                    function updateRejectionButton() {
-                        const valid =
-                            category.value.trim() !== '' &&
-                            reason.value.trim() !== '';
-
-                        button.disabled = !valid;
-                        button.classList.toggle('opacity-60', !valid);
-                        button.classList.toggle('cursor-not-allowed', !valid);
-                        button.classList.toggle('bg-[#f1f5f9]', !valid);
-                        button.classList.toggle('text-[#94a3b8]', !valid);
-
-                        button.classList.toggle('bg-[#e11d48]', valid);
-                        button.classList.toggle('text-white', valid);
-                    }
-
-                    category.addEventListener('change', updateRejectionButton);
-                    reason.addEventListener('input', updateRejectionButton);
-                    updateRejectionButton();
-                });
-            </script>
-
-
         {{-- ====================================================
              STATE 10
              REJECTED
@@ -1478,21 +1405,6 @@
                 </p>
 
             </div>
-            <a href="{{ route('petugas.laporan.index') }}"
-                class="
-                    flex items-center justify-center
-                    min-h-[44px]
-                    rounded-[12px]
-                    border border-[#cbd5e1]
-                    bg-white
-                    text-[#334155]
-                    font-bold
-                    text-[12px]
-                    w-full
-                    no-underline
-                ">
-                    Tutup
-            </a>
             <p
                 class="
                     italic

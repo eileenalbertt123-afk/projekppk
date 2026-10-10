@@ -62,7 +62,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="bg-brand-neutral font-sans text-brand-primary h-screen flex relative overflow-hidden antialiased">
+<body class="bg-brand-neutral font-sans text-brand-primary h-dvh flex relative overflow-hidden antialiased">
     <!-- LAPISAN GELAP (hanya HP) -->
     <div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false"
         x-transition.opacity
@@ -230,7 +230,7 @@
         </header>
 
         <!-- Tempat Konten Berubah-ubah -->
-        <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+        <main class="flex-1 overflow-y-auto p-4 pb-24 sm:p-6 sm:pb-6">
             <div class="max-w-7xl mx-auto">
                 @yield('content')
             </div>

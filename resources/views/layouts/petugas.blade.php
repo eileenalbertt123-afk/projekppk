@@ -53,14 +53,6 @@
             #mainContent {
                 margin-left: 0;
             }
-
-            #sidebar {
-                width: 0;
-            }
-
-            #sidebar:not(.collapsed) {
-                width: 250px;
-            }
         }
     </style>
 </head>
@@ -80,10 +72,26 @@
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
         const toggle = document.getElementById('sidebarToggle');
+        const isMobile = () => window.matchMedia('(max-width: 1023px)').matches;
 
-        toggle.addEventListener('click', function() {
+        // Di HP, sidebar tertutup saat halaman dibuka
+        if (isMobile()) {
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('collapsed');
+        }
+
+        toggle.addEventListener('click', function(e) {
+            e.stopPropagation();
             sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('collapsed');
+        });
+
+        // Di HP, ketuk area di luar sidebar untuk menutupnya
+        mainContent.addEventListener('click', function() {
+            if (isMobile() && !sidebar.classList.contains('collapsed')) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('collapsed');
+            }
         });
     </script>
 

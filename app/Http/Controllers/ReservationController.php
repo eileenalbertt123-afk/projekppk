@@ -292,7 +292,7 @@ class ReservationController extends Controller
 
         $reservations = Reservation::select(['id', 'reservation_code', 'user_id', 'purpose', 'status', 'start_time', 'end_time'])
             ->with(['user:id,name', 'facilities:id,name,type,location'])
-            ->whereIn('status', ['menunggu', 'disetujui'])
+            ->whereIn('status', ['disetujui', 'selesai'])
             ->where('start_time', '<=', $weekEnd->copy()->endOfDay())
             ->where('end_time', '>=', $weekStart->copy()->startOfDay())
             ->when($selectedType, fn($q) => $q->whereHas('facilities', fn($f) => $f->where('facilities.type', $selectedType)))

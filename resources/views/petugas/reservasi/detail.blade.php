@@ -119,427 +119,185 @@ $conflictDescription = $conflictingReservation
 : null;
 @endphp
 
-{{-- STATUS BANNER --}}
-<x-petugas.reservation-status-banner
-    :status="$bannerStatus"
+<div id="reservation-detail-ajax">
+    {{-- STATUS BANNER --}}
+    <x-petugas.reservation-status-banner
+        :status="$bannerStatus"
 
-    :conflict-code="$conflictingReservation?->reservation_code ?? '-'"
+        :conflict-code="$conflictingReservation?->reservation_code ?? '-'"
 
-    :conflict-description="$conflictDescription"
+        :conflict-description="$conflictDescription"
 
-    :conflict-link="$conflictingReservation
-        ? route('petugas.reservasi.detail', $conflictingReservation->id)
-        : '#'" />
+        :conflict-link="$conflictingReservation
+            ? route('petugas.reservasi.detail', $conflictingReservation->id)
+            : '#'" />
 
-{{-- BREADCRUMB --}}
-<div class="mt-4 mb-6 flex items-center gap-3">
+    {{-- BREADCRUMB --}}
+    <div class="mt-4 mb-6 flex items-center gap-3">
 
-    <a href="{{ route('petugas.reservasi.index') }}"
-        class="inline-flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3.5 py-1.5 text-slate-800 font-medium text-xs shadow-sm hover:bg-slate-50 transition">
+        <a href="{{ route('petugas.reservasi.index') }}"
+            class="inline-flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3.5 py-1.5 text-slate-800 font-medium text-xs shadow-sm hover:bg-slate-50 transition">
 
-        <svg class="w-3.5 h-3.5 text-slate-600 stroke-[2.5]"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor">
+            <svg class="w-3.5 h-3.5 text-slate-600 stroke-[2.5]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
 
-            <path stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M15 19l-7-7 7-7" />
+                <path stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 19l-7-7 7-7" />
 
-        </svg>
+            </svg>
 
-        Kembali ke Daftar Reservasi
+            Kembali ke Daftar Reservasi
 
-    </a>
-
-    {{-- Separator --}}
-    <div class="h-4 w-[1px] bg-gray-200 mx-0.5"></div>
-
-    {{-- Breadcrumb --}}
-    <div class="flex items-center gap-1.5 text-xs text-gray-500">
-
-        <a href="#"
-            class="hover:text-gray-800 transition">
-            Daftar Reservasi
         </a>
 
-        <span class="text-gray-400">
-            /
-        </span>
+        {{-- Separator --}}
+        <div class="h-4 w-[1px] bg-gray-200 mx-0.5"></div>
 
-        <span class="font-semibold text-gray-800">
-            Detail Reservasi #{{ $reservation->reservation_code }}
-        </span>
+        {{-- Breadcrumb --}}
+        <div class="flex items-center gap-1.5 text-xs text-gray-500">
 
-    </div>
+            <a href="#"
+                class="hover:text-gray-800 transition">
+                Daftar Reservasi
+            </a>
 
-</div>
+            <span class="text-gray-400">
+                /
+            </span>
 
-
-{{-- HEADER DETAIL RESERVASI --}}
-<div class="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
-
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-
-        {{-- Sisi Kiri: Judul & Deskripsi --}}
-        <div>
-
-            <div class="flex items-center gap-3">
-
-                <h1 class="text-xl font-bold text-gray-900">
-                    Detail Reservasi Fasilitas
-                </h1>
-
-                <x-petugas.status-badge :status="$reservation->status" />
-
-            </div>
-
-            <p class="text-xs text-gray-500 mt-1 max-w-xl leading-relaxed">
-                Tinjau kelayakan peminjam, ketersediaan fasilitas, serta potensi bentrok sebelum mengambil tindakan.
-            </p>
-
-        </div>
-
-        {{-- Sisi Kanan: Metadata Badges (Berjejer Kesamping) --}}
-        <div class="flex items-center gap-3 flex-shrink-0">
-
-            <div class="bg-gray-50/80 border border-gray-200/80 rounded-xl px-4 py-2.5 min-w-[120px]">
-                <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-                    ID RESERVASI
-                </p>
-                <p class="font-bold text-slate-900 text-sm mt-0.5">
-                    {{ $reservation->reservation_code }}
-                </p>
-            </div>
-
-            <div class="bg-gray-50/80 border border-gray-200/80 rounded-xl px-4 py-2.5 min-w-[140px]">
-                <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-                    TGL PENGAJUAN
-                </p>
-                <p class="font-bold text-slate-900 text-sm mt-0.5">
-                    {{ $reservation->created_at->locale('id')->translatedFormat('d F Y, H.i') }}
-                </p>
-            </div>
+            <span class="font-semibold text-gray-800">
+                Detail Reservasi #{{ $reservation->reservation_code }}
+            </span>
 
         </div>
 
     </div>
 
-</div>
 
+    {{-- HEADER DETAIL RESERVASI --}}
+    <div class="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
 
-{{-- GRID UTAMA --}}
-<style>
-    .reservation-detail-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-        gap: 1.5rem;
-        width: 100%;
-    }
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
 
-    .reservation-main-column {
-        min-width: 0;
-        width: 100%;
-    }
-
-    .reservation-sidebar {
-        min-width: 0;
-        width: 100%;
-    }
-
-    .facility-detail-row {
-        display: flex;
-        gap: 1.25rem;
-        width: 100%;
-        min-width: 0;
-    }
-
-    .facility-photo {
-        position: relative;
-        width: 16rem;
-        min-width: 16rem;
-        height: 11rem;
-        flex-shrink: 0;
-    }
-
-    .facility-content {
-        flex: 1;
-        min-width: 0;
-    }
-
-    @media (max-width: 1023px) {
-        .reservation-detail-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (max-width: 767px) {
-        .facility-detail-row {
-            flex-direction: column;
-        }
-
-        .facility-photo {
-            width: 100%;
-            min-width: 0;
-        }
-    }
-</style>
-
-<div class="grid grid-cols-1 gap-6 reservation-detail-grid">
-
-    <div class="reservation-main-column space-y-6">
-
-        {{-- INFORMASI PEMOHON --}}
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
-
-            {{-- Header --}}
-            <div class="flex items-center gap-3 mb-4">
-
-                <div class="w-9 h-9 rounded-lg bg-indigo-50 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-indigo-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor">
-
-                        <path stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                </div>
-
-                <div>
-                    <h2 class="font-semibold text-gray-900">
-                        Informasi Pemohon
-                    </h2>
-
-                    <p class="text-xs text-gray-400">
-                        Data identitas pemohon reservasi
-                    </p>
-                </div>
-
-            </div>
-
-            <hr class="border-gray-100 mb-4">
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-                {{-- Nama Pemohon --}}
-                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-
-                    <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">
-                        Nama Pemohon
-                    </p>
-
-                    <div class="flex items-center gap-3">
-
-                        {{-- Initial Avatar --}}
-                        <div class="w-9 h-9 rounded-full bg-indigo-600 text-white
-                                    flex items-center justify-center
-                                    text-xs font-semibold shrink-0">
-
-                            {{ \Illuminate\Support\Str::of($reservation->user->name)
-                                ->explode(' ')
-                                ->filter()
-                                ->map(fn ($word) => strtoupper(substr($word, 0, 1)))
-                                ->take(2)
-                                ->implode('') }}
-
-                        </div>
-
-                        <div class="min-w-0">
-
-                            <p class="font-semibold text-gray-900 text-sm">
-                                {{ $reservation->user->name }}
-                            </p>
-
-                            @if($reservation->user->identifier)
-                            <p class="text-xs text-gray-500">
-                                {{ $reservation->user->userType?->name === 'mahasiswa' ? 'NIM' : 'ID' }}:
-                                {{ $reservation->user->identifier }}
-                            </p>
-                            @endif
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                {{-- Tipe Pemohon --}}
-                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-
-                    <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">
-                        Tipe Pemohon
-                    </p>
-
-                    <p class="font-semibold text-gray-900 text-sm capitalize">
-                        {{ $reservation->user->userType?->name ?? '-' }}
-                    </p>
-
-                    <p class="text-xs text-gray-500 mt-1">
-                        Pengguna fasilitas kampus
-                    </p>
-
-                </div>
-
-
-                {{-- Kontak --}}
-                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-
-                    <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">
-                        Kontak & Email
-                    </p>
-
-                    <p class="font-semibold text-gray-900 text-sm break-words">
-                        {{ $reservation->user->email }}
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        {{-- INFORMASI FASILITAS --}}
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
-
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-emerald-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01" />
-                    </svg>
-                </div>
-
-                <div>
-                    <h2 class="font-semibold text-gray-900">
-                        Informasi Fasilitas Kampus
-                    </h2>
-
-                    <p class="text-xs text-gray-400">
-                        Verifikasi visual dan status operasional fasilitas
-                    </p>
-                </div>
-            </div>
-
-            <hr class="border-gray-100 mb-5">
-
-            @foreach ($reservation->details as $detail)
-
-            @php
-            $facility = $detail->facility;
-            @endphp
-
-            <div class="facility-detail-row">
-
-                {{-- Foto --}}
-                <div class="facility-photo">
-
-                    <img
-                        src="{{ $facility?->image
-                                ? asset('storage/' . $facility->image)
-                                : 'https://placehold.co/400x300' }}"
-                        alt="Foto {{ $facility?->name ?? 'Fasilitas' }}"
-                        class="w-full h-full object-cover rounded-xl border border-gray-200">
-
-                    <span class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded">
-                        Foto Resmi
-                    </span>
-
-                </div>
-
-                {{-- Konten --}}
-                <div class="facility-content">
-
-                    {{-- Nama + Status --}}
-                    <div class="flex items-start justify-between gap-3 flex-wrap">
-
-                        <div>
-                            <h3 class="text-xl font-bold text-[#19183b]">
-                                {{ $facility?->name ?? '-' }}
-                            </h3>
-
-                            <p class="text-sm text-gray-500 mt-1">
-                                Tipe:
-                                <span class="text-indigo-600 font-medium bg-indigo-50 px-2 py-0.5 rounded">
-                                    {{ ucwords(str_replace('_', ' ', $facility?->type ?? '-')) }}
-                                </span>
-                            </p>
-                        </div>
-
-                        <x-petugas.facility-status-badge :status="$facility?->status" />
-
-                    </div>
-
-                    {{-- Detail fasilitas --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
-
-                        {{-- Lokasi --}}
-                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">
-                                Lokasi
-                            </p>
-
-                            <p class="font-semibold text-gray-900 text-sm">
-                                {{ $facility?->location ?? '-' }}
-                            </p>
-                        </div>
-
-                        {{-- Kapasitas --}}
-                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">
-                                Kapasitas
-                            </p>
-
-                            <p class="font-semibold text-gray-900 text-sm">
-                                @if ($facility?->capacity)
-                                {{ $facility->capacity }} Peserta
-                                @else
-                                -
-                                @endif
-                            </p>
-                        </div>
-
-                    </div>
-
-                    {{-- Deskripsi --}}
-                    @if ($facility?->description)
-                    <div class="mt-4 bg-gray-50 border border-gray-200 rounded-xl p-4">
-                        <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">
-                            Deskripsi
-                        </p>
-
-                        <p class="text-sm text-gray-700">
-                            {{ $facility->description }}
-                        </p>
-                    </div>
-                    @endif
-
-                </div>
-
-            </div>
-
-            @endforeach
-
-        </div>
-
-        {{-- DETAIL WAKTU & PENGGUNAAN --}}
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
-
-            {{-- Header --}}
-            <div class="flex items-center justify-between mb-4">
+            {{-- Sisi Kiri: Judul & Deskripsi --}}
+            <div>
 
                 <div class="flex items-center gap-3">
 
-                    <div class="w-9 h-9 rounded-lg bg-violet-50 flex items-center justify-center">
-                        <svg class="w-5 h-5 text-violet-500"
+                    <h1 class="text-xl font-bold text-gray-900">
+                        Detail Reservasi Fasilitas
+                    </h1>
+
+                    <x-petugas.status-badge :status="$reservation->status" />
+
+                </div>
+
+                <p class="text-xs text-gray-500 mt-1 max-w-xl leading-relaxed">
+                    Tinjau kelayakan peminjam, ketersediaan fasilitas, serta potensi bentrok sebelum mengambil tindakan.
+                </p>
+
+            </div>
+
+            {{-- Sisi Kanan: Metadata Badges (Berjejer Kesamping) --}}
+            <div class="flex items-center gap-3 flex-shrink-0">
+
+                <div class="bg-gray-50/80 border border-gray-200/80 rounded-xl px-4 py-2.5 min-w-[120px]">
+                    <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                        ID RESERVASI
+                    </p>
+                    <p class="font-bold text-slate-900 text-sm mt-0.5">
+                        {{ $reservation->reservation_code }}
+                    </p>
+                </div>
+
+                <div class="bg-gray-50/80 border border-gray-200/80 rounded-xl px-4 py-2.5 min-w-[140px]">
+                    <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                        TGL PENGAJUAN
+                    </p>
+                    <p class="font-bold text-slate-900 text-sm mt-0.5">
+                        {{ $reservation->created_at->locale('id')->translatedFormat('d F Y, H.i') }}
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- GRID UTAMA --}}
+    <style>
+        .reservation-detail-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .reservation-main-column {
+            min-width: 0;
+            width: 100%;
+        }
+
+        .reservation-sidebar {
+            min-width: 0;
+            width: 100%;
+        }
+
+        .facility-detail-row {
+            display: flex;
+            gap: 1.25rem;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .facility-photo {
+            position: relative;
+            width: 16rem;
+            min-width: 16rem;
+            height: 11rem;
+            flex-shrink: 0;
+        }
+
+        .facility-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        @media (max-width: 1023px) {
+            .reservation-detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .facility-detail-row {
+                flex-direction: column;
+            }
+
+            .facility-photo {
+                width: 100%;
+                min-width: 0;
+            }
+        }
+    </style>
+
+    <div class="grid grid-cols-1 gap-6 reservation-detail-grid">
+
+        <div class="reservation-main-column space-y-6">
+
+            {{-- INFORMASI PEMOHON --}}
+            <div class="bg-white border border-gray-200 rounded-2xl p-6">
+
+                {{-- Header --}}
+                <div class="flex items-center gap-3 mb-4">
+
+                    <div class="w-9 h-9 rounded-lg bg-indigo-50 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-indigo-500"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor">
@@ -547,132 +305,242 @@ $conflictDescription = $conflictingReservation
                             <path stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                     </div>
 
                     <div>
                         <h2 class="font-semibold text-gray-900">
-                            Detail Waktu &amp; Penggunaan
+                            Informasi Pemohon
                         </h2>
 
                         <p class="text-xs text-gray-400">
-                            Jadwal, agenda kegiatan, dan berkas surat
+                            Data identitas pemohon reservasi
                         </p>
                     </div>
 
                 </div>
 
-                <span class="bg-slate-100 text-slate-500 text-xs font-semibold px-3 py-1 rounded-lg">
-                    READ-ONLY
-                </span>
+                <hr class="border-gray-100 mb-4">
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                    {{-- Nama Pemohon --}}
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+
+                        <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">
+                            Nama Pemohon
+                        </p>
+
+                        <div class="flex items-center gap-3">
+
+                            {{-- Initial Avatar --}}
+                            <div class="w-9 h-9 rounded-full bg-indigo-600 text-white
+                                        flex items-center justify-center
+                                        text-xs font-semibold shrink-0">
+
+                                {{ \Illuminate\Support\Str::of($reservation->user->name)
+                                    ->explode(' ')
+                                    ->filter()
+                                    ->map(fn ($word) => strtoupper(substr($word, 0, 1)))
+                                    ->take(2)
+                                    ->implode('') }}
+
+                            </div>
+
+                            <div class="min-w-0">
+
+                                <p class="font-semibold text-gray-900 text-sm">
+                                    {{ $reservation->user->name }}
+                                </p>
+
+                                @if($reservation->user->identifier)
+                                <p class="text-xs text-gray-500">
+                                    {{ $reservation->user->userType?->name === 'mahasiswa' ? 'NIM' : 'ID' }}:
+                                    {{ $reservation->user->identifier }}
+                                </p>
+                                @endif
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- Tipe Pemohon --}}
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+
+                        <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">
+                            Tipe Pemohon
+                        </p>
+
+                        <p class="font-semibold text-gray-900 text-sm capitalize">
+                            {{ $reservation->user->userType?->name ?? '-' }}
+                        </p>
+
+                        <p class="text-xs text-gray-500 mt-1">
+                            Pengguna fasilitas kampus
+                        </p>
+
+                    </div>
+
+
+                    {{-- Kontak --}}
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+
+                        <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">
+                            Kontak & Email
+                        </p>
+
+                        <p class="font-semibold text-gray-900 text-sm break-words">
+                            {{ $reservation->user->email }}
+                        </p>
+
+                    </div>
+
+                </div>
 
             </div>
 
-            <hr class="border-gray-100 mb-4">
+            {{-- INFORMASI FASILITAS --}}
+            <div class="bg-white border border-gray-200 rounded-2xl p-6">
 
-
-            @php
-            $startTime = $reservation->start_time;
-            $endTime = $reservation->end_time;
-
-            $durationMinutes = $startTime->diffInMinutes($endTime);
-            $durationHours = $durationMinutes / 60;
-
-            // 1 slot = 30 menit
-            $durationSlots = $durationMinutes / 30;
-            @endphp
-
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-
-                {{-- Tanggal Penggunaan --}}
-                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-
-                    <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">
-                        Tanggal Penggunaan
-                    </p>
-
-                    <div class="flex items-center gap-2">
-
-                        <svg class="w-4 h-4 text-indigo-500"
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-emerald-500"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor">
-
                             <path stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01" />
                         </svg>
+                    </div>
 
-                        <p class="font-semibold text-gray-900 text-sm">
-                            {{ $startTime->locale('id')->translatedFormat('d F Y') }}
+                    <div>
+                        <h2 class="font-semibold text-gray-900">
+                            Informasi Fasilitas Kampus
+                        </h2>
+
+                        <p class="text-xs text-gray-400">
+                            Verifikasi visual dan status operasional fasilitas
                         </p>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100 mb-5">
+
+                @foreach ($reservation->details as $detail)
+
+                @php
+                $facility = $detail->facility;
+                @endphp
+
+                <div class="facility-detail-row">
+
+                    {{-- Foto --}}
+                    <div class="facility-photo">
+
+                        <img
+                            src="{{ $facility?->image
+                                    ? asset('storage/' . $facility->image)
+                                    : 'https://placehold.co/400x300' }}"
+                            alt="Foto {{ $facility?->name ?? 'Fasilitas' }}"
+                            class="w-full h-full object-cover rounded-xl border border-gray-200">
+
+                        <span class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded">
+                            Foto Resmi
+                        </span>
 
                     </div>
 
-                    <p class="text-xs text-gray-500 mt-1">
-                        {{ $startTime->locale('id')->translatedFormat('l') }}
-                    </p>
+                    {{-- Konten --}}
+                    <div class="facility-content">
 
-                </div>
+                        {{-- Nama + Status --}}
+                        <div class="flex items-start justify-between gap-3 flex-wrap">
 
+                            <div>
+                                <h3 class="text-xl font-bold text-[#19183b]">
+                                    {{ $facility?->name ?? '-' }}
+                                </h3>
 
-                {{-- Rentang Waktu --}}
-                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                <p class="text-sm text-gray-500 mt-1">
+                                    Tipe:
+                                    <span class="text-indigo-600 font-medium bg-indigo-50 px-2 py-0.5 rounded">
+                                        {{ ucwords(str_replace('_', ' ', $facility?->type ?? '-')) }}
+                                    </span>
+                                </p>
+                            </div>
 
-                    <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">
-                        Rentang Waktu
-                    </p>
+                            <x-petugas.facility-status-badge :status="$facility?->status" />
 
-                    <div class="flex items-center gap-2">
+                        </div>
 
-                        <svg class="w-4 h-4 text-emerald-500"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor">
+                        {{-- Detail fasilitas --}}
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
 
-                            <path stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                            {{-- Lokasi --}}
+                            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">
+                                    Lokasi
+                                </p>
 
-                        <p class="font-semibold text-gray-900 text-sm">
-                            {{ $startTime->format('H.i') }}
-                            –
-                            {{ $endTime->format('H.i') }}
-                            WIB
-                        </p>
+                                <p class="font-semibold text-gray-900 text-sm">
+                                    {{ $facility?->location ?? '-' }}
+                                </p>
+                            </div>
+
+                            {{-- Kapasitas --}}
+                            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">
+                                    Kapasitas
+                                </p>
+
+                                <p class="font-semibold text-gray-900 text-sm">
+                                    @if ($facility?->capacity)
+                                    {{ $facility->capacity }} Peserta
+                                    @else
+                                    -
+                                    @endif
+                                </p>
+                            </div>
+
+                        </div>
+
+                        {{-- Deskripsi --}}
+                        @if ($facility?->description)
+                        <div class="mt-4 bg-gray-50 border border-gray-200 rounded-xl p-4">
+                            <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">
+                                Deskripsi
+                            </p>
+
+                            <p class="text-sm text-gray-700">
+                                {{ $facility->description }}
+                            </p>
+                        </div>
+                        @endif
 
                     </div>
 
-                    <p class="text-xs text-gray-500 mt-1">
-                        Durasi
-                        {{ number_format($durationHours, 1, ',', '.') }}
-                        jam setara
-                        {{ $durationSlots }}
-                        slot
-                    </p>
-
                 </div>
 
+                @endforeach
 
-                {{-- Dokumen Permohonan --}}
-                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+            </div>
 
-                    <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">
-                        Dokumen Permohonan
-                    </p>
+            {{-- DETAIL WAKTU & PENGGUNAAN --}}
+            <div class="bg-white border border-gray-200 rounded-2xl p-6">
 
-                    @if ($reservation->document)
+                {{-- Header --}}
+                <div class="flex items-center justify-between mb-4">
 
-                        <a href="{{ route('reservations.document', $reservation) }}"
-                            target="_blank"
-                            class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-700">
+                    <div class="flex items-center gap-3">
 
-                            <svg class="w-4 h-4"
+                        <div class="w-9 h-9 rounded-lg bg-violet-50 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-violet-500"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -680,39 +548,257 @@ $conflictDescription = $conflictingReservation
                                 <path stroke-linecap="round"
                                     stroke-linejoin="round"
                                     stroke-width="2"
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
+                        </div>
 
-                            Pratinjau Dokumen
+                        <div>
+                            <h2 class="font-semibold text-gray-900">
+                                Detail Waktu &amp; Penggunaan
+                            </h2>
 
-                        </a>
+                            <p class="text-xs text-gray-400">
+                                Jadwal, agenda kegiatan, dan berkas surat
+                            </p>
+                        </div>
 
-                    @else
+                    </div>
 
-                        <p class="text-sm text-gray-400">
-                            Tidak ada dokumen
+                    <span class="bg-slate-100 text-slate-500 text-xs font-semibold px-3 py-1 rounded-lg">
+                        READ-ONLY
+                    </span>
+
+                </div>
+
+                <hr class="border-gray-100 mb-4">
+
+
+                @php
+                $startTime = $reservation->start_time;
+                $endTime = $reservation->end_time;
+
+                $durationMinutes = $startTime->diffInMinutes($endTime);
+                $durationHours = $durationMinutes / 60;
+
+                // 1 slot = 30 menit
+                $durationSlots = $durationMinutes / 30;
+                @endphp
+
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+
+                    {{-- Tanggal Penggunaan --}}
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+
+                        <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">
+                            Tanggal Penggunaan
                         </p>
 
-                    @endif
+                        <div class="flex items-center gap-2">
+
+                            <svg class="w-4 h-4 text-indigo-500"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor">
+
+                                <path stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+
+                            <p class="font-semibold text-gray-900 text-sm">
+                                {{ $startTime->locale('id')->translatedFormat('d F Y') }}
+                            </p>
+
+                        </div>
+
+                        <p class="text-xs text-gray-500 mt-1">
+                            {{ $startTime->locale('id')->translatedFormat('l') }}
+                        </p>
+
+                    </div>
+
+
+                    {{-- Rentang Waktu --}}
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+
+                        <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">
+                            Rentang Waktu
+                        </p>
+
+                        <div class="flex items-center gap-2">
+
+                            <svg class="w-4 h-4 text-emerald-500"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor">
+
+                                <path stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+
+                            <p class="font-semibold text-gray-900 text-sm">
+                                {{ $startTime->format('H.i') }}
+                                –
+                                {{ $endTime->format('H.i') }}
+                                WIB
+                            </p>
+
+                        </div>
+
+                        <p class="text-xs text-gray-500 mt-1">
+                            Durasi
+                            {{ number_format($durationHours, 1, ',', '.') }}
+                            jam setara
+                            {{ $durationSlots }}
+                            slot
+                        </p>
+
+                    </div>
+
+
+                    {{-- Dokumen Permohonan --}}
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+
+                        <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">
+                            Dokumen Permohonan
+                        </p>
+
+                        @if ($reservation->document)
+
+                            <a href="{{ route('reservations.document', $reservation) }}"
+                                target="_blank"
+                                class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-700">
+
+                                <svg class="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor">
+
+                                    <path stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+
+                                Pratinjau Dokumen
+
+                            </a>
+
+                        @else
+
+                            <p class="text-sm text-gray-400">
+                                Tidak ada dokumen
+                            </p>
+
+                        @endif
+
+                    </div>
+
+                </div>
+
+
+                {{-- Tujuan / Agenda --}}
+                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mt-3">
+
+                    <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">
+                        Tujuan / Agenda Penggunaan
+                    </p>
+
+                    <p class="font-semibold text-gray-900 mb-1">
+                        {{ $reservation->purpose ?? '-' }}
+                    </p>
+
+                    <p class="text-sm text-gray-500">
+                        {{ $reservation->activity_description ?? '-' }}
+                    </p>
 
                 </div>
 
             </div>
 
+        </div>
 
-            {{-- Tujuan / Agenda --}}
-            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mt-3">
+        {{-- SIDEBAR KANAN --}}
+        <div class="reservation-sidebar space-y-6">
 
-                <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">
-                    Tujuan / Agenda Penggunaan
-                </p>
+            {{-- PANEL AKSI PETUGAS (Aksen Garis Gelap/Biru di Atas) --}}
+            <x-petugas.action-panel
+                :state="$panelState"
 
-                <p class="font-semibold text-gray-900 mb-1">
-                    {{ $reservation->purpose ?? '-' }}
-                </p>
+                :officer-name="Auth::user()?->name ?? '-'"
 
-                <p class="text-sm text-gray-500">
-                    {{ $reservation->activity_description ?? '-' }}
+                :reservation-id="$reservation->id"
+
+                :approve-action="route('petugas.reservasi.update-status', $reservation->id)"
+                :reject-action="route('petugas.reservasi.update-status', $reservation->id)"
+                :cancel-action="route('petugas.reservasi.update-status', $reservation->id)"
+
+                :approved-by="$approvedHistory?->changedBy?->name ?? '-'"
+                :approved-at="$approvedHistory?->created_at
+                    ? $approvedHistory->created_at->locale('id')->translatedFormat('d M Y H.i') . ' WIB'
+                    : '-'"
+
+                :rejected-by="$rejectedHistory?->changedBy?->name ?? '-'"
+                :rejected-at="$rejectedHistory?->created_at
+                    ? $rejectedHistory->created_at->locale('id')->translatedFormat('d M Y H.i') . ' WIB'
+                    : '-'"
+                :reject-reason-detail="$rejectedHistory?->reason"
+
+                :cancelled-by="$cancelledHistory?->changedBy?->name ?? '-'"
+                :cancelled-at="$cancelledHistory?->created_at
+                    ? $cancelledHistory->created_at->locale('id')->translatedFormat('d M Y H.i') . ' WIB'
+                    : '-'"
+                :cancel-reason-detail="$cancelledHistory?->reason" 
+                :rejectionHistory="$rejectionHistory" />
+
+            {{-- ATURAN TRANSISI STATUS --}}
+            <div class="bg-white border border-gray-200 rounded-2xl p-6">
+
+                <div class="flex items-center gap-2 mb-3">
+
+                    <svg class="w-4 h-4 text-indigo-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor">
+
+                        <path stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+
+                    </svg>
+
+                    <h2 class="text-sm font-semibold text-gray-900">
+                        Aturan Transisi Status
+                    </h2>
+
+                </div>
+
+                <ul class="space-y-2 text-sm text-gray-600 mb-4">
+
+                    <li class="flex items-start gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-gray-300 mt-1.5 shrink-0"></span>
+                        Menunggu &rarr; Disetujui atau Ditolak
+                    </li>
+
+                    <li class="flex items-start gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-gray-300 mt-1.5 shrink-0"></span>
+                        Disetujui &rarr; Dibatalkan, wajib alasan
+                    </li>
+
+                    <li class="flex items-start gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-gray-300 mt-1.5 shrink-0"></span>
+                        Disetujui &rarr; Selesai, otomatis sistem
+                    </li>
+
+                </ul>
+
+                <p class="text-xs text-gray-400">
+                    Pusat Bantuan Petugas &mdash; Sarpras Hub Ext. 201
                 </p>
 
             </div>
@@ -720,90 +806,170 @@ $conflictDescription = $conflictingReservation
         </div>
 
     </div>
-
-    {{-- SIDEBAR KANAN --}}
-    <div class="reservation-sidebar space-y-6">
-
-        {{-- PANEL AKSI PETUGAS (Aksen Garis Gelap/Biru di Atas) --}}
-        <x-petugas.action-panel
-            :state="$panelState"
-
-            :officer-name="Auth::user()?->name ?? '-'"
-
-            :reservation-id="$reservation->id"
-
-            :approve-action="route('petugas.reservasi.update-status', $reservation->id)"
-            :reject-action="route('petugas.reservasi.update-status', $reservation->id)"
-            :cancel-action="route('petugas.reservasi.update-status', $reservation->id)"
-
-            :approved-by="$approvedHistory?->changedBy?->name ?? '-'"
-            :approved-at="$approvedHistory?->created_at
-                ? $approvedHistory->created_at->locale('id')->translatedFormat('d M Y H.i') . ' WIB'
-                : '-'"
-
-            :rejected-by="$rejectedHistory?->changedBy?->name ?? '-'"
-            :rejected-at="$rejectedHistory?->created_at
-                ? $rejectedHistory->created_at->locale('id')->translatedFormat('d M Y H.i') . ' WIB'
-                : '-'"
-            :reject-reason-detail="$rejectedHistory?->reason"
-
-            :cancelled-by="$cancelledHistory?->changedBy?->name ?? '-'"
-            :cancelled-at="$cancelledHistory?->created_at
-                ? $cancelledHistory->created_at->locale('id')->translatedFormat('d M Y H.i') . ' WIB'
-                : '-'"
-            :cancel-reason-detail="$cancelledHistory?->reason" 
-            :rejectionHistory="$rejectionHistory" />
-
-        {{-- ATURAN TRANSISI STATUS --}}
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
-
-            <div class="flex items-center gap-2 mb-3">
-
-                <svg class="w-4 h-4 text-indigo-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor">
-
-                    <path stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-
-                </svg>
-
-                <h2 class="text-sm font-semibold text-gray-900">
-                    Aturan Transisi Status
-                </h2>
-
-            </div>
-
-            <ul class="space-y-2 text-sm text-gray-600 mb-4">
-
-                <li class="flex items-start gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-gray-300 mt-1.5 shrink-0"></span>
-                    Menunggu &rarr; Disetujui atau Ditolak
-                </li>
-
-                <li class="flex items-start gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-gray-300 mt-1.5 shrink-0"></span>
-                    Disetujui &rarr; Dibatalkan, wajib alasan
-                </li>
-
-                <li class="flex items-start gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-gray-300 mt-1.5 shrink-0"></span>
-                    Disetujui &rarr; Selesai, otomatis sistem
-                </li>
-
-            </ul>
-
-            <p class="text-xs text-gray-400">
-                Pusat Bantuan Petugas &mdash; Sarpras Hub Ext. 201
-            </p>
-
-        </div>
-
-    </div>
-
 </div>
 
+<script>
+(() => {
+    const rootId = 'reservation-detail-ajax';
+    let isSubmitting = false;
+
+    document.addEventListener('submit', async (event) => {
+        const form = event.target;
+        const area = document.getElementById(rootId);
+
+        if (!area || !area.contains(form)) return;
+        if (!form.matches('form[data-reservation-ajax]')) return;
+
+        event.preventDefault();
+
+        if (isSubmitting) return;
+
+        const submitter = event.submitter;
+        const submitButtons = form.querySelectorAll(
+            'button[type="submit"], input[type="submit"]'
+        );
+
+        isSubmitting = true;
+
+        submitButtons.forEach(button => {
+            button.disabled = true;
+        });
+
+        try {
+            const formData = new FormData(form, submitter);
+
+            const response = await fetch(form.action, {
+                method: form.method || 'POST',
+                body: formData,
+                credentials: 'same-origin',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.message || 'Gagal mengubah status.');
+            }
+
+            // Ambil tampilan detail reservasi terbaru
+            const detailResponse = await fetch(window.location.href, {
+                credentials: 'same-origin',
+                headers: {
+                    'Accept': 'text/html'
+                }
+            });
+
+            if (!detailResponse.ok) {
+                throw new Error('Gagal mengambil detail terbaru.');
+            }
+
+            const html = await detailResponse.text();
+
+            const documentResponse = new DOMParser()
+                .parseFromString(html, 'text/html');
+
+            const updatedArea = documentResponse
+                .getElementById(rootId);
+
+            if (!updatedArea) {
+                throw new Error('Konten detail reservasi tidak ditemukan.');
+            }
+
+            area.replaceWith(updatedArea);
+        } catch (error) {
+            console.error('AJAX reservasi gagal:', error);
+
+            alert(
+                'Gagal memproses reservasi. ' +
+                'Periksa kembali checklist atau alasan yang wajib diisi.'
+            );
+
+        } finally {
+            isSubmitting = false;
+
+            // Tombol lama mungkin sudah diganti oleh respons AJAX
+            if (form.isConnected) {
+                submitButtons.forEach(button => {
+                    button.disabled = false;
+                });
+            }
+        }
+    });
+        document.addEventListener('click', async (event) => {
+        const link = event.target.closest('a[data-reservation-link]');
+        const area = document.getElementById('reservation-detail-ajax');
+
+        if (!link || !area?.contains(link)) return;
+
+        // Biarkan navigasi browser biasa untuk Ctrl+klik atau tab baru
+        if (
+            event.button !== 0 ||
+            event.ctrlKey ||
+            event.metaKey ||
+            event.shiftKey ||
+            event.altKey
+        ) return;
+
+        event.preventDefault();
+
+        try {
+            const response = await fetch(link.href, {
+                headers: {
+                    'Accept': 'text/html'
+                },
+                credentials: 'same-origin'
+            });
+
+            if (!response.ok) {
+                throw new Error('Gagal memuat panel.');
+            }
+
+            const html = await response.text();
+
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const updatedArea = doc.getElementById('reservation-detail-ajax');
+
+            if (!updatedArea) {
+                throw new Error('Area AJAX tidak ditemukan.');
+            }
+
+            area.replaceWith(updatedArea);
+
+            window.history.pushState({}, '', link.href);
+
+        } catch (error) {
+            console.error(error);
+            window.location.assign(link.href);
+        }
+    });
+
+    // Mendukung tombol Back dan Forward browser
+    window.addEventListener('popstate', async () => {
+        const response = await fetch(window.location.href);
+        if (!response.ok) {
+            window.location.reload();
+            return;
+        }
+
+        const html = await response.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+
+        const updatedArea = doc.getElementById('reservation-detail-ajax');
+        const area = document.getElementById('reservation-detail-ajax');
+
+        if (area && updatedArea) {
+            area.replaceWith(updatedArea);
+        } else {
+            window.location.reload();
+        }
+    });
+})();
+</script>
 @endsection

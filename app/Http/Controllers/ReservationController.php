@@ -570,6 +570,13 @@ class ReservationController extends Controller
             ]);
         });
 
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Status reservasi berhasil diperbarui.'
+            ]);
+        }
+
         return back()->with('success', 'Status reservasi berhasil diperbarui.');
     }
 
@@ -638,8 +645,8 @@ class ReservationController extends Controller
                 'facilities:id,name,type,location',
             ])
             ->whereIn('status', [
-                'menunggu',
                 'disetujui',
+                'selesai',
             ])
             ->where(
                 'start_time',

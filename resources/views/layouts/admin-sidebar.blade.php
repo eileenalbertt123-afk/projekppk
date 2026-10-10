@@ -1,5 +1,4 @@
-<aside class="w-[290px] h-full min-h-screen shrink-0 bg-white border-r border-[#e2ebe9] flex flex-col justify-between">
-
+<div class="w-[290px] h-full min-h-screen shrink-0 bg-white flex flex-col justify-between">
     <div>
 
         <!-- BRAND -->
@@ -187,4 +186,4 @@
 
     </div>
 
-</aside>
+</div>

@@ -29,10 +29,9 @@
 
         <aside
             id="adminSidebar"
-            class="fixed inset-y-0 left-0 z-50 w-[290px]
+            class="fixed inset-y-0 left-0 z-50 w-[290px] -translate-x-full
                    bg-white border-r border-[#e2ebe9]
                    transition-transform duration-300 ease-in-out">
-
             @include('layouts.admin-sidebar')
 
         </aside>
@@ -44,7 +43,7 @@
 
         <div
             id="adminMain"
-            class="min-h-screen ml-[290px]
+            class="min-h-screen lg:ml-[290px]
                    transition-all duration-300 ease-in-out">
 
 
@@ -54,11 +53,11 @@
 
             <header
                 class="sticky top-0 z-40
-                       h-[90px]
+                       h-16 sm:h-[90px]
                        bg-white
                        border-b border-[#e2ebe9]
                        flex items-center justify-between
-                       px-8">
+                       px-4 sm:px-8">
 
 
                 {{-- MENU --}}
@@ -67,7 +66,7 @@
                     type="button"
                     id="menuButton"
                     class="flex items-center gap-2
-                           px-4 py-2.5
+                           px-3 py-2 sm:px-4 sm:py-2.5
                            rounded-xl
                            border border-[#dfe8e6]
                            bg-white
@@ -98,9 +97,9 @@
 
                 {{-- KANAN HEADER --}}
 
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 sm:gap-4">
 
-                    <span class="text-sm text-[#708993]">
+                    <span class="hidden sm:inline text-sm text-[#708993]">
 
                         Halo,
 
@@ -121,7 +120,7 @@
 
                         <button
                             type="submit"
-                            class="px-4 py-2
+                            class="px-3 py-1.5 sm:px-4 sm:py-2
                                    rounded-xl
                                    border border-[#f2caca]
                                    bg-white
@@ -147,7 +146,7 @@
                 CONTENT
             ====================================================== --}}
 
-            <main class="min-w-0 px-8 py-8">
+            <main class="min-w-0 px-4 py-5 sm:px-8 sm:py-8">
 
                 @yield('content')
 
@@ -164,46 +163,26 @@
     ========================================================== --}}
 
     <script>
-
-        document.addEventListener('DOMContentLoaded', function () {
-
-            const menuButton = document.getElementById('menuButton');
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.getElementById('menuButton');
             const sidebar = document.getElementById('adminSidebar');
             const main = document.getElementById('adminMain');
+            if (!btn || !sidebar || !main) return;
 
-            if (!menuButton || !sidebar || !main) {
-                return;
+            // Terbuka otomatis di desktop, tertutup di HP
+            let open = window.matchMedia('(min-width: 1024px)').matches;
+
+            function apply() {
+                sidebar.classList.toggle('-translate-x-full', !open);
+                main.classList.toggle('lg:ml-[290px]', open);
             }
 
-
-            let sidebarOpen = true;
-
-
-            menuButton.addEventListener('click', function () {
-
-                sidebarOpen = !sidebarOpen;
-
-
-                if (sidebarOpen) {
-
-                    sidebar.classList.remove('-translate-x-full');
-
-                    main.classList.add('ml-[290px]');
-                    main.classList.remove('ml-0');
-
-                } else {
-
-                    sidebar.classList.add('-translate-x-full');
-
-                    main.classList.remove('ml-[290px]');
-                    main.classList.add('ml-0');
-
-                }
-
+            btn.addEventListener('click', () => {
+                open = !open;
+                apply();
             });
-
+            apply();
         });
-
     </script>
 
 

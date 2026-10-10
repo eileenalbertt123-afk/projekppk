@@ -13,12 +13,19 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-        * { box-sizing: border-box; }
-        body { margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
 
         #sidebar {
             position: fixed;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             width: 250px;
             height: 100vh;
             z-index: 50;
@@ -34,8 +41,27 @@
             transition: margin-left 0.3s ease;
         }
 
-        #sidebar.collapsed   { width: 0; }
-        #mainContent.collapsed { margin-left: 0; }
+        #sidebar.collapsed {
+            width: 0;
+        }
+
+        #mainContent.collapsed {
+            margin-left: 0;
+        }
+
+        @media (max-width: 1023px) {
+            #mainContent {
+                margin-left: 0;
+            }
+
+            #sidebar {
+                width: 0;
+            }
+
+            #sidebar:not(.collapsed) {
+                width: 250px;
+            }
+        }
     </style>
 </head>
 
@@ -45,17 +71,17 @@
 
     <div id="mainContent">
         @include('components.petugas.header')
-        <main class="flex-1 p-6">
+        <main class="flex-1 p-4 sm:p-6">
             @yield('content')
         </main>
     </div>
 
     <script>
-        const sidebar     = document.getElementById('sidebar');
+        const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
-        const toggle      = document.getElementById('sidebarToggle');
+        const toggle = document.getElementById('sidebarToggle');
 
-        toggle.addEventListener('click', function () {
+        toggle.addEventListener('click', function() {
             sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('collapsed');
         });
@@ -64,4 +90,5 @@
     @stack('scripts')
 
 </body>
+
 </html>

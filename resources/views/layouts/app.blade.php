@@ -198,18 +198,18 @@
     <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-brand-neutral">
 
         <!-- Header Atas -->
-        <header class="bg-white border-b border-gray-200 px-6 py-3.5 flex items-center justify-between shadow-xs">
-            <div class="flex items-center gap-3">
+        <header class="bg-white border-b border-gray-200 px-3 py-3 sm:px-6 sm:py-3.5 flex items-center justify-between shadow-xs gap-2">
+            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
                 <button @click="sidebarOpen = !sidebarOpen" class="bg-brand-neutral hover:bg-gray-200 text-brand-primary px-3 py-1.5 rounded-lg border border-gray-200 text-sm flex items-center gap-2 transition font-medium">
                     <span>☰</span>
                     <span class="hidden sm:inline">Menu</span>
                 </button>
-                <h1 class="text-base font-bold text-brand-primary tracking-tight">Sistem Reservasi Fasilitas Kampus</h1>
+                <h1 class="text-sm sm:text-base font-bold text-brand-primary tracking-tight truncate">
             </div>
 
             <div class="flex items-center gap-3">
                 @guest
-                <a href="{{ route('login') }}" class="bg-brand-primary hover:opacity-95 text-white px-5 py-2 rounded-xl text-sm font-semibold transition shadow-sm">
+                <a href="{{ route('login') }}" class="bg-brand-primary hover:opacity-95 text-white px-3.5 py-2 sm:px-5 rounded-xl text-xs sm:text-sm font-semibold transition shadow-sm whitespace-nowrap">
                     Sign In
                 </a>
                 @else
@@ -225,7 +225,7 @@
         </header>
 
         <!-- Tempat Konten Berubah-ubah -->
-        <main class="flex-1 overflow-y-auto p-6 full">
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6">
             <div class="max-w-7xl mx-auto">
                 @yield('content')
             </div>

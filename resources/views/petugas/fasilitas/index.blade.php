@@ -2,12 +2,12 @@
 
 @section('content')
 
-<div class="flex flex-col gap-6 p-8 w-full">
+<div class="flex flex-col gap-4 sm:gap-6 p-0 sm:p-8 w-full">
 
     {{-- ============================================================
          PAGE HEADER
     ============================================================ --}}
-    <div class="flex items-start justify-between gap-6">
+    <div class="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-6">
         <div class="flex flex-col gap-1">
             <div class="flex items-center gap-3">
                 <h1 class="text-[24px] font-extrabold text-[#0f172a] tracking-[-0.6px] leading-8">
@@ -28,7 +28,7 @@
             <svg class="w-4 h-4 shrink-0 text-[#475569]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
-            <p class="text-[12px] text-[#475569] whitespace-nowrap">
+            <p class="text-[12px] text-[#475569] sm:whitespace-nowrap">
                 Jam Operasional Fasilitas:
                 <span class="font-bold text-[#1e293b]">07.00 – 20.00 WIB</span>
             </p>
@@ -38,14 +38,14 @@
     {{-- ============================================================
          SUMMARY METRIC CARDS
     ============================================================ --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 w-full">
+    <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 w-full">
 
         {{-- Total Fasilitas --}}
-        <div class="flex items-center justify-between bg-white border border-[rgba(226,232,240,0.7)] shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-2xl p-[21px]">
+        <div class="flex items-center justify-between bg-white border border-[rgba(226,232,240,0.7)] shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-2xl p-3 sm:p-[21px]">
             <div class="flex flex-col gap-1.5">
                 <span class="text-[12px] font-bold text-[#94a3b8] uppercase tracking-[0.6px]">TOTAL FASILITAS</span>
-                <div class="flex items-baseline gap-2">
-                    <span class="text-[30px] font-extrabold text-[#0f172a] leading-9">{{ $totalFasilitas }}</span>
+                <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                    <span class="text-2xl sm:text-[30px] font-extrabold text-[#0f172a] leading-8 sm:leading-9">{{ $totalFasilitas }}</span>
                     <span class="text-[12px] font-bold text-[#64748b]">Unit terdata</span>
                 </div>
             </div>
@@ -57,11 +57,11 @@
         </div>
 
         {{-- Tersedia --}}
-        <div class="flex items-center justify-between bg-white border border-[rgba(226,232,240,0.7)] shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-2xl p-[21px]">
+        <div class="flex items-center justify-between bg-white border border-[rgba(226,232,240,0.7)] shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-2xl p-3 sm:p-[21px]">
             <div class="flex flex-col gap-1.5">
                 <span class="text-[12px] font-bold text-[#94a3b8] uppercase tracking-[0.6px]">TERSEDIA</span>
-                <div class="flex items-end gap-2">
-                    <span class="text-[30px] font-extrabold text-[#0f172a] leading-9">{{ $tersediaCount }}</span>
+                <div class="flex flex-wrap items-end gap-x-2 gap-y-1">
+                    <span class="text-2xl sm:text-[30px] font-extrabold text-[#0f172a] leading-8 sm:leading-9">{{ $tersediaCount }}</span>
                     <span class="inline-flex bg-[#ecfdf5] rounded-[6px] px-2 py-0.5 text-[11px] font-bold text-[#047857] whitespace-nowrap">Siap Pakai</span>
                 </div>
             </div>
@@ -73,11 +73,11 @@
         </div>
 
         {{-- Dalam Perbaikan --}}
-        <div class="flex items-center justify-between bg-white border border-[rgba(226,232,240,0.7)] shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-2xl p-[21px]">
+        <div class="flex items-center justify-between bg-white border border-[rgba(226,232,240,0.7)] shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-2xl p-3 sm:p-[21px]">
             <div class="flex flex-col gap-1.5">
                 <span class="text-[12px] font-bold text-[#94a3b8] uppercase tracking-[0.6px]">DALAM PERBAIKAN</span>
-                <div class="flex items-end gap-2">
-                    <span class="text-[30px] font-extrabold text-[#0f172a] leading-9">{{ $maintenanceCount }}</span>
+                <div class="flex flex-wrap items-end gap-x-2 gap-y-1">
+                    <span class="text-2xl sm:text-[30px] font-extrabold text-[#0f172a] leading-8 sm:leading-9">{{ $maintenanceCount }}</span>
                     <span class="inline-flex bg-[#fffbeb] rounded-[6px] px-2 py-0.5 text-[11px] font-bold text-[#b45309] whitespace-nowrap">Perbaikan Aktif</span>
                 </div>
             </div>
@@ -89,11 +89,11 @@
         </div>
 
         {{-- Nonaktif --}}
-        <div class="flex items-center justify-between bg-white border border-[rgba(226,232,240,0.7)] shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-2xl p-[21px]">
+        <div class="flex items-center justify-between bg-white border border-[rgba(226,232,240,0.7)] shadow-[0px_1px_1px_rgba(0,0,0,0.05)] rounded-2xl p-3 sm:p-[21px]">
             <div class="flex flex-col gap-1.5">
                 <span class="text-[12px] font-bold text-[#94a3b8] uppercase tracking-[0.6px]">NONAKTIF</span>
-                <div class="flex items-end gap-2">
-                    <span class="text-[30px] font-extrabold text-[#0f172a] leading-9">{{ $nonaktifCount }}</span>
+                <div class="flex flex-wrap items-end gap-x-2 gap-y-1">
+                    <span class="text-2xl sm:text-[30px] font-extrabold text-[#0f172a] leading-8 sm:leading-9">{{ $nonaktifCount }}</span>
                     <span class="inline-flex bg-[#fff1f2] rounded-[6px] px-2 py-0.5 text-[11px] font-bold text-[#be123c] whitespace-nowrap">Terkunci</span>
                 </div>
             </div>
@@ -138,7 +138,7 @@
                 </form>
 
                 {{-- Status Filter Tabs --}}
-                <div class="flex items-center bg-[#f8fafc] rounded-xl p-[5px] gap-1.5 overflow-x-auto">
+                <div class="flex flex-wrap sm:flex-nowrap items-center bg-[#f8fafc] rounded-xl p-[5px] gap-1.5 sm:overflow-x-auto">
                     @php
                     $currentStatus = request('status', '');
                     $statusOptions = [
@@ -166,8 +166,8 @@
             </div>
 
             {{-- Row 2: Type Filter Chips --}}
-            <div class="border-t border-[#f1f5f9] pt-2.5 overflow-x-auto">
-                <div class="flex items-center gap-2 pb-1">
+            <div class="border-t border-[#f1f5f9] pt-2.5 sm:overflow-x-auto">
+                <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 pb-1">
                     <span class="text-[10px] font-bold text-[#94a3b8] uppercase tracking-[0.5px] whitespace-nowrap shrink-0 pr-1">
                         TIPE FASILITAS:
                     </span>
@@ -211,7 +211,7 @@
             <p class="text-[12px] text-[#94a3b8] mt-1">Coba ubah filter atau kata kunci pencarian</p>
         </div>
         @else
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
             @foreach($facilities as $facility)
 
             @php
@@ -278,7 +278,7 @@
                 </div>
 
                 {{-- Card Body --}}
-                <div class="flex flex-col gap-1.5 pt-5 px-5">
+                <div class="flex flex-col gap-1.5 pt-4 px-4 sm:pt-5 sm:px-5">
 
                     {{-- Type + Status Badge --}}
                     <div class="flex items-start justify-between">
@@ -379,7 +379,7 @@
                 </div>
 
                 {{-- Quick Action Button --}}
-                <div class="px-5 pb-5 pt-5">
+                <div class="px-4 sm:px-5 pb-4 sm:pb-5 pt-4 sm:pt-5">
                     <div class="border-t border-[#f1f5f9] pt-3">
                         <a href="{{ route('petugas.laporan.index', ['facility_id' => $facility->id]) }}"
                             class="flex items-center justify-center gap-1.5 w-full bg-white border border-[#e2e8f0] rounded-xl px-3 py-2.5 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] hover:bg-[#f8fafc] transition-colors">
@@ -401,7 +401,7 @@
             PAGINATION & FOOTER INFO
         ============================================================ --}}
         @if($facilities->hasPages() || $facilities->total() > 0)
-        <div class="flex items-center justify-between pt-2">
+        <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-between text-center gap-3 pt-2">
 
             {{-- Info text --}}
             <p class="text-[12px] font-medium text-[#64748b]">
@@ -414,8 +414,7 @@
 
             {{-- Pagination links --}}
             @if($facilities->hasPages())
-            <div class="flex items-center gap-1.5">
-
+            <div class="flex flex-wrap items-center justify-center gap-1.5">
                 {{-- Previous --}}
                 @if($facilities->onFirstPage())
                 <span class="w-8 h-8 flex items-center justify-center bg-white border border-[rgba(226,232,240,0.8)] rounded-lg opacity-40 cursor-not-allowed">
@@ -474,195 +473,202 @@
 
 <script>
     (() => {
-    const rootId = 'fasilitas-ajax-area';
-    const searchSelector = 'form input[name="search"]';
+        const rootId = 'fasilitas-ajax-area';
+        const searchSelector = 'form input[name="search"]';
 
-    let debounceTimer;
-    let activeRequest = null;
-    let requestVersion = 0;
+        let debounceTimer;
+        let activeRequest = null;
+        let requestVersion = 0;
 
-    async function updateArea(url, {
-        isSearch = false,
-        addHistory = true
-    } = {}) {
+        async function updateArea(url, {
+            isSearch = false,
+            addHistory = true
+        } = {}) {
 
-        const version = ++requestVersion;
+            const version = ++requestVersion;
 
-        if (activeRequest) activeRequest.abort();
+            if (activeRequest) activeRequest.abort();
 
-        const controller = new AbortController();
-        activeRequest = controller;
+            const controller = new AbortController();
+            activeRequest = controller;
 
-        const oldArea = document.getElementById(rootId);
-        if (!oldArea) return;
+            const oldArea = document.getElementById(rootId);
+            if (!oldArea) return;
 
-        oldArea.setAttribute('aria-busy', 'true');
+            oldArea.setAttribute('aria-busy', 'true');
 
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'text/html'
-                },
-                signal: controller.signal,
-                credentials: 'same-origin'
-            });
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'text/html'
+                    },
+                    signal: controller.signal,
+                    credentials: 'same-origin'
+                });
 
-            if (!response.ok) {
-                throw new Error('HTTP ' + response.status);
-            }
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
 
-            const html = await response.text();
+                const html = await response.text();
 
-            const doc = new DOMParser().parseFromString(
-                html,
-                'text/html'
-            );
+                const doc = new DOMParser().parseFromString(
+                    html,
+                    'text/html'
+                );
 
-            const newArea = doc.getElementById(rootId);
+                const newArea = doc.getElementById(rootId);
 
-            if (!newArea) {
-                throw new Error('Konten AJAX tidak ditemukan.');
-            }
+                if (!newArea) {
+                    throw new Error('Konten AJAX tidak ditemukan.');
+                }
 
-            if (version !== requestVersion) return;
+                if (version !== requestVersion) return;
 
-            // Simpan isi search sebelum area diganti
-            const previousSearch = oldArea.querySelector(searchSelector);
-            const searchValue = previousSearch?.value ?? '';
+                // Simpan isi search sebelum area diganti
+                const previousSearch = oldArea.querySelector(searchSelector);
+                const searchValue = previousSearch?.value ?? '';
 
-            const focused = document.activeElement === previousSearch;
+                const focused = document.activeElement === previousSearch;
 
-            const cursorStart = focused
-                ? previousSearch.selectionStart
-                : null;
+                const cursorStart = focused ?
+                    previousSearch.selectionStart :
+                    null;
 
-            const cursorEnd = focused
-                ? previousSearch.selectionEnd
-                : null;
+                const cursorEnd = focused ?
+                    previousSearch.selectionEnd :
+                    null;
 
-            // Ganti hasil AJAX
-            oldArea.replaceWith(newArea);
+                // Ganti hasil AJAX
+                oldArea.replaceWith(newArea);
 
-            // Kembalikan isi search
-            const nextSearch = newArea.querySelector(searchSelector);
+                // Kembalikan isi search
+                const nextSearch = newArea.querySelector(searchSelector);
 
-            if (nextSearch) {
-                nextSearch.value = searchValue;
+                if (nextSearch) {
+                    nextSearch.value = searchValue;
+
+                    if (focused) {
+                        nextSearch.focus({
+                            preventScroll: true
+                        });
+
+                        if (cursorStart !== null) {
+                            nextSearch.setSelectionRange(cursorStart, cursorEnd);
+                        }
+                    }
+                }
 
                 if (focused) {
-                    nextSearch.focus({ preventScroll: true });
+                    const nextSearch = newArea.querySelector(searchSelector);
 
-                    if (cursorStart !== null) {
+                    nextSearch?.focus({
+                        preventScroll: true
+                    });
+
+                    if (nextSearch && cursorStart !== null) {
                         nextSearch.setSelectionRange(cursorStart, cursorEnd);
                     }
                 }
-            }
 
-            if (focused) {
-                const nextSearch = newArea.querySelector(searchSelector);
+                if (addHistory) {
+                    window.history.pushState({}, '', url);
+                }
 
-                nextSearch?.focus({ preventScroll: true });
+            } catch (error) {
+                if (error.name !== 'AbortError' && version === requestVersion) {
+                    console.error('AJAX gagal:', error);
 
-                if (nextSearch && cursorStart !== null) {
-                    nextSearch.setSelectionRange(cursorStart, cursorEnd);
+                    if (!isSearch) {
+                        window.location.assign(url);
+                    }
+                }
+            } finally {
+                if (version === requestVersion) {
+                    document.getElementById(rootId)
+                        ?.removeAttribute('aria-busy');
+
+                    activeRequest = null;
                 }
             }
-
-            if (addHistory) {
-                window.history.pushState({}, '', url);
-            }
-
-        } catch (error) {
-            if (error.name !== 'AbortError' && version === requestVersion) {
-                console.error('AJAX gagal:', error);
-
-                if (!isSearch) {
-                    window.location.assign(url);
-                }
-            }
-        } finally {
-            if (version === requestVersion) {
-                document.getElementById(rootId)
-                    ?.removeAttribute('aria-busy');
-
-                activeRequest = null;
-            }
-        }
-    }
-
-    // LIVE SEARCH
-    document.addEventListener('input', (event) => {
-        const area = document.getElementById(rootId);
-
-        if (
-            !area ||
-            !area.contains(event.target) ||
-            !event.target.matches(searchSelector)
-        ) return;
-
-        clearTimeout(debounceTimer);
-
-        if (activeRequest) activeRequest.abort();
-
-        const query = event.target.value;
-        const url = new URL(window.location.href);
-
-        if (query.trim()) {
-            url.searchParams.set('search', query);
-        } else {
-            url.searchParams.delete('search');
         }
 
-        url.searchParams.delete('page');
+        // LIVE SEARCH
+        document.addEventListener('input', (event) => {
+            const area = document.getElementById(rootId);
 
-        debounceTimer = setTimeout(() => {
-            updateArea(url.href, { isSearch: true });
-        }, 400);
-    });
+            if (
+                !area ||
+                !area.contains(event.target) ||
+                !event.target.matches(searchSelector)
+            ) return;
 
-    // FILTER STATUS, TIPE, DAN PAGINATION
-    document.addEventListener('click', (event) => {
-        const link = event.target.closest('a[href]');
-        const area = document.getElementById(rootId);
+            clearTimeout(debounceTimer);
 
-        if (
-            !link ||
-            !area?.contains(link) ||
-            event.defaultPrevented ||
-            event.button !== 0 ||
-            event.ctrlKey ||
-            event.metaKey ||
-            event.shiftKey ||
-            event.altKey ||
-            link.target === '_blank'
-        ) return;
+            if (activeRequest) activeRequest.abort();
 
-        const url = new URL(link.href, window.location.href);
-        const form = area.querySelector('form[action]');
+            const query = event.target.value;
+            const url = new URL(window.location.href);
 
-        if (
-            !form ||
-            url.origin !== window.location.origin ||
-            url.pathname !== new URL(form.action).pathname
-        ) return;
+            if (query.trim()) {
+                url.searchParams.set('search', query);
+            } else {
+                url.searchParams.delete('search');
+            }
 
-        event.preventDefault();
+            url.searchParams.delete('page');
 
-        clearTimeout(debounceTimer);
-
-        updateArea(url.href);
-    });
-
-    // BACK / FORWARD BROWSER
-    window.addEventListener('popstate', () => {
-        clearTimeout(debounceTimer);
-
-        updateArea(window.location.href, {
-            addHistory: false
+            debounceTimer = setTimeout(() => {
+                updateArea(url.href, {
+                    isSearch: true
+                });
+            }, 400);
         });
-    });})();
+
+        // FILTER STATUS, TIPE, DAN PAGINATION
+        document.addEventListener('click', (event) => {
+            const link = event.target.closest('a[href]');
+            const area = document.getElementById(rootId);
+
+            if (
+                !link ||
+                !area?.contains(link) ||
+                event.defaultPrevented ||
+                event.button !== 0 ||
+                event.ctrlKey ||
+                event.metaKey ||
+                event.shiftKey ||
+                event.altKey ||
+                link.target === '_blank'
+            ) return;
+
+            const url = new URL(link.href, window.location.href);
+            const form = area.querySelector('form[action]');
+
+            if (
+                !form ||
+                url.origin !== window.location.origin ||
+                url.pathname !== new URL(form.action).pathname
+            ) return;
+
+            event.preventDefault();
+
+            clearTimeout(debounceTimer);
+
+            updateArea(url.href);
+        });
+
+        // BACK / FORWARD BROWSER
+        window.addEventListener('popstate', () => {
+            clearTimeout(debounceTimer);
+
+            updateArea(window.location.href, {
+                addHistory: false
+            });
+        });
+    })();
 </script>
 
 @endsection

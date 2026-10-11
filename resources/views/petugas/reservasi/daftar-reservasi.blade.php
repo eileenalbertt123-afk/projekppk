@@ -383,7 +383,7 @@
         </div>
 
         {{-- Pagination Footer --}}
-        <div class="border-t border-[#f1f5f9] flex items-center justify-between gap-4 px-4 pt-[17px] pb-4 flex-wrap">
+        <div class="border-t border-[#f1f5f9] flex flex-col sm:flex-row items-center justify-center sm:justify-between text-center gap-3 sm:gap-4 px-4 pt-[17px] pb-4">
             <p class="text-xs font-medium text-[#64748b] leading-4">
                 Menampilkan
                 <span class="font-semibold text-[#0f172a]">
@@ -396,7 +396,7 @@
                 reservasi
             </p>
 
-            <nav class="flex items-center gap-1">
+            <nav class="flex flex-wrap items-center justify-center gap-1">
 
                 {{-- Previous --}}
                 @if ($reservations->onFirstPage())

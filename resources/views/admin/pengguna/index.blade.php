@@ -4,12 +4,12 @@
 @section('content')
 
     <div class="min-h-full">
-        <div class="px-8 py-8">
+        <div class="sm:px-8 sm:py-8">
 
             {{-- HEADER --}}
-            <div class="flex items-center justify-between mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 sm:mb-8">
                 <div>
-                    <h1 class="font-extrabold text-[30px] tracking-[-0.75px] text-[#19183b]">
+                    <h1 class="font-extrabold text-2xl sm:text-[30px] tracking-[-0.75px] text-[#19183b]">
                         Kelola Pengguna
                     </h1>
 
@@ -21,7 +21,7 @@
                 {{-- TAMBAH PETUGAS --}}
                 <a
                     href="{{ route('admin.pengguna.create.petugas') }}"
-                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#19183b] text-white text-sm font-semibold hover:bg-[#292850] transition">
+                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#19183b] text-white text-sm font-semibold hover:bg-[#292850] transition">
 
                     <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
@@ -46,7 +46,7 @@
                     <div class="flex items-center gap-2 flex-wrap">
 
                         {{-- SEARCH --}}
-                        <div class="relative flex-1 min-w-[220px]">
+                        <div class="relative flex-1 min-w-full sm:min-w-[220px]">
                             <svg
                                 class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#9aaab0]"
                                 fill="none"
@@ -177,30 +177,30 @@
 
                 {{-- TABLE --}}
                 <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
+                    <table class="w-full min-w-[820px] text-sm">
                         <thead class="bg-[#fbfcfc]">
                             <tr>
-                                <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
+                                <th class="px-3 sm:px-5 py-3 sm:py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
                                     Nama
                                 </th>
 
-                                <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
+                                <th class="px-3 sm:px-5 py-3 sm:py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
                                     Email
                                 </th>
 
-                                <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
+                                <th class="px-3 sm:px-5 py-3 sm:py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
                                     Tipe Pengguna
                                 </th>
 
-                                <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
+                                <th class="px-3 sm:px-5 py-3 sm:py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
                                     Role
                                 </th>
 
-                                <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
+                                <th class="px-3 sm:px-5 py-3 sm:py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
                                     Status
                                 </th>
 
-                                <th class="px-5 py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
+                                <th class="px-3 sm:px-5 py-3 sm:py-4 text-left text-[11px] uppercase tracking-wide font-bold text-[#93a3aa]">
                                     Aksi
                                 </th>
                             </tr>
@@ -222,7 +222,7 @@
                                     ) }}">
 
                                     {{-- NAMA --}}
-                                    <td class="px-5 py-4">
+                                    <td class="px-3 sm:px-5 py-3 sm:py-4">
                                         <div class="flex items-center gap-3">
                                             <div class="size-9 rounded-full bg-[#eef2ff] text-[#5965c4] flex items-center justify-center text-[11px] font-bold shrink-0">
                                                 {{ strtoupper(substr($item->name, 0, 2)) }}
@@ -237,12 +237,12 @@
                                     </td>
 
                                     {{-- EMAIL --}}
-                                    <td class="px-5 py-4 text-[13px] text-[#708993]">
+                                    <td class="px-3 sm:px-5 py-3 sm:py-4 text-[13px] text-[#708993]">
                                         {{ $item->email }}
                                     </td>
 
                                     {{-- TIPE PENGGUNA --}}
-                                    <td class="px-5 py-4 text-[13px] text-[#708993]">
+                                    <td class="px-3 sm:px-5 py-3 sm:py-4 text-[13px] text-[#708993]">
                                         @if($item->userType)
                                             {{ ucfirst($item->userType->name) }}
                                         @else
@@ -251,7 +251,7 @@
                                     </td>
 
                                     {{-- ROLE --}}
-                                    <td class="px-5 py-4">
+                                    <td class="px-3 sm:px-5 py-3 sm:py-4">
                                         @if($item->role === 'admin')
                                             <span class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-purple-50 text-purple-700 border border-purple-100">
                                                 Admin
@@ -268,7 +268,7 @@
                                     </td>
 
                                     {{-- STATUS --}}
-                                    <td class="px-5 py-4">
+                                    <td class="px-3 sm:px-5 py-3 sm:py-4">
                                         @if($item->status_verifikasi === 'menunggu')
                                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-[#fffaf0] text-[#b77900] border border-[#f3e4b7]">
                                                 <span class="size-1.5 rounded-full bg-[#e6a51d]"></span>
@@ -288,7 +288,7 @@
                                     </td>
 
                                     {{-- AKSI --}}
-                                    <td class="px-5 py-4">
+                                    <td class="px-3 sm:px-5 py-3 sm:py-4">
                                         <div class="flex items-center gap-1.5">
 
                                             {{-- MENUNGGU --}}
@@ -395,7 +395,7 @@
                 </div>
 
                 {{-- FOOTER --}}
-                <div class="px-4 py-3 border-t border-[#eef1f1] flex items-center justify-between">
+                <div class="px-4 py-3 border-t border-[#eef1f1] flex flex-col sm:flex-row items-center justify-center sm:justify-between text-center gap-2">
                     <p class="text-xs text-[#708993]">
                         Menampilkan
                         <span id="jumlahPengguna" class="font-semibold text-[#19183b]">

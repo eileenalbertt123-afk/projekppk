@@ -163,35 +163,35 @@
     </div>
 
 
-    <!-- SYSTEM STATUS -->
-    <div class="p-4 space-y-3">
+    <!-- SYSTEM STATUS + PROFIL -->
+    <div>
 
-        <div class="flex items-center gap-3 px-1">
-            <div class="size-9 rounded-full bg-[#19183b] text-white flex items-center justify-center font-bold text-sm shrink-0">
-                {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
-            </div>
-            <div class="min-w-0">
-                <p class="text-sm font-bold text-[#19183b] truncate">{{ auth()->user()->name }}</p>
-                <p class="text-[11px] text-[#708993] truncate">{{ auth()->user()->email }}</p>
+        <div class="px-4 pb-4">
+            <div class="bg-[#eef4f3] border border-[#e2ebe9] rounded-2xl p-4 flex items-center gap-3">
+
+                <span class="size-3 shrink-0 rounded-full bg-[#59b88a]"></span>
+
+                <div>
+                    <p class="text-xs font-semibold text-[#19183b]">
+                        Sistem Booking Aktif
+                    </p>
+
+                    <p class="text-[11px] text-[#708993]">
+                        Server Kampus Normal
+                    </p>
+                </div>
+
             </div>
         </div>
 
-        <div class="bg-[#eef4f3] border border-[#e2ebe9] rounded-2xl p-4 flex items-center gap-3">
-
-            <span class="size-3 shrink-0 rounded-full bg-[#59b88a]"></span>
-
-            <div>
-
-                <p class="text-xs font-semibold text-[#19183b]">
-                    Sistem Booking Aktif
-                </p>
-
-                <p class="text-[11px] text-[#708993]">
-                    Server Kampus Normal
-                </p>
-
+        <div class="border-t border-[#e2ebe9] px-5 pt-4 pb-6 flex items-center gap-3">
+            <div class="size-9 rounded-full bg-[#19183b] text-white flex items-center justify-center font-bold text-sm shrink-0">
+                {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
             </div>
-
+            <div class="min-w-0 text-xs">
+                <p class="font-bold text-[#19183b] truncate">{{ auth()->user()->name }}</p>
+                <p class="text-[#708993] truncate">{{ auth()->user()->email }}</p>
+            </div>
         </div>
 
     </div>

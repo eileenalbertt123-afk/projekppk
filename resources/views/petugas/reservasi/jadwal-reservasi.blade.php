@@ -1,10 +1,10 @@
 @extends('layouts.petugas')
 
 @section('content')
-    <div id="schedule-ajax-area" class="px-8 py-8">
+    <div id="schedule-ajax-area" class="sm:px-8 sm:py-8">
 
         {{-- ==================== TOP BAR: HEADER & CONTROLS ==================== --}}
-        <div class="flex items-start justify-between gap-6 flex-wrap mb-6">
+        <div class="flex items-start justify-between gap-4 sm:gap-6 flex-wrap mb-5 sm:mb-6">
             <div class="max-w-[480px]">
                 <div class="flex items-center gap-3 flex-wrap">
                     <h1 class="font-bold text-2xl tracking-[-0.6px] text-[#19183b] leading-8">
@@ -23,13 +23,13 @@
                 </p>
             </div>
 
-            <div class="flex items-center gap-3 flex-wrap justify-end">
+            <div class="flex flex-col items-stretch sm:flex-row sm:items-center gap-2 sm:gap-3 sm:flex-wrap sm:justify-end w-full sm:w-auto">
 
                 {{-- Week navigation --}}
                 <div
                     class="bg-white border border-[rgba(226,232,240,0.8)]
                         drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)]
-                        rounded-xl p-[5px] flex items-center gap-1 shrink-0">
+                        rounded-xl p-[5px] flex items-center justify-between sm:justify-start gap-1 sm:shrink-0">
 
                     {{-- Tombol Minggu Ini --}}
                     <a
@@ -77,7 +77,7 @@
 
                         {{-- Range minggu --}}
                         <span
-                            class="flex items-center gap-1.5 px-3
+                            class="flex items-center gap-1.5 px-1.5 sm:px-3
                                 text-xs font-medium text-[#334155]
                                 whitespace-nowrap"
                         >
@@ -137,7 +137,7 @@
                 <form
                     method="GET"
                     action="{{ route('petugas.reservasi.jadwal') }}"
-                    class="shrink-0">
+                    class="w-full sm:w-auto sm:shrink-0">
                     {{-- Pertahankan minggu aktif --}}
                     <input
                         type="hidden"
@@ -151,7 +151,7 @@
                         class="bg-white border border-[#e2e8f0]
                             rounded-xl px-4 py-2.5
                             text-xs font-semibold text-[#334155]
-                            min-w-[160px]
+                            w-full sm:w-auto sm:min-w-[160px]
                             focus:outline-none focus:ring-2 focus:ring-[#19183b]/10"
                     >
                         <option value="">
@@ -173,7 +173,7 @@
                 <form
                     method="GET"
                     action="{{ route('petugas.reservasi.jadwal') }}"
-                    class="shrink-0"
+                    class="w-full sm:w-auto sm:shrink-0"
                 >
                     {{-- Pertahankan minggu aktif --}}
                     <input
@@ -197,7 +197,7 @@
                         class="bg-white border border-[#e2e8f0]
                             rounded-xl px-4 py-2.5
                             text-xs font-semibold text-[#334155]
-                            min-w-[220px]
+                            w-full sm:w-auto sm:min-w-[220px]
                             focus:outline-none focus:ring-2 focus:ring-[#19183b]/10"
                     >
                         <option value="">
@@ -218,7 +218,7 @@
         </div>
 
         {{-- Calendar --}}
-        <div class="flex items-center justify-start gap-x-6 gap-y-3 mb-4 text-xs font-medium text-[#475569] flex-wrap">
+        <div class="flex items-center justify-start gap-x-4 gap-y-2 sm:gap-x-6 sm:gap-y-3 mb-4 text-xs font-medium text-[#475569] flex-wrap">
 
             <div class="flex items-center gap-2 whitespace-nowrap">
                 <span class="size-3 rounded-full bg-[#6366F1]"></span>
@@ -316,7 +316,7 @@
             <div
                 class="bg-white border border-[rgba(226,232,240,0.8)]
                     drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)]
-                    rounded-2xl p-[25px]"
+                    rounded-2xl p-3 sm:p-[25px]"
             >
 
                 <div

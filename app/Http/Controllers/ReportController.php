@@ -24,7 +24,7 @@ class ReportController extends Controller
             ->groupBy('status')
             ->pluck('total', 'status');
 
-        $totalLaporan = Report::count();
+        $totalLaporan = $statusCounts->sum();
         $laporanBaruCount = $statusCounts->get('baru', 0);
         $laporanTerlambatCount = Report::query()
             ->where('status', 'baru')
@@ -37,8 +37,7 @@ class ReportController extends Controller
             ->whereBetween('created_at', [$startLastMonth, $endLastMonth])
             ->count();
 
-        $totalThisMonth = $statusCounts->sum();
-
+        $totalThisMonth = $totalLaporan;
         $laporanGrowth = null;
         if ($totalLastMonth > 0) {
             $laporanGrowth = round(

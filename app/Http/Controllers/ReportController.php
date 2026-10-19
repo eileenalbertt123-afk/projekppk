@@ -37,9 +37,14 @@ class ReportController extends Controller
             ->whereBetween('created_at', [$startLastMonth, $endLastMonth])
             ->count();
 
+        $totalThisMonth = $statusCounts->sum();
+
         $laporanGrowth = null;
         if ($totalLastMonth > 0) {
-            $laporanGrowth = round((($totalLaporan - $totalLastMonth) / $totalLastMonth) * 100, 1);
+            $laporanGrowth = round(
+                (($totalThisMonth - $totalLastMonth) / $totalLastMonth) * 100,
+                1
+            );
         }
 
         $incomingReports = Report::query()
@@ -48,6 +53,14 @@ class ReportController extends Controller
             ->latest('created_at')
             ->limit(3)
             ->get();
+
+        $completedReports = Report::where('status', 'selesai')
+            ->whereNotNull('resolved_at')
+            ->get();
+
+        $rataRataPerbaikan = $completedReports->avg(function ($report) {
+            return $report->created_at->diffInMinutes($report->resolved_at) / 60;
+        }) ?? 0;
 
         $statusSummary = [
             ['key' => 'baru',     'label' => 'BARU',     'value' => $statusCounts->get('baru', 0),     'desc' => 'Menunggu verifikasi'],
@@ -68,7 +81,8 @@ class ReportController extends Controller
             'laporanGrowth',
             'incomingReports',
             'statusSummary',
-            'facilitiesUnderRepair'
+            'facilitiesUnderRepair',
+            'rataRataPerbaikan'
         ));
     }
 
@@ -92,10 +106,10 @@ class ReportController extends Controller
         $query->when($request->filled('facility_id'), fn($q) => $q->where('facility_id', $request->facility_id));
 
         $query->when($request->filled('search'), function ($query) use ($request) {
-            $search   = strtoupper(trim($request->search));
-            $idSearch = str_replace('LP-', '', $search);
+            $search   = strtoupper(trim($request->search));     // hapus spasi di awal/akhir
+            $idSearch = str_replace('LP-', '', $search);        //hapus awalan LP-
             $query->where(function ($q) use ($search, $idSearch) {
-                if (is_numeric($idSearch)) $q->where('id', intval($idSearch));
+                if (is_numeric($idSearch)) $q->where('id', intval($idSearch));  //cari id==idSearch
                 $q->orWhere('report_code', 'like', "%{$search}%");
                 $q->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$search}%"));
                 $q->orWhereHas('facility', fn($f) => $f->where('name', 'like', "%{$search}%"));
@@ -145,7 +159,7 @@ class ReportController extends Controller
         return view('reports.create', compact('facilities'));
     }
 
-    public function userStore(Request $request)
+    public function userStore(Request $request)     //simpanlaporan ver baru
     {
         $request->validate([
             'facility_id' => 'required|exists:facilities,id',
@@ -180,7 +194,7 @@ class ReportController extends Controller
         return redirect()->route('riwayat.laporan')->with('success', 'Laporan kerusakan berhasil dikirim!');
     }
 
-    public function userShow(Report $report)
+    public function userShow(Report $report)        //pengguna
     {
         $report->load(['user', 'facility']);
         return view('reports.show', [
@@ -190,7 +204,7 @@ class ReportController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request)         //vers lama, gk dipake
     {
         $request->validate([
             'facility_id' => 'required',
@@ -209,7 +223,7 @@ class ReportController extends Controller
         return back()->with('success', 'Laporan berhasil dibuat');
     }
 
-    public function show(Report $report)
+    public function show(Report $report)        //petugas
     {
         $report->load(['user', 'facility']);
 
@@ -320,7 +334,7 @@ class ReportController extends Controller
                 'reason'          => $validated['rejection_reason'],
             ]);
         });
-        
+
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
@@ -343,6 +357,7 @@ class ReportController extends Controller
 
             $report->update([
                 'status' => 'selesai',
+                'resolved_at' => now(),
             ]);
 
             $report->facility?->update([

@@ -360,10 +360,19 @@ class ReportController extends Controller
                 'resolved_at' => now(),
             ]);
 
-            $report->facility?->update([
-                'status' => 'tersedia',
-            ]);
+            // Fasilitas baru dikembalikan ke "tersedia" jika tidak ada
+            // laporan lain pada fasilitas yang sama yang masih diproses.
+            $masihAdaLaporanAktif = Report::where('facility_id', $report->facility_id)
+                ->where('id', '!=', $report->id)
+                ->where('status', 'diproses')
+                ->exists();
 
+            if (!$masihAdaLaporanAktif) {
+                $report->facility?->update([
+                    'status' => 'tersedia',
+                ]);
+            }
+            
             ReportStatusHistory::create([
                 'report_id'  => $report->id,
                 'status'     => 'selesai',
